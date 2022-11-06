@@ -1,4 +1,5 @@
 {% load static %}
+{% csrf_token %}
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -53,44 +54,59 @@
 						<div class="col-md-2">
 							<div class="header-logo">
 								<a href="#" class="logo">
-									<img src="{% static 'images/logo2.png' %}" alt="" height="100" width="250">
+									<img src="{% static 'images/logo2.png' %}" alt="" height="90" width="200">
 								</a>
 							</div>
 						</div>
 						<!-- /LOGO -->
 						
 						<!-- SEARCH BAR -->
-						<div class="col-md-6">
+						<div class="col-md-5">
 							<div class="header-search">
-								<form>
+								<form action="{% url 'searchbar' %}" method="GET">
 
-									<select class="input-select">
+												<input class="input" placeholder="Search here" name="query">
+												<button type="submit" class="search-btn">Search</button>
 
-										<option value="0">All Categories</option>
-										{% for x in category %}
-										<option value="1">{{x.category_name}}</option>
-										{% endfor %}
-<!--										<option value="1">History</option>-->
-<!--										<option value="1">Fiction</option>-->
-<!--										<option value="1">Novel</option>-->
-									</select>
-									<input class="input" placeholder="Search here">
-									<button class="search-btn">Search</button>
+
+
 								</form>
 							</div>
 						</div>
 						<!-- /SEARCH BAR -->
 						
 						<!-- ACCOUNT -->
-						<div class="col-md-0">
+						<div class="col-md-5">
 							<div class="header-ctn">
-								
+                                 <!--				dropdown				-->
+								<div class="dropdown my_acc_btn">
+
+
+                                 <button class="btn dropdown-toggle my_acc_btn"  type="button" data-bs-toggle="dropdown" aria-expanded="false">
+									<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-book" viewBox="0 0 16 16">
+                                    <path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811V2.828zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492V2.687zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z"/>
+                                    </svg> Category</button>
+
+									<ul class="dropdown-menu">
+
+										{% for x in category %}-->
+										<li><a  href="{% url 'categorys' %}">{{x.category_name}}</a></li>
+										{% endfor %}
+
+									</ul>
+								</div>
+
 								<!-- Wishlist -->
 								<div>
 									<a href="#">
-										<i class="fa fa-heart-o"></i>
+<!--										<i class="fa fa-heart-o"></i>-->
+										<div>
+										<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+                                        <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
+                                        </svg>
+								        </div>
 										<span>My Wishlist</span>
-										<div class="qty">2</div>
+										<div class="qty">0</div>
 									</a>
 								</div>
 								<!-- /Wishlist -->								
@@ -98,9 +114,13 @@
 								<!-- Cart -->
 								<div class="dropdown">
 									<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-										<i class="fa fa-shopping-cart"></i>
+										<div>
+										<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" class="bi bi-cart2" viewBox="0 0 16 16">
+                                        <path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5zM3.14 5l1.25 5h8.22l1.25-5H3.14zM5 13a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0zm9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0z"/>
+										</svg>
+										</div>
 										<span>My Cart</span>
-										<div class="qty">3</div>
+										<div class="qty">0</div>
 									</a>
 									<div class="cart-dropdown">
 										<div class="cart-list">
@@ -115,16 +135,7 @@
 												<button class="delete"><i class="fa fa-close"></i></button>
 											</div>
 
-											<div class="product-widget">
-												<div class="product-img">
-													<img src="./img/product02.png" alt="">
-												</div>
-												<div class="product-body">
-													<h3 class="product-name"><a href="#">product name goes here</a></h3>
-													<h4 class="product-price"><span class="qty">3x</span>$980.00</h4>
-												</div>
-												<button class="delete"><i class="fa fa-close"></i></button>
-											</div>
+
 										</div>
 										<div class="cart-summary">
 											<small>3 Item(s) selected</small>
@@ -145,21 +156,23 @@
 
 								<div class="dropdown my_acc_btn">
 									{% if user.is_authenticated %}
-                                 <button class="btn dropdown-toggle my_acc_btn"  type="button" data-bs-toggle="dropdown" aria-expanded="false"> <svg xmlns="http://www.w3.org/2000/svg"  width="20" height="15" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
+
+                                 <button class="btn dropdown-toggle my_acc_btn"  type="button" data-bs-toggle="dropdown" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg"  width="20" height="15" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
                                     <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
                                      </svg>{{user.first_name}}</button>
+
 									<ul class="dropdown-menu">
 
-										<li><a class="dropdown-item" href="{% url 'index' %}">My Account</a></li>
+										<li><a class="dropdown-item" href="{% url 'profile' %}">My Account</a></li>
 										<li><a class="dropdown-item" href="{% url 'changepassword' %}">Change Password</a></li>
 										<li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
 
 									</ul>
 
 								{% else %}
-								 <button class="btn dropdown-toggle my_acc_btn"  type="button" data-bs-toggle="dropdown" aria-expanded="false"> <svg xmlns="http://www.w3.org/2000/svg"  width="20" height="15" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
+								 <button class="btn dropdown-toggle my_acc_btn"  type="button" data-bs-toggle="dropdown" aria-expanded="false"> <svg xmlns="http://www.w3.org/2000/svg"  width="25" height="25" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
                                     <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
-                                     </svg>My Account</button>
+                                     </svg></button>
 									<ul class="dropdown-menu">
 
 										<li><a class="dropdown-item" href="{% url 'login' %}">Login</a></li>ref="{% url 'index' %}">Login</a></li>
@@ -198,16 +211,25 @@
 			<div class="container">
 				<!-- responsive-nav -->
 				<div id="responsive-nav">
+
 					<!-- NAV -->
 					<ul class="main-nav nav navbar-nav">
 						<li class="active"><a href="/">Home</a></li>
-						<li><a href="#">Hot Deals</a></li>
-						<li><a href="#">Horror</a></li>
-						<li><a href="#">History</a></li>
-						<li><a href="#">Novel</a></li>
-						<li><a href="#">Fiction</a></li>
-						<li><a href="#">Health</a></li>
-					</ul>
+						<li><a href="{% url 'allproduct' %}">All Books</a></li>
+
+
+<!--      <li><a href="#">HTML</a></li>-->
+<!--      <li><a href="#">CSS</a></li>-->
+<!--      <li><a href="#">JavaScript</a></li>-->
+    </ul>
+  </div>
+<!--						<li><a href="#">Horror</a></li>-->
+<!--						<li><a href="#">History</a></li>-->
+<!--						<li><a href="#">Novel</a></li>-->
+<!--						<li><a href="#">Fiction</a></li>-->
+<!--						<li><a href="#">Health</a></li>-->
+
+
 					<!-- /NAV -->
 				</div>
 				<!-- /responsive-nav -->
@@ -229,8 +251,11 @@
 								<img src="{% static 'images/bo11.png' %}" alt="">
 							</div>
 							<div class="shop-body">
+
 								<h3>Horror</h3>
-								<a href="#" class="cta-btn">Shop now <i class="fa fa-arrow-circle-right"></i></a>
+								<a href="{% url 'allproduct' %}" class="cta-btn">Shop now <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right-circle-fill" viewBox="0 0 16 16">
+  <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
+</svg></a>
 							</div>
 						</div>
 					</div>
@@ -244,7 +269,9 @@
 							</div>
 							<div class="shop-body">
 								<h3>Health</h3>
-								<a href="#" class="cta-btn">Shop now <i class="fa fa-arrow-circle-right"></i></a>
+								<a href="{% url 'allproduct' %}" class="cta-btn">Shop now <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right-circle-fill" viewBox="0 0 16 16">
+                               <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
+                                  </svg></a>
 							</div>
 						</div>
 					</div>
@@ -258,7 +285,9 @@
 							</div>
 							<div class="shop-body">
 								<h3>History</h3>
-								<a href="#" class="cta-btn">Shop now <i class="fa fa-arrow-circle-right"></i></a>
+								<a href="{% url 'allproduct' %}" class="cta-btn">Shop now <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right-circle-fill" viewBox="0 0 16 16">
+                                <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
+                                </svg></a>
 							</div>
 						</div>
 					</div>
@@ -298,7 +327,7 @@
 										<div class="product">
 
 											<div class="product-img">
-												<a href="{% url 'product' %}"><img src="{{i.img.url}}" alt="" height="450">
+												<a href="{{i.get_url}}"><img src="{{i.img.url}}" alt="" height="450"></a>
 												<div class="product-label">
 													<span class="sale">-30%</span>
 													<span class="new">NEW</span>
@@ -306,8 +335,8 @@
 											</div>
 											<div class="product-body">
 												<p class="product-category">{{i.book_category}}</p>
-												<h3 class="product-name"><a href="{% url 'product' %}">{{i.book_name}}</a></h3>
-												<h4 class="product-price">₹{{i.book_price}} <del class="product-old-price">₹₹{{i.book_oldprice}}</del></h4>
+												<h3 class="product-name"><a href="{{i.get_url}}">{{i.book_name}}</a></h3>
+												<h4 class="product-price">₹{{i.book_price}}.00  <del class="product-old-price">₹{{i.book_oldprice}}.00 </del></h4>
 												<div class="product-rating">
 													<i class="fa fa-star"></i>
 													<i class="fa fa-star"></i>
@@ -884,9 +913,15 @@
 								<h3 class="footer-title">About Us</h3>
 
 								<ul class="footer-links">
-									<li><a href="#"><i class="fa fa-map-marker"></i> New Delhi Road</a></li>
-									<li><a href="#"><i class="fa fa-phone"></i>+91-9551956840</a></li>
-									<li><a href="#"><i class="fa fa-envelope-o"></i>bookrak@gmail.com</a></li>
+									<li><a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
+                        							<path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+                      								</svg> Trivandrum</a></li>
+									<li><a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-telephone-fill" viewBox="0 0 16 16">
+                                                    <path fill-rule="evenodd" d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z"/>
+                                                     </svg> +91-9551956840</a></li>
+									<li><a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope-fill" viewBox="0 0 16 16">
+                                                     <path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555ZM0 4.697v7.104l5.803-3.558L0 4.697ZM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757Zm3.436-.586L16 11.801V4.697l-5.803 3.546Z"/>
+                                                      </svg> bookrak@gmail.com</a></li>
 								</ul>
 							</div>
 						</div>

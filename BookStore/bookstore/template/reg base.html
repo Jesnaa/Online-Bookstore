@@ -1,4 +1,7 @@
+
+
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -6,9 +9,12 @@
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-	  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-      <title>Sign Up</title>
 
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+
+      <title>Sign Up</title>
+        <script src="{% static 'js/reg.js' %}"></script>
 
   </head>
 	<body>
@@ -22,13 +28,16 @@
           <div class="card text-black" style="border-radius: 25px;">
             <div class="card-body p-md-5">
               <div class="row justify-content-center">
+                 <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
+                  <img src="{% static 'images/booo.jpg' %}" class="img-fluid" alt="Sample image">
+                </div>
                 <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
   
                   <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Sign up</p>
   
                   <form action="" method="post" class="mx-1 mx-md-4" onsubmit="return validation()" enctype="multipart/form-data">
                     {% csrf_token %}
-  
+                    {% include 'Message.html' %}
                     <div class="d-flex flex-row align-items-center mb-4">
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
                         <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
@@ -36,7 +45,7 @@
                       <i class="bi bi-person-fill"></i>
                       <div class="form-outline flex-fill mb-0">
 
-                        <input type="text" id="ffname" class="form-control" name="first_name" placeholder="First Name"  pattern="^[A-Za_z][A-Za-z -]+$" title="The name should begin with capital letter Followed by uppercase or lowercase" required/>
+                        <input type="text" id="ffname" class="form-control" name="first_name"  onkeyup='fnameValidation(this)' placeholder="First Name"  pattern="^[A-Za_z][A-Za-z -]+$" title="The name should begin with capital letter Followed by uppercase or lowercase" required/>
                         <span id="name" style="font-size:12px;margin-top:-5px;" class="text-danger"></span>
                         
                       </div>
@@ -48,7 +57,7 @@
                       <i class="bi bi-person-fill"></i>
                       <div class="form-outline flex-fill mb-0">
 
-                        <input type="text" id="llname" class="form-control" name="last_name" placeholder="Last Name"required/>
+                        <input type="text" id="llname" class="form-control" name="last_name"  onkeyup='lnameValidation(this)' placeholder="Last Name"required/>
                         <span id="names" style="font-size:12px;margin-top:-5px;" class="text-danger"></span>
                       </div>
                     </div>
@@ -59,7 +68,7 @@
                       </svg>
                       <i class="bi bi-envelope-fill"></i>
                       <div class="form-outline flex-fill mb-0">                       
-                        <input type="email" id="email" class="form-control" name="email" placeholder="Email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="must enter a valid email address" required/>
+                        <input type="email" id="email" class="form-control" name="email" onkeyup='emailValidation(this)' placeholder="Email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="must enter a valid email address" required/>
                         <span id="mail" style="font-size:12px;margin-top:-5px;" class="text-danger"></span>
                       </div>
                     </div>
@@ -70,7 +79,7 @@
                       </svg>
                       <i class="bi bi-telephone-fill"></i>
                       <div class="form-outline flex-fill mb-0">                       
-                        <input type="text" id="phone" class="form-control" name="phonenumber" placeholder="Phone Number"  pattern="^[6-9][0-9]{9}$" title="must be 10 digit" required/>
+                        <input type="text" id="phone" class="form-control" name="phonenumber" onkeyup='phoneValidation(this)'  placeholder="Phone Number"  pattern="^[6-9][0-9]{9}$" title="must be 10 digit" required/>
                         <span id="pho" style="font-size:12px;margin-top:-5px;" class="text-danger"></span>
                       </div>
                     </div>
@@ -80,7 +89,7 @@
                       </svg>
                       <i class="bi bi-house-door-fill"></i>
                       <div class="form-outline flex-fill mb-0">
-                        <input type="text" id="hname" class="form-control" name="hname" placeholder="House Name" required />
+                        <input type="text" id="hname" class="form-control" name="hname" onkeyup='lnameValidation(this)' placeholder="House Name" required />
                         <span id="hsname" style="font-size:12px;margin-top:-5px;" class="text-danger"></span>
                       </div>
                     </div>
@@ -90,15 +99,15 @@
                       </svg>
                       <i class="bi bi-geo-alt-fill"></i>
                       <div class="form-outline flex-fill mb-0">
-                        <input type="text" id="country" class="form-control" name="country" placeholder="country"required/>
+                        <input type="text" id="country" class="form-control" name="country" onkeyup='countryValidation(this)' placeholder="country"required/>
                         <span id="countrys" style="font-size:12px;margin-top:-5px;" class="text-danger"></span>
                       </div>
                       <div class="form-outline flex-fill mb-0">
-                        <input type="text" id="state" class="form-control" name="state" placeholder="state"required/>
+                        <input type="text" id="state" class="form-control" name="state" onkeyup='stateValidation(this)'  placeholder="state"required/>
                         <span id="states" style="font-size:12px;margin-top:-5px;" class="text-danger"></span>
                       </div>
                       <div class="form-outline flex-fill mb-0">
-                        <input type="text" id="city" class="form-control" name="city" placeholder="city"required/>
+                        <input type="text" id="city" class="form-control" name="city" onkeyup='cityValidation(this)' placeholder="city"required/>
                         <span id="citys" style="font-size:12px;margin-top:-5px;" class="text-danger"></span>
                       </div>
                     </div>
@@ -109,7 +118,7 @@
                       </svg>
                       <i class="bi bi-mailbox"></i>
                       <div class="form-outline flex-fill mb-0">
-                      <input type="text" id="pincode" class="form-control" name="pincode" placeholder="pincode"  pattern="^[1-9][0-9]{5}$" title="must be valid pincode" required/>
+                      <input type="text" id="pincode" class="form-control" name="pincode" onkeyup='pincodeValidation(this)' placeholder="pincode"  pattern="^[1-9][0-9]{5}$" title="must be valid pincode" required/>
                        <span id="pincodes" style="font-size:12px;margin-top:-5px;" class="text-danger"></span>
                       </div>
                     </div>
@@ -119,7 +128,7 @@
                       </svg>
                       <i class="bi bi-lock-fill"></i>
                       <div class="form-outline flex-fill mb-0">                        
-                      <input type="password" id="pass1" class="form-control" name="password" placeholder="Password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" required/>
+                      <input type="password" id="pass1" class="form-control" name="password" onkeyup='passwordValidation(this)' placeholder="Password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" required/>
                        <span id="pa1" style="font-size:12px;margin-top:-5px;" class="text-danger"></span>
                       </div>
                     </div>
@@ -130,7 +139,7 @@
                       </svg> 
                       <i class="bi bi-key-fill"></i>
                       <div class="form-outline flex-fill mb-0">                                                                                        
-                      <input type="password" id="pass2" class="form-control" name="cpassword" placeholder="Repeat your password" required/>
+                      <input type="password" id="pass2" class="form-control" name="cpassword" onkeyup='cpasswordValidation(this)' placeholder="Repeat your password" required/>
                        <span id="pa2" style="font-size:12px;margin-top:-5px;" class="text-danger"></span>
                       </div>
                     </div>
@@ -139,16 +148,23 @@
                     <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
                       <button type="submit" class="btn btn-primary btn-lg">Sign Up</button>
                     </div>
+
+                    <div>
+                      {% for message in messages %}
+                      {{message}}
+                      {% endfor %}
+                    </div>
+
                    <p>Already have an account? <a href="{% url 'login' %}">Sign in</a></p>
   
                   </form>
   
                 </div>
-                <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
-  
-                  <img src="{% static 'images/booo.jpg' %}" class="img-fluid" alt="Sample image">
-  
-                </div>
+<!--                <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">-->
+<!--  -->
+<!--                  <img src="{% static 'images/booo.jpg' %}" class="img-fluid" alt="Sample image">-->
+<!--  -->
+<!--                </div>-->
               </div>
             </div>
           </div>
@@ -156,12 +172,7 @@
       </div>
     </div>
   </section>
-<div>
-        {% for message in messages %}
-        {{message}}
-        {% endfor %}
 
-    </div>
   <script src="{% static 'js/jquery.min.js' %}"></script>
   <script src="{% static 'js/bootstrap.min.js' %}"></script>
   <script src="{% static 'js/slick.min.js' %}"></script>
@@ -211,9 +222,9 @@
              document.getElementById('names').innerHTML="";
           }
 
-          if((lname.length<=2)||(fname.length>20)){
+          if((lname.length<=1)||(fname.length>20)){
 
-             document.getElementById('names').innerHTML="**User length must be between 2 and 20";
+             document.getElementById('names').innerHTML="**User length must be between 1 and 20";
              return false;
 
           }

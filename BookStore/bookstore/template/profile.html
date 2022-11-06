@@ -1,0 +1,152 @@
+{% extends 'base1.html' %}
+{% load static %}
+
+{% block title%}
+<title>My Account || Bookrak</title>
+{% endblock %}
+
+{% block path %}
+<li class="active"><a href="{% url 'account' %}">Account</a></li>
+{% endblock %}
+{% block content %}
+<!--<body background="{% static 'images/bo.jpg' %}">-->
+ <!-- My Account Page Start Here -->
+ <div class="my-account white-bg pb-60">
+    <div class="container">
+        <div class="account-dashboard">
+           <div class="dashboard-upper-info">
+               <div class="row no-gutters align-items-center">
+                   <div class="col-lg-3 col-md-6">
+<!--                       <div class="d-single-info">-->
+<!--                           <p class="user-name">Hello <span>{{user.first_name}}</span></p>-->
+<!--                       </div>-->
+                   </div>
+               </div>
+           </div>
+            <div class="row" >
+                <div class="col-lg-2" >
+                    <!-- Nav tabs -->
+                    <ul class="nav flex-column dashboard-list" role="tablist">
+                        <li><a class="active" data-toggle="tab" href="#dashboard">Dashboard</a></li>
+                        <li><a data-toggle="tab" href="#orders">Orders</a></li>
+                        <li><a data-toggle="tab" href="#address">Addresses</a></li>
+                        <li><a data-toggle="tab" href="#account-details">Account details</a></li>
+
+<!--                        <li><a  href="{% url 'changepassword' %}">Change Password</a></li>-->
+<!--                        <li><a href="login.html" href="#logout">logout</a></li>-->
+                    </ul>
+                </div>
+                <div class="col-lg-10" style="background-image: url({% static 'images/bo.jpg' %});">
+                    <!-- Tab panes -->
+                    <div class="tab-content dashboard-content mt-all-40">
+                        <div id="dashboard" class="tab-pane active">
+                            <center> <h3>Dashboard </h3></center>
+                            <h4>Hello {{user.first_name}}</h4>
+                                 <img src="{% static 'images/bo.jpg' %}" alt="" height="200"   style="margin-left:800px;">
+
+                            <p><b>You're never too old, too wacky, too wild, to pick up a book and read to a child.</b></p>
+                            <p>From your account dashboard. you can easily check & view your <a href="#">recent orders</a>, manage your <a href="#">shipping and billing addresses</a> and <a href="#">edit your password and account details.</a></p>
+                        </div>
+                        <div id="orders" class="tab-pane fade">
+                            <h3>Orders</h3>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Order</th>
+                                            <th>Date</th>
+                                            <th>Status</th>
+                                            <th>Total</th>
+                                            <th>Actions</th>                
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>May 10, 2018</td>
+                                            <td>Processing</td>
+                                            <td>$25.00 for 1 item </td>
+                                            <td><a class="view" href="cart.html">view</a></td>
+                                        </tr>
+                                        <tr>
+                                            <td>2</td>
+                                            <td>May 10, 2018</td>
+                                            <td>Processing</td>
+                                            <td>$17.00 for 1 item </td>
+                                            <td><a class="view" href="cart.html">view</a></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="address" class="tab-pane">
+                            <p>The following addresses will be used on the checkout page by default.</p>
+                            <h4 class="billing-address">Billing address</h4>
+                            <a class="view" href="#">edit</a>
+                            <p>steven smith</p>
+                            <p>Australia</p>   
+                        </div>
+                        <div id="account-details" class="tab-pane fade">
+                            <h3>Account details </h3>
+                            <div class="register-form login-form clearfix">
+                                <form action="#">
+                                    <div class="form-group row">
+                                        <label for="f-name" class="col-lg-3 col-md-4 col-form-label">First Name</label>
+                                        <div class="col-lg-6 col-md-8">
+                                            <input type="text" class="form-control" id="f-name">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="l-name" class="col-lg-3 col-md-4 col-form-label">Last Name</label>
+                                        <div class="col-lg-6 col-md-8">
+                                            <input type="text" class="form-control" id="l-name">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="email" class="col-lg-3 col-md-4 col-form-label">Email address</label>
+                                        <div class="col-lg-6 col-md-8">
+                                            <input type="text" class="form-control" id="email">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="inputpassword" class="col-lg-3 col-md-4 col-form-label">Current password</label>
+                                        <div class="col-lg-6 col-md-8">
+                                            <input type="password" class="form-control" id="inputpassword">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="newpassword" class="col-lg-3 col-md-4 col-form-label">New password</label>
+                                        <div class="col-lg-6 col-md-8">
+                                            <input type="password" class="form-control" id="newpassword">
+                                            <button class="btn show-btn" type="button">Show</button>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="v-password" class="col-lg-3 col-md-4 col-form-label">Confirm password</label>
+                                        <div class="col-lg-6 col-md-8">
+                                            <input type="password" class="form-control" id="c-password">
+                                            <button class="btn show-btn" type="button">Show</button>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="birth" class="col-lg-3 col-md-4 col-form-label">Birthdate</label>
+                                        <div class="col-lg-6 col-md-8">
+                                            <input type="text" class="form-control" id="birth" placeholder="MM/DD/YYYY">
+                                        </div>
+                                    </div>
+                                    <div class="register-box mt-40">
+                                        <button type="submit" class="return-customer-btn f-right">Save</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- My Account Page End Here -->
+</body>
+{% endblock %}

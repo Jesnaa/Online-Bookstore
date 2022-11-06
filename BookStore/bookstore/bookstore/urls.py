@@ -23,3 +23,6 @@ urlpatterns = [
     path('', include('homeapp.urls')),
     path('login/',include('logapp.urls'))
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
+admin.site.site_title="Admin"
+admin.site.site_header='BOOKRAK'
+admin.site.index_title="BOOKRAK"
