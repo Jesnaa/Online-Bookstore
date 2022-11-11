@@ -43,7 +43,7 @@
 
     </head>
 	<body>
-		
+
 			<!-- MAIN HEADER -->
 			<div id="header">
 				<!-- container -->
@@ -54,12 +54,12 @@
 						<div class="col-md-2">
 							<div class="header-logo">
 								<a href="#" class="logo">
-									<img src="{% static 'images/logo2.png' %}" alt="" height="90" width="200">
+									<img src="{% static 'images/logo2.png' %}" alt="" height="85" width="200">
 								</a>
 							</div>
 						</div>
 						<!-- /LOGO -->
-						
+
 						<!-- SEARCH BAR -->
 						<div class="col-md-5">
 							<div class="header-search">
@@ -74,7 +74,7 @@
 							</div>
 						</div>
 						<!-- /SEARCH BAR -->
-						
+
 						<!-- ACCOUNT -->
 						<div class="col-md-5">
 							<div class="header-ctn">
@@ -109,45 +109,51 @@
 										<div class="qty">0</div>
 									</a>
 								</div>
-								<!-- /Wishlist -->								
-								
+								<!-- /Wishlist -->
+
 								<!-- Cart -->
 								<div class="dropdown">
-									<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-										<div>
-										<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" class="bi bi-cart2" viewBox="0 0 16 16">
-                                        <path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5zM3.14 5l1.25 5h8.22l1.25-5H3.14zM5 13a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0zm9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0z"/>
-										</svg>
-										</div>
+									<a  class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+
+										<a  href="{% url 'cart' %}">
+											<div>
+												<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" class="bi bi-cart2" viewBox="0 0 16 16">
+												<path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5zM3.14 5l1.25 5h8.22l1.25-5H3.14zM5 13a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0zm9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0z"/>
+												</svg>
+										    </div>
+
 										<span>My Cart</span>
-										<div class="qty">0</div>
+										{% for i in cart %}
+										<div class="qty">{{i.product_qty}}</div>
+										{% endfor %}
+										</a>
 									</a>
-									<div class="cart-dropdown">
-										<div class="cart-list">
-											<div class="product-widget">
-												<div class="product-img">
-													<img src="{% static 'images/book1.png' %}" alt="">
-												</div>
-												<div class="product-body">
-													<h3 class="product-name"><a href="#">product name goes here</a></h3>
-													<h4 class="product-price"><span class="qty">1x</span>$980.00</h4>
-												</div>
-												<button class="delete"><i class="fa fa-close"></i></button>
-											</div>
+<!--									<div class="cart-dropdown">-->
+<!--&lt;!&ndash;										<div class="cart-list">&ndash;&gt;-->
+<!--&lt;!&ndash;											<div class="product-widget">&ndash;&gt;-->
+<!--&lt;!&ndash;												<div class="product-img">&ndash;&gt;-->
+<!--&lt;!&ndash;													<img src="{% static 'images/book1.png' %}" alt="">&ndash;&gt;-->
+<!--&lt;!&ndash;												</div>&ndash;&gt;-->
+<!--&lt;!&ndash;												<div class="product-body">&ndash;&gt;-->
+<!--&lt;!&ndash;													<h3 class="product-name"><a href="#">product name goes here</a></h3>&ndash;&gt;-->
+<!--&lt;!&ndash;													<h4 class="product-price"><span class="qty">1x</span>$980.00</h4>&ndash;&gt;-->
+<!--&lt;!&ndash;												</div>&ndash;&gt;-->
+<!--&lt;!&ndash;												<button class="delete"><i class="fa fa-close"></i></button>&ndash;&gt;-->
+<!--&lt;!&ndash;											</div>&ndash;&gt;-->
 
 
-										</div>
-										<div class="cart-summary">
-											<small>3 Item(s) selected</small>
-											<h5>SUBTOTAL: $2940.00</h5>
-										</div>
-										<div class="cart-btns">
-											<a href="#">View Cart</a>
-											<a href="{% url 'checkout' %}">Checkout  <i class="fa fa-arrow-circle-right"></i></a>
-										</div>
-										
-								    </div>
-									
+<!--&lt;!&ndash;										</div>&ndash;&gt;-->
+<!--&lt;!&ndash;										<div class="cart-summary">&ndash;&gt;-->
+<!--&lt;!&ndash;											<small>3 Item(s) selected</small>&ndash;&gt;-->
+<!--&lt;!&ndash;											<h5>SUBTOTAL: $2940.00</h5>&ndash;&gt;-->
+<!--&lt;!&ndash;										</div>&ndash;&gt;-->
+<!--&lt;!&ndash;										<div class="cart-btns">&ndash;&gt;-->
+<!--&lt;!&ndash;											<a href="{% url 'cart' %}">View Cart</a>&ndash;&gt;-->
+<!--&lt;!&ndash;											<a href="{% url 'checkout' %}">Checkout  <i class="fa fa-arrow-circle-right"></i></a>&ndash;&gt;-->
+<!--&lt;!&ndash;										</div>&ndash;&gt;-->
+<!--&lt;!&ndash;										&ndash;&gt;-->
+<!--								    </div>-->
+
 
 								</div>
 
@@ -188,15 +194,15 @@
 									</a>
 								</div>
 								<!-- /Menu Toogle -->
-								
-						</div>								
 
 						</div>
-						
+
+						</div>
+
 						<!-- /ACCOUNT -->
-						
+
 					</div>
-					
+
 					<!-- row -->
 				</div>
 				<!-- container -->
@@ -310,7 +316,7 @@
 					<div class="col-md-12">
 						<div class="section-title">
 							<h3 class="title">New Products</h3>
-							
+
 						</div>
 					</div>
 					<!-- /section title -->
@@ -327,7 +333,7 @@
 										<div class="product">
 
 											<div class="product-img">
-												<a href="{{i.get_url}}"><img src="{{i.img.url}}" alt="" height="450"></a>
+												<a href="{{i.get_url}}"><img src="{{i.img.url}}" alt="" height="400"></a>
 												<div class="product-label">
 													<span class="sale">-30%</span>
 													<span class="new">NEW</span>
@@ -356,10 +362,12 @@
 												</div>
 											</div>
 											<div class="add-to-cart">
-												<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+												<button class="add-to-cart-btn"><a href="{% url 'addcart' i.book_id %}"> add to cart</a></button>
 											</div>
 
+
 										</div>
+
 										{% endfor %}
 										<!-- /product -->
 				</div>
@@ -899,6 +907,8 @@
 <!--		&lt;!&ndash; /SECTION &ndash;&gt;-->
 
 <!--		-->
+							<br>
+							<br>
 
 		<!-- FOOTER -->
 		<footer id="footer">
@@ -987,7 +997,7 @@
 								<li><a href="#"><i class="fa fa-cc-discover"></i></a></li>
 								<li><a href="#"><i class="fa fa-cc-amex"></i></a></li>
 							</ul>
-							
+
 						</div>
 					</div>
 						<!-- /row -->

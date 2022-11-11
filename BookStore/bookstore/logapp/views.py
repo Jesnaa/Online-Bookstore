@@ -37,9 +37,14 @@ def register(request):
         password = request.POST.get('password')
 
         if password == cpassword:
+
+            if User.objects.filter(phonenumber=phonenumber).exists():
+                messages.info(request, 'phonenumber already taken')
+                return render(request, 'reg base.html')
             if User.objects.filter(email=email).exists():
                 messages.info(request, 'email already taken')
                 return render(request, 'reg base.html')
+
             else:
                 user = User.objects.create_user(username=username, first_name=first_name,
                                                 last_name=last_name, email=email,
@@ -208,3 +213,8 @@ def activate(request, uidb64, token):
     else:
         messages.error(request, 'Invalid activation link')
         return redirect('register')
+
+
+
+
+

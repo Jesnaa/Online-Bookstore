@@ -84,11 +84,12 @@ table, th, td {
 								<h3 class="product-price">₹{{result.book_price}}.00 <del class="product-old-price">₹{{result.book_oldprice}}.00 </del></h3>
 								<span class="product-available">In Stock</span>
 							</div>
+
 							<p>
-								 Pay on Delivery<br><br>
-								 10 Days Replacement Only<br><br>
+								&#9830; Pay on Delivery<br><br>
+								&#9830; 10 Days Replacement Only<br><br>
 								 </p>
-								
+
 								<p>{{result.book_desc}}</p>
 
 <!--							<div class="product-options">-->
@@ -106,21 +107,21 @@ table, th, td {
 <!--								</label>-->
 <!--							</div>-->
 
-							<div class="add-to-cart">
-								<div class="qty-label">
-									Qty
-									<div class="input-number">
-										<input type="number">
-										<span class="qty-up">+</span>
-										<span class="qty-down">-</span>
-									</div>
-								</div>
+<!--							<div class="add-to-cart">-->
+<!--								<div class="qty-label">-->
+<!--									Qty-->
+<!--									<div class="input-number">-->
+<!--										<input type="number">-->
+<!--										<span class="qty-up">+</span>-->
+<!--										<span class="qty-down">-</span>-->
+<!--									</div>-->
+<!--								</div>-->
 
 
-							</div>
+<!--							</div>-->
 							<div class="add-to-cart">
-									<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i>add to cart</button>
-									<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i>add to wishlist</button>
+									<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i><a  href="{% url 'addcart' result.book_id %}">add to cart </a></button>
+									<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i><a>add to wishlist</a></button>
 									</div>
 
 						</div>
@@ -132,8 +133,8 @@ table, th, td {
 						<div id="product-tab">
 							<!-- product tab nav -->
 							<ul class="tab-nav">
-								<li class="active"><a data-toggle="tab" href="#tab1">Description</a></li>
-								<li><a data-toggle="tab" href="#tab2">Details</a></li>
+								<li class="active"><a data-toggle="tab" href="#tab1">Details</a></li>
+								<li><a data-toggle="tab" href="#tab2">Description</a></li>
 								<li><a data-toggle="tab" href="#tab3">Reviews (3)</a></li>
 							</ul>
 							<!-- /product tab nav -->
@@ -144,24 +145,25 @@ table, th, td {
 								<div id="tab1" class="tab-pane fade in active">
 									<div class="row">
 										<div class="col-md-12">
-											 <center><h3>{{result.book_name}}</h3></center>
-								             <p>{{result.book_desc}}</p>
+                                           <table style="width:50%">
+											<tr>	<td>&#9830; Name</td>       <td>:{{result.book_name}}</td>		</tr>
+											<tr>	<td>&#9830; Author</td>     <td>:{{result.book_author}}</td>		</tr>
+											<tr>	<td>&#9830; Category</td>   <td>:{{result.book_category}}</td>	</tr>
+											<tr>	<td>&#9830; Year</td>       <td>:{{result.book_year}}</td>		</tr>
+											<tr>	<td>&#9830; Language</td>   <td>:{{result.book_language}}</td>	</tr>
+											<tr>	<td>&#9830; Publisher</td>  <td>:{{result.book_publisher}}</td>	</tr>
+											<tr>	<td>&#9830; Price</td>      <td>:₹{{result.book_price}}.00</td>	</tr>
+                                           </table>
 										</div>
 									</div>
 								</div>
+
 									<!-- tab2  -->
-								<div id="tab2" class="tab-pane fade in">
+								<div id="tab2" class="tab-pane fade in ">
 									<div class="row">
 										<div class="col-md-12">
-                                           <table style="width:50%">
-											<tr>	<td>Name</td>       <td>:{{result.book_name}}</td>		</tr>
-											<tr>	<td>Author</td>     <td>:{{result.book_author}}</td>		</tr>
-											<tr>	<td>Category</td>   <td>:{{result.book_category}}</td>	</tr>
-											<tr>	<td>Year</td>       <td>:{{result.book_year}}</td>		</tr>
-											<tr>	<td>Language</td>   <td>:{{result.book_language}}</td>	</tr>
-											<tr>	<td>Publisher</td>  <td>:{{result.book_publisher}}</td>	</tr>
-											<tr>	<td>Price</td>      <td>:₹{{result.book_price}}.00</td>	</tr>
-                                           </table>
+											 <center><h3>{{result.book_name}}</h3></center>
+								             <p>{{result.book_desc}}</p>
 										</div>
 									</div>
 								</div>
@@ -498,6 +500,5 @@ table, th, td {
 		</div>
 		<!-- /Section -->
 
-	</body>
-</html>
+
 {% endblock content %}

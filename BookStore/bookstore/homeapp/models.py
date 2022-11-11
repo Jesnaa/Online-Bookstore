@@ -1,3 +1,4 @@
+from logapp.models import User
 from django.db import models
 from django.utils.text import slugify
 from django.urls.base import reverse
@@ -53,3 +54,12 @@ class Book(models.Model):
     def get_url(self):
         return reverse('product', args=[self.slug])
 # Create your models here.
+class Cart(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    product=models.ForeignKey(Book,on_delete=models.CASCADE)
+    product_qty=models.IntegerField(default=1)
+    price=models.DecimalField(max_digits=20,decimal_places=2,default=0)
+
+    def get_product_price(self):
+        price=[self.product.price]
+        return sum(price)
