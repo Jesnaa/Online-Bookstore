@@ -90,7 +90,7 @@
 									<ul class="dropdown-menu">
 
 										{% for x in category %}-->
-										<li><a  href="{% url 'categorys' %}">{{x.category_name}}</a></li>
+										<li><a  href="{% url 'categorys' x.category_id %}">{{x.category_name}}</a></li>
 										{% endfor %}
 
 									</ul>
@@ -98,7 +98,7 @@
 
 								<!-- Wishlist -->
 								<div>
-									<a href="#">
+									<a href="{% url 'view_wishlist' %}">
 <!--										<i class="fa fa-heart-o"></i>-->
 										<div>
 										<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
@@ -106,7 +106,7 @@
                                         </svg>
 								        </div>
 										<span>My Wishlist</span>
-										<div class="qty">0</div>
+<!--										<div class="qty">0</div>-->
 									</a>
 								</div>
 								<!-- /Wishlist -->

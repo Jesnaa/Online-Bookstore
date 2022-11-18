@@ -216,5 +216,36 @@ def activate(request, uidb64, token):
 
 
 
+def profile_update(request):
+    if request.method == "POST":
+
+        last_name = request.POST.get('last_name')
+        first_name = request.POST.get('first_name')
+        email = request.POST.get('email')
+        phonenumber = request.POST.get('phonenumber')
+        user_id = request.user.id
+        username = request.POST.get('username')
+        hname = request.POST.get('hname')
+        country = request.POST.get('country')
+        state = request.POST.get('state')
+        city = request.POST.get('city')
+        pincode = request.POST.get('pincode')
+
+        user = User.objects.get(id=user_id)
+        user.first_name = first_name
+        user.last_name = last_name
+        user.phonenumber = phonenumber
+        user.email = email
+        user.city = city
+        user.country = country
+        user.state = state
+        user.pincode = pincode
+        user.username = username
+        user.hname = hname
+
+        user.save()
+
+        messages.success(request,'Profile Are Successfully Updated. ')
+        return redirect('profile')
 
 

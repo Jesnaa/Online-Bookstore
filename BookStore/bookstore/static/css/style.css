@@ -1094,6 +1094,7 @@ textarea.input {
   left: 0px;
   top: 0px;
   width: 60px;
+
 }
 
 .product-widget .product-img>img {
@@ -1166,6 +1167,7 @@ textarea.input {
 
 .products-slick .product.slick-slide {
   margin: 15px;
+
 }
 
 .products-tabs>.tab-pane {

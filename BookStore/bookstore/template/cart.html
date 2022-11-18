@@ -22,12 +22,12 @@
                         {% if not cart %}
 
                     <div style="height:300px;text-align: center;">
-                          <h2 style="font-family: sans-serif;color: rgb(246,86, 12);">Your Cart is Empty !!!!</h2><br>
+                          <h2 style="font-family: sans-serif;color: rgb(246,86, 12);">Your Wishlist is Empty !!!!</h2><br>
                           <div class="button-area">
                             <a href="{% url 'allproduct' %}" style="font-weight:bold;color:rgb(240, 16, 16);">Continue Shopping</a>
                             </div>
                     </div>
-                </div>
+<!--                </div>-->
                   {% else %}
                         <!-- Products-List-Wrapper -->
                         <div class="table-wrapper u-s-m-b-60">
@@ -47,7 +47,7 @@
                                     <tr>
                                         <td>
                                             <div class="cart-anchor-image">
-                                                <a href="{{i.product.get_url}}">
+                                                <a href="{% url 'product' i.product_id %}">
                                                     <img src="{{i.product.img.url}}" alt="Product" height="100px">
                                                     <h6>{{i.product.book_name}}</h6>
                                                 </a>

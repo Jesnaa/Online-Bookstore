@@ -4,7 +4,7 @@ from django.utils.text import slugify
 from django.urls.base import reverse
 class Category(models.Model):
     category_id = models.AutoField(primary_key=True)
-    category_name = models.CharField(max_length=50)
+    category_name = models.CharField(max_length=50, unique=True)
     slug=models.SlugField(max_length=50, unique=True)
 
     class Meta:
@@ -20,7 +20,7 @@ class Category(models.Model):
 # category_status = models.BigIntegerField(default=0)
 class SubCategory(models.Model):
     subcategory_id = models.AutoField(primary_key=True)
-    subcategory_name = models.CharField(max_length=50)
+    subcategory_name = models.CharField(max_length=50, unique=True)
     slug = models.SlugField(max_length=50, unique=True)
     category = models.ForeignKey(Category, verbose_name="Category", on_delete=models.CASCADE)
     def __str__(self):
@@ -63,3 +63,6 @@ class Cart(models.Model):
     def get_product_price(self):
         price=[self.product.price]
         return sum(price)
+class Whishlist(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    product=models.ForeignKey(Book,on_delete=models.CASCADE)

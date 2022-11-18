@@ -36,7 +36,7 @@
 						<!-- /aside Widget -->
 
 						<!-- aside Widget -->
-						<div class="aside">
+						<div class="aside" style="margin-right:29px;">
 							<h3 class="aside-title">Price</h3>
 							<div class="price-filter">
 								<div id="price-slider"></div>
@@ -119,10 +119,10 @@
 <!--								<div class="product-img">-->
 <!--									<img src="{{i.img.url}}" alt="">-->
 <!--								</div>-->
-								<div class="product-body">
+								<div class="product-body" style="margin-right:29px;">
 									<img src="{{i.img.url}}" alt="" height="60">
 									<p class="product-category">{{i.book_category}}</p>
-									<h3 class="product-name"><a href="{{i.get_url}}">{{i.book_name}}</a></h3>
+									<h3 class="product-name"><a href="{% url 'product' i.book_id %}">{{i.book_name}}</a></h3>
 									<h4 class="product-price">₹{{i.book_price}}.00 <del class="product-old-price">₹{{i.book_oldprice}}.00</del></h4>
 								</div>
 								{% endfor %}
@@ -169,11 +169,11 @@
 						<div class="row">
 							<!-- product -->
 							{% for i in datas %}
-							<div class="col-md-4 col-xs-6">
+							<div class="col-md-3 col-xs-5">
 								<div class="product">
 
 									<div class="product-img">
-										<a href="{{i.get_url}}"><img src="{{i.img.url}}" alt="All Books" height="400"></a>
+										<a href="{% url 'product' i.book_id %}"><img src="{{i.img.url}}" alt="All Books" height="300"></a>
 										<div class="product-label">
 											<span class="sale">-30%</span>
 											<span class="new">NEW</span>
@@ -181,7 +181,7 @@
 									</div>
 									<div class="product-body">
 										<p class="product-category">{{i.book_category}}</p>
-										<h3 class="product-name"><a href="{{i.get_url}}">{{i.book_name}}</a></h3>
+										<h3 class="product-name"><a href="{% url 'product' i.book_id %}">{{i.book_name}}</a></h3>
 										<h4 class="product-price">₹{{i.book_price}}.00<del class="product-old-price">₹{{i.book_oldprice}}.00</del></h4>
 										<div class="product-rating">
 											<i class="fa fa-star"></i>

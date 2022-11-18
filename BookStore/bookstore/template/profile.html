@@ -9,7 +9,7 @@
 <li class="active"><a href="{% url 'account' %}">Account</a></li>
 {% endblock %}
 {% block content %}
-<!--<body background="{% static 'images/bo.jpg' %}">-->
+<body >
  <!-- My Account Page Start Here -->
  <div class="my-account white-bg pb-60">
     <div class="container">
@@ -28,9 +28,10 @@
                     <!-- Nav tabs -->
                     <ul class="nav flex-column dashboard-list" role="tablist">
                         <li><a class="active" data-toggle="tab" href="#dashboard">Dashboard</a></li>
-                        <li><a data-toggle="tab" href="#orders">Orders</a></li>
+                         <li><a data-toggle="tab" href="#account-details">Account details</a></li>
                         <li><a data-toggle="tab" href="#address">Addresses</a></li>
-                        <li><a data-toggle="tab" href="#account-details">Account details</a></li>
+                        <li><a data-toggle="tab" href="#orders">Orders</a></li>
+
 
 <!--                        <li><a  href="{% url 'changepassword' %}">Change Password</a></li>-->
 <!--                        <li><a href="login.html" href="#logout">logout</a></li>-->
@@ -39,15 +40,13 @@
                 <div class="col-lg-10" style="background-image: url({% static 'images/bo.jpg' %});">
                     <!-- Tab panes -->
                     <div class="tab-content dashboard-content mt-all-40">
-                        <div id="dashboard" class="tab-pane active">
+                        <div id="dashboard" class="tab-pane active" style="height:70%">
                             <center> <h3>Dashboard </h3></center>
-                            <h4>Hello {{user.first_name}}</h4>
-                                 <img src="{% static 'images/bo.jpg' %}" alt="" height="200"   style="margin-left:800px;">
-
-                            <p><b>You're never too old, too wacky, too wild, to pick up a book and read to a child.</b></p>
-                            <p>From your account dashboard. you can easily check & view your <a href="#">recent orders</a>, manage your <a href="#">shipping and billing addresses</a> and <a href="#">edit your password and account details.</a></p>
+                            <h4 style="color:red;">Hello {{user.first_name}}</h4><br>
+                            <p style="color:green;"><b><i>You're never too old, too wacky, too wild, to pick up a book and read to a child.</i></b></p><br>
+                            <p>From your account dashboard. you can easily check & view your <a href="#">recent orders</a>, manage your <a data-toggle="tab" href="#account-details"><b>shipping and billing addresses</b></a> and <a data-toggle="tab" href="#account-details"><b>edit your password and account details.</b></a></p>
                         </div>
-                        <div id="orders" class="tab-pane fade">
+                        <div id="orders" class="tab-pane fade" style="height:70%">
                             <h3>Orders</h3>
                             <div class="table-responsive">
                                 <table class="table">
@@ -79,61 +78,106 @@
                                 </table>
                             </div>
                         </div>
-                        <div id="address" class="tab-pane">
-                            <p>The following addresses will be used on the checkout page by default.</p>
+                        <div id="address" class="tab-pane" style="height:70%">
+                            <p>The following addresses will be used on the checkout page by default.</p><br>
                             <h4 class="billing-address">Billing address</h4>
-                            <a class="view" href="#">edit</a>
-                            <p>steven smith</p>
-                            <p>Australia</p>   
+
+                             <p>{{user.first_name}} {{user.last_name}}</p>
+                             <p>{{user.phonenumber}}</p>
+                             <p>{{user.hname}} (h)</p>
+                             <p>{{user.pincode}}</p>
+                             <p>{{user.city}}</p>
+                             <p>{{user.state}}</p>
+                             <p>{{user.country}}</p>
+                            <button ><a data-toggle="tab" href="#account-details">Edit</a></button>
                         </div>
                         <div id="account-details" class="tab-pane fade">
                             <h3>Account details </h3>
                             <div class="register-form login-form clearfix">
-                                <form action="#">
+                                <form action="{% url 'profile_update' %}" method="post">
+                                     {% csrf_token %}
+
                                     <div class="form-group row">
                                         <label for="f-name" class="col-lg-3 col-md-4 col-form-label">First Name</label>
                                         <div class="col-lg-6 col-md-8">
-                                            <input type="text" class="form-control" id="f-name">
+                                            <input type="text" class="form-control" id="f-name" name="first_name" value="{{user.first_name}}" >
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label for="l-name" class="col-lg-3 col-md-4 col-form-label">Last Name</label>
                                         <div class="col-lg-6 col-md-8">
-                                            <input type="text" class="form-control" id="l-name">
+                                            <input type="text" class="form-control" id="l-name" name="last_name" value="{{user.last_name}}">
                                         </div>
                                     </div>
+<!--                                    <div class="form-group row">-->
+<!--                                        <label for="username" class="col-lg-3 col-md-4 col-form-label">User Name</label>-->
+<!--                                        <div class="col-lg-6 col-md-8">-->
+<!--                                            <input type="text" class="form-control" id="username" name="username" value="{{user.username}}" >-->
+<!--                                        </div>-->
+<!--                                    </div>-->
                                     <div class="form-group row">
                                         <label for="email" class="col-lg-3 col-md-4 col-form-label">Email address</label>
                                         <div class="col-lg-6 col-md-8">
-                                            <input type="text" class="form-control" id="email">
+                                            <input type="text" class="form-control" id="email" name="email" value="{{user.email}}" readonly>
+                                        </div>
+                                    </div>
+<!--                                    <div class="form-group row">-->
+<!--                                        <label for="inputpassword" class="col-lg-3 col-md-4 col-form-label">Current password</label>-->
+<!--                                        <div class="col-lg-6 col-md-8">-->
+<!--                                            <input type="password" class="form-control" id="inputpassword">-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <div class="form-group row">-->
+<!--                                        <label for="newpassword" class="col-lg-3 col-md-4 col-form-label">New password</label>-->
+<!--                                        <div class="col-lg-6 col-md-8">-->
+<!--                                            <input type="password" class="form-control" id="newpassword">-->
+<!--                                            <button class="btn show-btn" type="button">Show</button>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <div class="form-group row">-->
+<!--                                        <label for="v-password" class="col-lg-3 col-md-4 col-form-label">Confirm password</label>-->
+<!--                                        <div class="col-lg-6 col-md-8">-->
+<!--                                            <input type="password" class="form-control" id="c-password">-->
+<!--                                            <button class="btn show-btn" type="button">Show</button>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+                                    <div class="form-group row">
+                                        <label for="phone" class="col-lg-3 col-md-4 col-form-label">Phone Number</label>
+                                        <div class="col-lg-6 col-md-8">
+                                            <input type="text" class="form-control" id="phone" name="phonenumber" placeholder="phone" value="{{user.phonenumber}}" >
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="inputpassword" class="col-lg-3 col-md-4 col-form-label">Current password</label>
+                                        <label for="hname" class="col-lg-3 col-md-4 col-form-label">House Name</label>
                                         <div class="col-lg-6 col-md-8">
-                                            <input type="password" class="form-control" id="inputpassword">
+                                            <input type="text" class="form-control" id="hname" name="hname" value="{{user.hname}}" >
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="newpassword" class="col-lg-3 col-md-4 col-form-label">New password</label>
+                                        <label for="pincode" class="col-lg-3 col-md-4 col-form-label">Pincode</label>
                                         <div class="col-lg-6 col-md-8">
-                                            <input type="password" class="form-control" id="newpassword">
-                                            <button class="btn show-btn" type="button">Show</button>
+                                            <input type="text" class="form-control" id="pincode" name="pincode" value="{{user.pincode}}" >
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="v-password" class="col-lg-3 col-md-4 col-form-label">Confirm password</label>
+                                        <label for="city" class="col-lg-3 col-md-4 col-form-label">City</label>
                                         <div class="col-lg-6 col-md-8">
-                                            <input type="password" class="form-control" id="c-password">
-                                            <button class="btn show-btn" type="button">Show</button>
+                                            <input type="text" class="form-control" id="city" name="city" value="{{user.city}}" >
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="birth" class="col-lg-3 col-md-4 col-form-label">Birthdate</label>
+                                        <label for="country" class="col-lg-3 col-md-4 col-form-label">Country</label>
                                         <div class="col-lg-6 col-md-8">
-                                            <input type="text" class="form-control" id="birth" placeholder="MM/DD/YYYY">
+                                            <input type="text" class="form-control" id="country" name="country" value="{{user.country}}" >
                                         </div>
                                     </div>
+                                    <div class="form-group row">
+                                        <label for="state" class="col-lg-3 col-md-4 col-form-label">State</label>
+                                        <div class="col-lg-6 col-md-8">
+                                            <input type="text" class="form-control" id="state" name="state" value="{{user.state}}" >
+                                        </div>
+                                    </div>
+
                                     <div class="register-box mt-40">
                                         <button type="submit" class="return-customer-btn f-right">Save</button>
                                     </div>

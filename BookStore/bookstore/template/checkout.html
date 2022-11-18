@@ -38,42 +38,44 @@
 								<h3 class="title">Billing address</h3>
 							</div>
 							<div class="form-group">
-								<input class="input" type="text" name="first-name" placeholder="First Name">
+								<input class="input" type="text" name="first-name"  placeholder="First Name" value="{{user.first_name}}" readonly>
 							</div>
 							<div class="form-group">
-								<input class="input" type="text" name="last-name" placeholder="Last Name">
+								<input class="input" type="text" name="last-name" placeholder="Last Name" value="{{user.last_name}}" readonly>
 							</div>
 							<div class="form-group">
-								<input class="input" type="email" name="email" placeholder="Email">
+								<input class="input" type="email" name="email" placeholder="Email" value="{{user.email}}" readonly>
+							</div>
+
+							<div class="form-group">
+								<input class="input" type="text" name="phonenumber" placeholder="Phone Number" value="{{user.phonenumber}}" readonly>
 							</div>
 							<div class="form-group">
-								<input class="input" type="text" name="address" placeholder="Address">
+								<input class="input" type="text" hname="address" placeholder="House  Name" value="{{user.hname}}" readonly>
 							</div>
 							<div class="form-group">
-								<input class="input" type="text" name="city" placeholder="City">
+								<input class="input" type="text" name="pincode" placeholder="Pin Code" value="{{user.pincode}}" readonly>
 							</div>
 							<div class="form-group">
-								<input class="input" type="text" name="country" placeholder="Country">
+								<input class="input" type="text" name="city" placeholder="City" value="{{user.city}}" readonly>
 							</div>
 							<div class="form-group">
-								<input class="input" type="text" name="zip-code" placeholder="ZIP Code">
+								<input class="input" type="text" name="country" placeholder="Country" value="{{user.country}}" readonly>
 							</div>
-							<div class="form-group">
-								<input class="input" type="tel" name="tel" placeholder="Telephone">
-							</div>
-							<div class="form-group">
-								<div class="input-checkbox">
-									<input type="checkbox" id="create-account">
-									<label for="create-account">
-										<span></span>
-										Create Account?
-									</label>
-									<div class="caption">
-										<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt.</p>
-										<input class="input" type="password" name="password" placeholder="Enter Your Password">
-									</div>
-								</div>
-							</div>
+
+<!--							<div class="form-group">-->
+<!--								<div class="input-checkbox">-->
+<!--									<input type="checkbox" id="create-account">-->
+<!--									<label for="create-account">-->
+<!--										<span></span>-->
+<!--										Create Account?-->
+<!--									</label>-->
+<!--									<div class="caption">-->
+<!--										<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt.</p>-->
+<!--										<input class="input" type="password" name="password" placeholder="Enter Your Password">-->
+<!--									</div>-->
+<!--								</div>-->
+<!--							</div>-->
 						</div>
 						<!-- /Billing Details -->
 
@@ -118,11 +120,11 @@
 						</div>
 						<!-- /Shiping Details -->
 
-						<!-- Order notes -->
-						<div class="order-notes">
-							<textarea class="input" placeholder="Order Notes"></textarea>
-						</div>
-						<!-- /Order notes -->
+<!--						&lt;!&ndash; Order notes &ndash;&gt;-->
+<!--						<div class="order-notes">-->
+<!--							<textarea class="input" placeholder="Order Notes"></textarea>-->
+<!--						</div>-->
+<!--						&lt;!&ndash; /Order notes &ndash;&gt;-->
 					</div>
 
 					<!-- Order Details -->
@@ -136,7 +138,7 @@
 								<div><strong>PRODUCT</strong></div>
 								<div><strong>TOTAL</strong></div>
 							</div>
-							{% for i in cart %}
+							{% for i in product %}
 							<div class="order-products">
 								<div class="order-col">
 									<div>{{i.product.book_name}}</div>
@@ -148,12 +150,12 @@
 								<div>Shiping</div>
 								<div><strong>FREE</strong></div>
 							</div>
-							{% for i in cart %}
+
 							<div class="order-col">
 								<div><strong>TOTAL</strong></div>
-								<div><strong class="order-total"> ₹{{i.product.book_price}}.00</strong></div>
+								<div><strong class="order-total"> ₹{{total}}.00</strong></div>
 							</div>
-							{% endfor %}
+
 						</div>
 						<div class="payment-method">
 							<div class="input-radio">
