@@ -13,9 +13,17 @@ from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
 from django.core.mail import send_mail
 
+from homeapp.models import OrderPlaced,Payment
+
 
 def profile(request):
-    return render(request,'profile.html')
+    orders = OrderPlaced.objects.filter(
+        user=request.user, is_ordered=True).order_by('ordered_date')
+    context = {
+        'orders': orders,
+    }
+    return render(request,'profile.html',context)
+
 def index(request):
     return render(request,'index.html')
 

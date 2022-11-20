@@ -66,3 +66,71 @@ class Cart(models.Model):
 class Whishlist(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)
     product=models.ForeignKey(Book,on_delete=models.CASCADE)
+#
+# class Order(models.Model):
+#     order_id = models.AutoField(primary_key=True)
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     price = models.DecimalField(max_digits=20, decimal_places=2, default=0)
+#     payment_mode= models.CharField(max_length=100)
+#     payment_id = models.CharField(max_length=100, null=True)
+#     order_status=(
+#         ('pending','pending'),
+#         ('out for shipping','out for shipping'),
+#         ('delivered','delivered')
+#
+#     )
+#     status = models.CharField(max_length=100,choices=order_status,default='pending' )
+#     tracking_no = models.CharField(max_length=100, null=True)
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     updated_at = models.DateTimeField(auto_now=True)
+#
+#     def __str__(self):
+#         return '{}  {}'.format(self.order_id,self.user)
+
+
+class Payment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    amount = models.FloatField(blank=True,null=True)
+    razorpay_order_id = models.CharField(max_length=100,blank=True,null=True)
+    razorpay_payment_id = models.CharField(max_length=100,blank=True,null=True)
+    razorpay_payment_status = models.CharField(max_length=100,blank=True,null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    paid = models.BooleanField(default=False)
+
+
+    def __str__(self):
+        return str(self.user)
+# class Order_item(models.Model):
+#     orderitem_id = models.AutoField(primary_key=True)
+#     order = models.ForeignKey(Order, on_delete=models.CASCADE)
+#     product = models.ForeignKey(Book, on_delete=models.CASCADE)
+#     quantity = models.BigIntegerField(default=1)
+#     price = models.DecimalField(max_digits=20, decimal_places=2)
+#     created_at = models.DateTimeField(auto_now_add=True)
+#
+#     def __str__(self):
+#         return '{}  {}'.format(self.orderitem_id, self.product)
+class OrderPlaced(models.Model):
+    STATUS = (
+        ('Pending', 'Pending'),
+        ('Accepted', 'Accepted'),
+        ('On The Way', 'On The Way'),
+        ('Delivered', 'Delivered'),
+        ('Cancelled', 'Cancelled'),
+
+    )
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    payment = models.ForeignKey(Payment, on_delete=models.SET_NULL, null=True, blank=True)
+    product = models.ForeignKey(Book, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)
+    status = models.CharField(max_length=10, choices=STATUS, default='New')
+    is_ordered = models.BooleanField(default=False)
+    ordered_date = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def total_cost(self):
+        return self.quantity
+
+
+    def __str__(self):
+        return str(self.user)

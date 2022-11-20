@@ -22,7 +22,7 @@
                         {% if not cart %}
 
                     <div style="height:300px;text-align: center;">
-                          <h2 style="font-family: sans-serif;color: rgb(246,86, 12);">Your Wishlist is Empty !!!!</h2><br>
+                          <h2 style="font-family: sans-serif;color: rgb(246,86, 12);">Your Cart is Empty !!!!</h2><br>
                           <div class="button-area">
                             <a href="{% url 'allproduct' %}" style="font-weight:bold;color:rgb(240, 16, 16);">Continue Shopping</a>
                             </div>
@@ -112,8 +112,8 @@
                         <div class="add-to-cart">
 
                             <div class="add-to-cart">
-                                <button class="add-to-cart-btn"> <a href="{% url 'allproduct' %}" >Continue Shopping</a></button>
-                                <button class="add-to-cart-btn"> <a href="{% url 'checkout' %}" >Proceed to Checkout</a></button>
+                                <button class="primary-btn order-submit" > <a href="{% url 'allproduct' %}" >Continue Shopping</a></button>
+                                <button class="primary-btn order-submit"> <a href="{% url 'checkout' %}" >Proceed to Checkout</a></button>
                             </div>
                         </div>
 

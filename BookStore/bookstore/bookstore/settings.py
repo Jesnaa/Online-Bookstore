@@ -146,3 +146,8 @@ SERVER_EMAIL = 'bookrakbook@gmail.com'
 EMAIL_HOST_PASSWORD = 'okcpgjwxquwregvw'
 
 EMAIL_USE_TLS = True
+
+
+
+RAZORPAY_API_KEY = 'rzp_test_7aOSCAvqMiNvCY'
+RAZORPAY_API_SECRET_KEY = 'o9UCVF405JsisfeKuuR1YHRc'

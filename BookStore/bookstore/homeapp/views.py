@@ -1,11 +1,15 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Book,Category
+from .models import Book,Category,Payment, OrderPlaced
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from .models import Cart,Whishlist
 from django.contrib import messages
 from logapp.models import User
+from django.conf import settings
+import razorpay
+
+# from settings import RAZORPAY_API_KEY, RAZORPAY_API_SECRET_KEY
 # Create your views here.
 def index(request):
     tblBook = Book.objects.all()
@@ -180,8 +184,70 @@ def checkout(request):
         cart = Cart.objects.filter(user_id=user)
     category = Category.objects.all()
     tblBook = Book.objects.all()
+    razoramount = total * 100
+    print(razoramount)
+    client = razorpay.Client(auth=(settings.RAZORPAY_API_KEY, settings.RAZORPAY_API_SECRET_KEY))
 
-    return render(request, 'checkout.html', {'datas': tblBook, 'category': category, 'product': cart, 'total':total})
+    data = {
+        "amount": total,
+        "currency": "INR",
+        "receipt": "order_rcptid_11"
+
+    }
+    payment_response = client.order.create(data=data)
+    print(payment_response)
+    # {'id': 'order_Ki9yWEa6goK1si', 'entity': 'order', 'amount': 419, 'amount_paid': 0, 'amount_due': 419,
+    #  'currency': 'INR', 'receipt': 'order_rcptid_11', 'offer_id': None, 'status': 'created ', 'attempts': 0, 'notes': [],'created_at': 1668918227}
+    order_id = payment_response['id']
+    request.session['order_id'] = order_id
+    order_status = payment_response['status']
+    if order_status == 'created':
+        payment = Payment(user=request.user,
+                          amount=total,
+                          razorpay_order_id=order_id,
+                          razorpay_payment_status=order_status)
+        payment.save()
+
+    # context = {
+    #     'razoramount': razoramount,
+    #     'customer': customer,
+    #     'total': total,
+    #     'quantity': quantity,
+    #     'cart_items': cart_items,
+    #     'tax': tax,
+    #     'grand_total': grand_total
+    # }
+
+    return render(request, 'checkout.html', {'datas': tblBook, 'category': category, 'product': cart, 'total':total,'razoramount':razoramount})
+
+def payment_done(request):
+    order_id=request.session['order_id']
+    payment_id = request.GET.get('payment_id')
+    print(payment_id)
+
+    payment=Payment.objects.get(razorpay_order_id = order_id)
+
+    payment.paid = True
+    payment.razorpay_payment_id = payment_id
+    payment.save()
+    # customer=Address_Book.objects.get(user=request.user,status=True)
+
+    cart=Cart.objects.filter(user=request.user)
+    # item = Product.objects.get(product=product, id=item_id)
+
+    for c in cart:
+        OrderPlaced(user=request.user,product=c.product,quantity=c.product_qty,payment=payment,is_ordered=True).save()
+        c.delete()
+    return redirect('orders')
+
+# @login_required(login_url='login')
+# def orders(request):
+#     orders = OrderPlaced.objects.filter(
+#         user=request.user, is_ordered=True).order_by('ordered_date')
+#     context = {
+#         'orders': orders,
+#     }
+#     return render(request, 'orders.html', context)
 #
 # def checkoutDetails(request):
 #     if request.method == "POST":
