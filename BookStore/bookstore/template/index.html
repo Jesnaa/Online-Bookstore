@@ -43,7 +43,16 @@
 
     </head>
 	<body>
+{% include 'alert.html' %}
 
+  <script>
+      setTimeout(function(){
+        if ($('#msg').length > 0){
+          $('#msg').remove();
+          }
+        },4000)
+
+  </script>
 			<!-- MAIN HEADER -->
 			<div id="header">
 				<!-- container -->
@@ -123,9 +132,9 @@
 										    </div>
 
 										<span>My Cart</span>
-										{% for i in cart %}
-										<div class="qty">{{i.product_qty}}</div>
-										{% endfor %}
+<!--										{% for i in cart %}-->
+<!--										<div class="qty">{{i.product_qty}}</div>-->
+<!--										{% endfor %}-->
 										</a>
 									</a>
 <!--									<div class="cart-dropdown">-->
@@ -222,7 +231,7 @@
 					<ul class="main-nav nav navbar-nav">
 						<li class="active"><a href="/">Home</a></li>
 						<li><a href="{% url 'allproduct' %}">All Books</a></li>
-
+                        <li><a href="{% url 'ebook' %}">E-Books</a></li>
 
 <!--      <li><a href="#">HTML</a></li>-->
 <!--      <li><a href="#">CSS</a></li>-->
@@ -324,7 +333,18 @@
 					<!-- Products tab & slick -->
 					<div class="col-md-12"   >
 						<div class="row">
-							 {% include 'Message.html' %}
+							 <div style="text-align: center;align: center;">
+                             {% include 'alert.html' %}
+
+								  <script>
+									  setTimeout(function(){
+										if ($('#msg').length > 0){
+										  $('#msg').remove();
+										  }
+										},2600)
+
+								  </script>
+						  </div>
 							<div class="products-tabs"  >
 								<!-- tab -->
 								<div id="tab1" class="tab-pane active">
@@ -337,8 +357,8 @@
 											<div class="product-img">
 												<a href="{% url 'product' i.book_id %}"><img src="{{i.img.url}}" alt="" height="360"></a>
 												<div class="product-label">
-													<span class="sale">-30%</span>
-													<span class="new">NEW</span>
+<!--													<span class="sale">-30%</span>-->
+<!--													<span class="new">NEW</span>-->
 												</div>
 											</div>
 

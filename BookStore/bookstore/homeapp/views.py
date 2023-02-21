@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Book,Category,Payment, OrderPlaced
+from .models import Book,Category,Payment, OrderPlaced,eBooks,BookTypes
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from .models import Cart,Whishlist
@@ -9,14 +9,35 @@ from logapp.models import User
 from django.conf import settings
 import razorpay
 
-# from settings import RAZORPAY_API_KEY, RAZORPAY_API_SECRET_KEY
-# Create your views here.
+# from importlib.metadata import files
+# # from settings import RAZORPAY_API_KEY, RAZORPAY_API_SECRET_KEY
+# # Create your views here.
+
 def index(request):
     tblBook = Book.objects.all()
     category = Category.objects.all()
     cart = Cart.objects.all()
     return render(request,'index.html',{'datas':tblBook,'category':category,'cart':cart})
+def ebook(request):
+ return render(request,'E-Book.html')
 
+def audiobooks(request):
+     category = Category.objects.all()
+     book = eBooks.objects.all()
+     cart = Cart.objects.all()
+     return render(request,'audiobooks.html',{'datas':book,'category':category,'cart':cart})
+def ebooks(request):
+    category = Category.objects.all()
+    book = eBooks.objects.all()
+    cart = Cart.objects.all()
+    return render(request, 'audiobooks.html', {'datas': book, 'category': category, 'cart': cart})
+
+def audiobook(request,id):
+    rproduct = eBooks.objects.all()
+    single = eBooks.objects.filter(book_id=id)
+    cart = Cart.objects.all()
+    category = Category.objects.all()
+    return render(request, 'audiobook.html', {'result': single,'products':rproduct,'category':category,'cart':cart})
 
 def product(request,id):
     rproduct = Book.objects.all()
@@ -36,9 +57,17 @@ def product(request,id):
 
 
 def categorys(request,id):
+    category = Category.objects.all()
+    books = Book.objects.all()
     if( Category.objects.filter(category_id=id)):
-         tblBook = Book.objects.filter(book_category_id=id)
-    return render(request,'categorys.html',{'datas':tblBook,})
+         book = Book.objects.filter(book_category_id=id)
+    return render(request,'categorys.html',{'datas':book,'category':category,'books':books})
+# def pricefilter(request,id):
+#     category = Category.objects.all()
+#     books = Book.objects.all()
+#     if (Category.objects.filter(cid=id)):
+#         book = Book.objects.filter(book_category_id=id)
+#     return render(request, 'prize.html', {'datas': book, 'category': category, 'books': books})
 
 # def category(request,category_slug):
 #     catslug = Category.objects.get(slug=category_slug)
@@ -52,9 +81,9 @@ def categorys(request,id):
 
 def allproduct(request):
      category = Category.objects.all()
-     tblBook = Book.objects.all()
+     book = Book.objects.all()
      cart = Cart.objects.all()
-     return render(request,'all product.html',{'datas':tblBook,'category':category,'cart':cart})
+     return render(request,'all product.html',{'datas':book,'category':category,'cart':cart})
 
 # def allproduct(request):
 #     tblBook = Book.objects.all()
@@ -94,6 +123,7 @@ def addcart(request,id):
 
                   new_cart=Cart(user_id=user.id,product_id=item.book_id,product_qty=product_qty,price=price)
                   new_cart.save()
+                  messages.success(request, 'Book added to the Cart ')
                   return redirect(allproduct)
 
 
@@ -154,7 +184,8 @@ def add_wishlist(request,id):
     else:
             new_wishlist=Whishlist(user_id=user.id,product_id=item.book_id)
             new_wishlist.save()
-            return redirect('view_wishlist')
+            messages.success(request, 'Book added to the wishlist ')
+            return redirect('allproduct')
     # messages.success(request, 'Sign in..!!')
     # return redirect(index)
 
@@ -238,6 +269,8 @@ def payment_done(request):
     for c in cart:
         OrderPlaced(user=request.user,product=c.product,quantity=c.product_qty,payment=payment,is_ordered=True).save()
         c.delete()
+    messages.success(request, 'Payment done successfully you can view the order details on your profile'
+                              'Continue Shopping')
     return redirect('orders')
 
 # @login_required(login_url='login')

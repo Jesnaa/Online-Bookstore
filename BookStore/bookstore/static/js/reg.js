@@ -32,7 +32,7 @@ function fnameValidation(inputTxt){
 
     if(inputTxt.value != '' ){
 
-        if(inputTxt.value.length >= 4){
+        if(inputTxt.value.length >= 2){
 
             if(inputTxt.value.match(regx)){
                 textField.textContent = '';
@@ -87,7 +87,7 @@ function addressValidation(inputTxt){
 
     if(inputTxt.value != '' ){
 
-        if(inputTxt.value.length >= 5){
+        if(inputTxt.value.length >= 2){
 
             if(inputTxt.value.match(regx)){
                 textField.textContent = '';
@@ -154,7 +154,7 @@ function cityValidation(inputTxt){
 
     if(inputTxt.value != '' ){
 
-        if(inputTxt.value.length >= 4){
+        if(inputTxt.value.length >= 2){
 
             if(inputTxt.value.match(regx)){
                 textField.textContent = '';
@@ -181,7 +181,7 @@ function stateValidation(inputTxt){
 
     if(inputTxt.value != '' ){
 
-        if(inputTxt.value.length >= 4){
+        if(inputTxt.value.length >= 2){
 
             if(inputTxt.value.match(regx)){
                 textField.textContent = '';
@@ -207,7 +207,7 @@ function countryValidation(inputTxt){
 
     if(inputTxt.value != '' ){
 
-        if(inputTxt.value.length >= 4){
+        if(inputTxt.value.length >= 2){
 
             if(inputTxt.value.match(regx)){
                 textField.textContent = '';

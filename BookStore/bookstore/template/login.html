@@ -33,7 +33,18 @@
                       <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Sign in</p>
                       <form action ="" method="post" onsubmit="return validation()" enctype="multipart/form-data">
                       {% csrf_token %}
-                          {% include 'Message.html' %}
+                         <div style="width:90%;text-align: center;align: center;">
+                             {% include 'alert.html' %}
+
+								  <script>
+									  setTimeout(function(){
+										if ($('#msg').length > 0){
+										  $('#msg').remove();
+										  }
+										},2900)
+
+								  </script>
+						  </div>
                         <!-- Email input -->
                         <div class="d-flex flex-row align-items-center mb-4">
                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">

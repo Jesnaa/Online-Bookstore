@@ -46,16 +46,16 @@
                             <p style="color:green;"><b><i>You're never too old, too wacky, too wild, to pick up a book and read to a child.</i></b></p><br>
                             <p>From your account dashboard. you can easily check & view your <a href="#">recent orders</a>, manage your <a data-toggle="tab" href="#account-details"><b>shipping and billing addresses</b></a> and <a data-toggle="tab" href="#account-details"><b>edit your password and account details.</b></a></p>
                         </div>
-                        <div id="orders" class="tab-pane fade" style="height:70%">
-                            <h3>Orders</h3>
+                        <div id="orders" class="tab-pane fade" style="height:60%">
+                            <center><h3>Orders</h3></center>
                             <div class="table-responsive">
                                 <table class="table">
                                     <thead>
                                         <tr>
-                                            <th>Order</th>
-                                            <th>Date</th>
+                                            <th>Number of books</th>
+                                            <th>Book Name</th>
                                             <th>Total</th>
-                                            <th>Status</th>
+<!--                                            <th>Status</th>-->
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -64,7 +64,7 @@
                                             <td>{{order.quantity}}</td>
                                             <td>{{order.product.book_name}}</td>
                                             <td>₹{{order.payment.amount}}.00 </td>
-                                            <td>{{order.status}}</td>
+<!--                                            <td>{{order.status}}</td>-->
                                         </tr>
 
                                     {% endfor %}
