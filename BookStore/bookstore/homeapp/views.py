@@ -273,6 +273,18 @@ def payment_done(request):
                               'Continue Shopping')
     return redirect('orders')
 
+
+
+def dboyindex(request):
+    return render(request,'dboyindex.html')
+def dboyblank(request):
+    return render(request,'dboyblank.html')
+def dboy1(request):
+    return render(request,'dboy1.html')
+def dboy2(request):
+    return render(request,'dboy2.html')
+def dboysetting(request):
+    return render(request,'dboysetting.html')
 # @login_required(login_url='login')
 # def orders(request):
 #     orders = OrderPlaced.objects.filter(
@@ -311,3 +323,36 @@ def payment_done(request):
 #
 #         user.save()
 #         return redirect('checkout')
+import nltk
+from django.shortcuts import render
+from django.views import View
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+from nltk.sentiment import SentimentIntensityAnalyzer
+
+analyzer = SentimentIntensityAnalyzer()
+# sentiment_score = analyzer.polarity_scores(text)
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('vader_lexicon')
+@method_decorator(csrf_exempt, name='dispatch')
+class TextSummarizerView(View):
+    template_name = 'summary.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        input_text = request.POST.get('input_text', '')
+        num_sentences = int(request.POST.get('num_sentences', 5))
+        sentences = nltk.sent_tokenize(input_text)
+        words = [nltk.word_tokenize(sentence) for sentence in sentences]
+        words = [[word for word in sentence if word.isalnum()] for sentence in words]
+        summaries = []
+        for i in range(len(sentences)):
+            score = nltk.sentiment.vader.SentimentIntensityAnalyzer().polarity_scores(sentences[i])['compound']
+            summaries.append((sentences[i], score))
+        summaries = sorted(summaries, key=lambda x: x[1], reverse=True)
+        summaries = [summary[0] for summary in summaries[:num_sentences]]
+        summary_text = ' '.join(summaries)
+        return render(request, self.template_name, {'input_text': input_text, 'summary_text': summary_text, 'num_sentences': num_sentences})

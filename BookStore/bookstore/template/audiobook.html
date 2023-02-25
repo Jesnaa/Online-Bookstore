@@ -137,7 +137,13 @@ table, th, td {
 
 <!--							</div>-->
 							<div class="add-to-cart">
-										<button class="add-to-cart-btn" >  <a href="{{ i.book_pdf.url }}">Play Now</a></button>
+								        <button class="add-to-cart-btn" >  <a href="{{ i.book_pdf.url }}">Read</a></button>
+								        <button class="add-to-cart-btn" >  <a href="#">Audio</a></button>
+<!--										<button class="add-to-cart-btn" >  <a href="#">FlipBook</a></button>-->
+								        <button class="add-to-cart-btn" ><a href="{{ i.book_pdf.url }}" download class="btn btn-outline-success">Download</a></button>
+<!--								        <button class="add-to-cart-btn" >  <a href="{% url 'text_summarizer' %}">summary</a></button>-->
+
+
 									</div>
 <!--							<div class="add-to-cart">-->
 <!--									<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i><a  href="{% url 'addcart' i.book_id %}">add to cart </a></button>-->
@@ -176,7 +182,7 @@ table, th, td {
 											   <tr>	<td>&#9830; Listening Length</td><td>:{{i.listening_length}}</td></tr>
 											<tr>	<td>&#9830; Narrator</td>   <td>:{{i.narrator}}</td>	</tr>
 											<tr>	<td>&#9830; AudibleRelease Date</td><td>:{{i.audibleRelease_date}}</td></tr>
-											<tr>	<td>&#9830; Book Type</td>      <td>:{{i.book_type}}.00</td>	</tr>
+											<tr>	<td>&#9830; Book Type</td>      <td>:{{i.book_type}}</td>	</tr>
                                            </table>
 										</div>
 									</div>
@@ -402,7 +408,7 @@ table, th, td {
 					<div class="col-md-3 col-xs-6">
 						<div class="product">
 							<div class="product-img">
-								<a href="{% url 'product' p.book_id %}"><img src="{{p.img.url}}"  alt="" height="400"></a>
+								<a href="{% url 'audiobook' p.book_id %}"><img src="{{p.img.url}}"  alt="" height="400"></a>
 								<div class="product-label">
 									<span class="sale">-30%</span>
 								</div>

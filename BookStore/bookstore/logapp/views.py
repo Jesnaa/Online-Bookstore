@@ -13,6 +13,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
 from django.core.mail import send_mail
 
+
 from homeapp.models import OrderPlaced,Payment
 
 
@@ -58,7 +59,7 @@ def register(request):
                                                 last_name=last_name, email=email,
                                                 phonenumber=phonenumber,hname=hname,country=country, state=state,
                                                 city=city, pincode=pincode, password=password)
-
+                user.is_user = True
                 user.save()
                 messages.success(request, 'Please verify your email for login!')
 
@@ -107,9 +108,11 @@ def login(request):
             if user.is_admin:
                 return redirect('admin/')
 
+            if user.is_staff:
+                return redirect('dboy1')
+
             else:
                 return redirect('/')
-
         else:
             messages.info(request, 'Invalid Credentials')
             return redirect('/login/login/login/register')

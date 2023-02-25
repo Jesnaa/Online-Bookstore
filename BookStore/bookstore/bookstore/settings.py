@@ -152,6 +152,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #
 # RAZORPAY_API_KEY = 'rzp_test_7aOSCAvqMiNvCY'
 # RAZORPAY_API_SECRET_KEY = 'o9UCVF405JsisfeKuuR1YHRc'
+LOGIN_REDIRECT_URL = 'login'
 LOGOUT_REDIRECT_URL = "index"
 
 # Getting values from .env

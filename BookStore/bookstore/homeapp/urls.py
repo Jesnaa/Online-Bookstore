@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views import TextSummarizerView
 
 urlpatterns = [
      path('',views.index,name='index'),
@@ -28,5 +29,12 @@ urlpatterns = [
     path('addcart/<int:id>/', views.addcart, name='addcart'),
     path('de_cart/<int:id>/', views.de_cart, name='de_cart'),
     path('plusqty/<int:id>/',views.plusqty,name='plusqty'),
-    path('minusqty/<int:id>/',views.minusqty,name='minusqty')
+    path('minusqty/<int:id>/',views.minusqty,name='minusqty'),
+    path('text_summarizer/', TextSummarizerView.as_view(), name='text_summarizer'),
+    path('dboyindex/', views.dboyindex, name='dboyindex'),
+    path('dboyblank/', views.dboyblank, name='dboyblank'),
+    path('dboy1/', views.dboy1, name='dboy1'),
+    path('dboy2/', views.dboy2, name='dboy2'),
+    path('dboysetting/', views.dboysetting, name='dboysetting'),
+
 ]
