@@ -8,20 +8,27 @@
     <title>Text Summarizer</title>
 </head>
 <body>
+
+<div class="section">
+			<!-- container -->
+    <div class="container">
     <h1>Text Summarizer</h1>
     <form method="POST">
         {% csrf_token %}
         <label for="input_text">Input Text:</label><br>
         <textarea id="input_text" name="input_text" rows="10" cols="80">{{ input_text }}</textarea><br>
         <label for="num_sentences">Number of Sentences in Summary:</label><br>
-        <input type="number" id="num_sentences" name="num_sentences" min="1" max="10" value="{{ num_sentences }}"><br>
-        <input type="submit" value="Summarize">
+        <input type="number" id="num_sentences" name="num_sentences" min="1" max="10" value="{{ num_sentences }}" required><br><br>
+        <div class="add-to-cart"><button  class="btn btn-danger" type="submit">Summarize</button></div>
+<!--        <input type="submit" value="Summarize">-->
     </form>
     {% if summary_text %}
     <hr>
     <h2>Summary:</h2>
     <p>{{ summary_text }}</p>
     {% endif %}
+    </div>
+</div>
 </body>
 </html>
 {% endblock content %}

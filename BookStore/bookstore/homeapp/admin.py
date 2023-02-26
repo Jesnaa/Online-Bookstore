@@ -80,16 +80,16 @@ class OrderPlacedAdmin(admin.ModelAdmin):
     list_display=('username','ordered_date','product','price','is_ordered')
     actions = [export_log]
 
-    def has_delete_permission(self, request, obj=None):
-        return request.user.is_superuser
-
-    def render_change_form(self, request, context, add=False, change=False, form_url='', obj=None):
-        context.update({
-            'show_save': False,
-            'show_save_and_continue': False,
-            'show_save_and_add_another': False,
-            'show_delete': False
-        })
-        return super().render_change_form(request, context, add, change, form_url, obj)
+    # def has_delete_permission(self, request, obj=None):
+    #     return request.user.is_superuser
+    #
+    # def render_change_form(self, request, context, add=False, change=False, form_url='', obj=None):
+    #     context.update({
+    #         'show_save': False,
+    #         'show_save_and_continue': False,
+    #         'show_save_and_add_another': False,
+    #         'show_delete': False
+    #     })
+    #     return super().render_change_form(request, context, add, change, form_url, obj)
     # search_fields = ['ordered_date']
 admin.site.register(OrderPlaced,OrderPlacedAdmin)

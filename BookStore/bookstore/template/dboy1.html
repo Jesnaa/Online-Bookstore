@@ -23,58 +23,54 @@
                                             <table id="dt-opt" class="table table-lg table-hover">
                                                 <thead>
                                                     <tr>
-                                                        <th>Name</th>
+                                                        <th>Book Name</th>
                                                         <th>Status</th>
-                                                        <th>Bill Code</th>
+                                                        <th>Customer</th>
                                                         <th>Date</th>
                                                         <th>Amount</th>
                                                         <th></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
+                                                {% for order in orders %}
                                                     <tr>
                                                         <td>
                                                             <div class="list-info mrg-top-10">
-                                                                <img class="thumb-img" src="assets/images/avatars/avatar-5.png" alt="">
+                                                                <img class="thumb-img" src="{{order.product.img.url}}" alt="">
                                                                 <div class="info">
-                                                                    <span class="title">Jordan Hurst</span>
-                                                                    <span class="sub-title">ID 860</span>
+                                                                    <span class="title">{{order.product}}</span>
+<!--                                                                    <span class="sub-title">ID 860</span>-->
                                                                 </div>
                                                             </div>
                                                         </td>
                                                         <td>
                                                             <div class="relative mrg-top-15">
                                                                 <span class="status online"> </span>
-                                                                <span class="pdd-left-20">Trade Approved</span>
+                                                                <span class="pdd-left-20">{{order.status}}</span>
                                                             </div>
                                                         </td>
                                                         <td>
                                                             <div class="mrg-top-15">
-                                                                <span class="text-info"><b>#33666</b></span>
+                                                                <span class="text-info"><b>{{order.user.first_name}}</b></span>
                                                             </div>
                                                         </td>
                                                         <td>
                                                             <div class="mrg-top-15">
-                                                                <span>8 May 2017</span>
+                                                                <span>{{order.ordered_date}}</span>
                                                             </div>
                                                         </td>
                                                         <td>
                                                             <div class="mrg-top-15">
-                                                                <b class="text-dark font-size-16">$168.00</b>
+                                                                <b class="text-dark font-size-16">₹{{order.payment.amount}}.00</b>
                                                             </div>
                                                         </td>
                                                         <td>
                                                             <div class="mrg-top-10 text-center">
-                                                                <button class="btn btn-icon btn-flat btn-rounded dropdown-toggle">
-                                                                    <i class="ti-more-alt"></i>
-                                                                </button>
+                                                                <a href="{% url 'dboy2' order.id %}"><button class="btn btn-icon btn-flat btn-rounded dropdown-toggle">View</button> </a>
                                                             </div>
                                                         </td>
                                                     </tr>
-
-
-
-                                                    </tr>
+                                                     {% endfor %}
                                                 </tbody>
                                             </table>
                                         </div>

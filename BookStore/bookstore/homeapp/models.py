@@ -111,7 +111,8 @@ class Payment(models.Model):
 class OrderPlaced(models.Model):
     STATUS = (
         ('Pending', 'Pending'),
-        ('Accepted', 'Accepted'),
+        ('Received', 'Received'),
+        ('Shipped', 'Shipped'),
         ('On The Way', 'On The Way'),
         ('Delivered', 'Delivered'),
         ('Cancelled', 'Cancelled'),
@@ -121,7 +122,7 @@ class OrderPlaced(models.Model):
     payment = models.ForeignKey(Payment, on_delete=models.SET_NULL, null=True, blank=True)
     product = models.ForeignKey(Book, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
-    status = models.CharField(max_length=10, choices=STATUS, default='New')
+    status = models.CharField(max_length=10, choices=STATUS, default='Pending')
     is_ordered = models.BooleanField(default=False)
     ordered_date = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

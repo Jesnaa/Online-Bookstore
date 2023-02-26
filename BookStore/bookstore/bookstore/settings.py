@@ -138,20 +138,6 @@ MEDIA_ROOT=os.path.join(BASE_DIR,'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_HOST_USER = 'bookrakbook@gmail.com'
-# DEFAULT_FROM_EMAIL = 'bookrakbook@gmail.com'
-# SERVER_EMAIL = 'bookrakbook@gmail.com'
-# EMAIL_HOST_PASSWORD = 'okcpgjwxquwregvw'
-#
-# EMAIL_USE_TLS = True
-#
-#
-#
-# RAZORPAY_API_KEY = 'rzp_test_7aOSCAvqMiNvCY'
-# RAZORPAY_API_SECRET_KEY = 'o9UCVF405JsisfeKuuR1YHRc'
 LOGIN_REDIRECT_URL = 'login'
 LOGOUT_REDIRECT_URL = "index"
 

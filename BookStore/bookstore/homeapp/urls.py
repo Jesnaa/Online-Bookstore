@@ -34,7 +34,7 @@ urlpatterns = [
     path('dboyindex/', views.dboyindex, name='dboyindex'),
     path('dboyblank/', views.dboyblank, name='dboyblank'),
     path('dboy1/', views.dboy1, name='dboy1'),
-    path('dboy2/', views.dboy2, name='dboy2'),
+    path('dboy2/<int:id>/', views.dboy2, name='dboy2'),
     path('dboysetting/', views.dboysetting, name='dboysetting'),
 
 ]

@@ -280,9 +280,17 @@ def dboyindex(request):
 def dboyblank(request):
     return render(request,'dboyblank.html')
 def dboy1(request):
-    return render(request,'dboy1.html')
-def dboy2(request):
-    return render(request,'dboy2.html')
+    orders = OrderPlaced.objects.all()
+    context = {
+        'orders': orders,
+    }
+    return render(request,'dboy1.html',context)
+def dboy2(request,id):
+    orders = OrderPlaced.objects.filter(id=id)
+    context = {
+        'orders': orders,
+    }
+    return render(request,'dboy2.html',context)
 def dboysetting(request):
     return render(request,'dboysetting.html')
 # @login_required(login_url='login')
