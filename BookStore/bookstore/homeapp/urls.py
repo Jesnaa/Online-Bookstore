@@ -8,7 +8,7 @@ urlpatterns = [
     # path('category/<slug:category_slug>',views.category, name='category'),
      path('checkout/',views.checkout,name='checkout'),
      path('ebook/',views.ebook,name='ebook'),
-
+     path('pdf_to_audio/',views.pdf_to_audio,name='pdf_to_audio'),
      path('ebooks/',views.ebooks,name='ebooks'),
      path('audiobook/<int:id>/',views.audiobook,name='audiobook'),
      path('audiobooks/', views.audiobooks, name='audiobooks'),

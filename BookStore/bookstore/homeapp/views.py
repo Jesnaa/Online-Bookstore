@@ -331,6 +331,35 @@ def dboysetting(request):
 #
 #         user.save()
 #         return redirect('checkout')
+import os
+import tempfile
+import PyPDF2
+import pyttsx3
+from django.shortcuts import render
+def pdf_to_audio(request):
+    # if request.method == 'POST':
+    #     pdf_file = request.FILES.get('pdf_file')
+        pdf = eBooks.objects.get(book_id=id)
+        pdf_file =pdf.book_pdf
+        if pdf_file:
+            pdf_reader = PyPDF2.PdfReader(pdf_file)
+            num_pages = len(pdf_reader.pages)
+            text = ''
+            for page_num in range(num_pages):
+                page = pdf_reader.pages[page_num]
+                text = page.extract_text()
+            engine = pyttsx3.init()
+            engine.setProperty('rate', 150)
+            with tempfile.NamedTemporaryFile(suffix='.mp3', delete=False) as temp_file:
+                engine.save_to_file(text, temp_file.name)
+                temp_file.flush()
+                os.fsync(temp_file.fileno())
+                audio_filename = temp_file.name
+            return render(request, 'pdf_to_audio.html', {'audio_files': [audio_filename]})
+    # else:
+    #     return render(request, 'pdf_to_audio.html')
+    # return HttpResponse()
+
 import nltk
 from django.shortcuts import render
 from django.views import View

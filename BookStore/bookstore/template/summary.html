@@ -6,14 +6,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Text Summarizer</title>
+
 </head>
-<body>
+<!--<body background="{% static 'images/summry.png' %}" style="background-repeat: no-repeat;">-->
 
 <div class="section">
 			<!-- container -->
     <div class="container">
+
     <h1>Text Summarizer</h1>
     <form method="POST">
+
         {% csrf_token %}
         <label for="input_text">Input Text:</label><br>
         <textarea id="input_text" name="input_text" rows="10" cols="80">{{ input_text }}</textarea><br>
@@ -28,6 +31,7 @@
     <p>{{ summary_text }}</p>
     {% endif %}
     </div>
+
 </div>
 </body>
 </html>

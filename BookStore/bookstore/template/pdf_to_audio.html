@@ -1,0 +1,22 @@
+{% extends 'base1.html' %}
+{% load static %}
+{% block content %}
+<body>
+
+    <h1>PDF to Audiobook Converter</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="pdf_file">Upload PDF file:</label>
+        <input type="file" name="pdf_file" id="pdf_file">
+        <br>
+        <button type="submit">Convert to Audiobook</button>
+    </form>
+
+    {% if audio_files %}
+        <h2>Download Audiobook:</h2>
+        {% for audio_file in audio_files %}
+            <a href="{{ audio_file }}">{{ audio_file }}</a><br>
+        {% endfor %}
+    {% endif %}
+</body>
+{% endblock content %}
