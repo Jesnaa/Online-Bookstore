@@ -2,21 +2,30 @@
 {% load static %}
 {% block content %}
 <body>
-
-    <h1>PDF to Audiobook Converter</h1>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <label for="pdf_file">Upload PDF file:</label>
-        <input type="file" name="pdf_file" id="pdf_file">
-        <br>
-        <button type="submit">Convert to Audiobook</button>
-    </form>
-
-    {% if audio_files %}
-        <h2>Download Audiobook:</h2>
-        {% for audio_file in audio_files %}
-            <a href="{{ audio_file }}">{{ audio_file }}</a><br>
-        {% endfor %}
-    {% endif %}
+<!--	<h1>PDF to Audio</h1>-->
+<!--	<form method="POST" enctype="multipart/form-data">-->
+<!--		{% csrf_token %}-->
+<!--		<label for="pdf_file">PDF File:</label>-->
+<!--		<input type="file" name="pdf_file" id="pdf_file"><br><br>-->
+<!--		<button type="submit">Convert to Audio</button>-->
+<!--	</form>-->
+   <div style="height:500px;text-align: center;">
+	   <div style="margin-top: 150px;">
+			{% if audio_files %}
+		   {% for audio_file in audio_files %}
+               <audio controls>
+               <source src="{{ audio_file.book_audioFile }}" type="audio/mpeg">
+               </audio>
+           {% endfor %}
+<!--		       {% for i in audio_files %}-->
+<!--				<br><h2>AudioBook</h2>-->
+<!--				<audio controls>-->
+<!--					<source src="{{ i.book_audioFile }}" type="audio/mpeg">-->
+<!--					Your browser does not support the audio element.-->
+<!--				</audio>-->
+<!--		       {% endfor %}-->
+			{% endif %}
+	   </div>
+   </div>
 </body>
 {% endblock content %}

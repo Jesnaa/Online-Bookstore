@@ -138,7 +138,7 @@ table, th, td {
 <!--							</div>-->
 							<div class="add-to-cart">
 								        <button class="add-to-cart-btn" >  <a href="{{ i.book_pdf.url }}">Read</a></button>
-								        <button class="add-to-cart-btn" >  <a href="#">Audio</a></button>
+								        <button class="add-to-cart-btn" >  <a href="{% url 'pdf_to_audio' i.book_id%}">Audio</a></button>
 <!--										<button class="add-to-cart-btn" >  <a href="#">FlipBook</a></button>-->
 								        <button class="add-to-cart-btn" ><a href="{{ i.book_pdf.url }}" download class="btn btn-outline-success">Download</a></button>
 <!--								        <button class="add-to-cart-btn" >  <a href="{% url 'text_summarizer' %}">summary</a></button>-->
