@@ -132,7 +132,6 @@ MEDIA_URL='/media/'
 MEDIA_ROOT=os.path.join(BASE_DIR,'media')
 
 from django.core.files.storage import FileSystemStorage
-
 audio_storage  = FileSystemStorage(location=os.path.join(MEDIA_ROOT, 'audio'))
 
 # Default primary key field type
