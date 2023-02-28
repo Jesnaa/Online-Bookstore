@@ -331,6 +331,55 @@ def dboysetting(request):
 #
 #         user.save()
 #         return redirect('checkout')
+
+import os
+import tempfile
+from io import BytesIO
+
+import PyPDF2
+import pyttsx3
+
+from django.shortcuts import get_object_or_404, render
+from django.core.files.base import ContentFile
+from django.core.files.storage import FileSystemStorage
+from django.conf import settings
+
+from .models import eBooks
+
+# Define the file storage for the audio files
+audio_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'audio'))
+
+def pdf_to_audio(request, id):
+    ebook = get_object_or_404(eBooks, book_id=id)
+    if not ebook.book_pdf:
+        return render(request, 'error.html', {'message': 'PDF not found'})
+    pdf_reader = PyPDF2.PdfReader(BytesIO(ebook.book_pdf.read()))
+    num_pages = len(pdf_reader.pages)
+    text = ''
+    for page_num in range(num_pages):
+        page = pdf_reader.pages[page_num]
+        text += page.extract_text()
+    engine = pyttsx3.init()
+    engine.setProperty('rate', 150)
+    with tempfile.NamedTemporaryFile(suffix='.mp3', delete=False) as temp_file:
+        engine.save_to_file(text, temp_file.name)
+        temp_file.flush()
+        os.fsync(temp_file.fileno())
+        audio_filename = os.path.basename(temp_file.name)
+    with open(temp_file.name, 'rb') as f:
+        audio_data = f.read()
+    audio_content = ContentFile(audio_data)
+    # Save the audio file to the book_audioFile field on the eBooks model
+    ebook.book_audioFile.save(audio_filename, audio_content)
+    print('Temp file:', temp_file.name)
+    print('Audio file:', audio_filename)
+    # Render the template
+    engine.say(text)
+    engine.runAndWait()
+    # Get the URL of the saved audio file
+    audio_file_url = audio_storage.url(ebook.book_audioFile.name)
+    return render(request, 'pdf_to_audio.html', {'audio_file_url': audio_file_url})
+
 # import os
 # import tempfile
 # import PyPDF2
@@ -359,51 +408,76 @@ def dboysetting(request):
 #     # else:
 #     #     return render(request, 'pdf_to_audio.html')
 #     # return HttpResponse()
-from io import BytesIO
-import os
-import tempfile
-import PyPDF2
-import pyttsx3
-from django.core.files.base import ContentFile
+# from io import BytesIO
+# import os
+# import tempfile
+# import PyPDF2
+# import pyttsx3
+# from django.core.files.base import ContentFile
+# from django.shortcuts import render, get_object_or_404
+# from .models import eBooks
+# def pdf_to_audio(request, id):
+#     ebook = get_object_or_404(eBooks, book_id=id)
+#     if not ebook.book_pdf:
+#         return render(request, 'error.html', {'message': 'PDF not found'})
+#     pdf_reader = PyPDF2.PdfReader(BytesIO(ebook.book_pdf.read()))
+#     num_pages = len(pdf_reader.pages)
+#     text = ''
+#     for page_num in range(num_pages):
+#         page = pdf_reader.pages[page_num]
+#         text += page.extract_text()
+#     engine = pyttsx3.init()
+#     engine.setProperty('rate', 150)
+#     with tempfile.NamedTemporaryFile(suffix='.mp3', delete=False) as temp_file:
+#         engine.save_to_file(text, temp_file.name)
+#         temp_file.flush()
+#         os.fsync(temp_file.fileno())
+#         audio_filename = os.path.basename(temp_file.name)
+#     with open(temp_file.name, 'rb') as f:
+#         audio_data = f.read()
+#     audio_content = ContentFile(audio_data)
+#     ebook.book_audioFile.save(audio_filename, audio_content)
+#     print('Temp file:', temp_file.name)
+#     print('Audio file:', audio_filename)
+#     # Play the audio file
+#     with open(ebook.book_audioFile.path, 'rb') as f:
+#         audio_data = f.read()
+#     engine.say(audio_data)
+#     engine.runAndWait()
+#     return render(request, 'pdf_to_audio.html')
 
-import PyPDF2
-import pyttsx3
-import tempfile
-import os
-import os
-import tempfile
-import PyPDF2
-import pyttsx3
-from django.core.files.base import ContentFile
-from django.shortcuts import render, get_object_or_404
-from .models import eBooks
 
-def pdf_to_audio(request, id):
-    ebook = get_object_or_404(eBooks, book_id=id)
-    if not ebook.book_pdf:
-        return render(request, 'error.html', {'message': 'PDF not found'})
-    pdf_reader = PyPDF2.PdfReader(BytesIO(ebook.book_pdf.read()))
-    num_pages = len(pdf_reader.pages)
-    text = ''
-    for page_num in range(num_pages):
-        page = pdf_reader.pages[page_num]
-        text += page.extract_text()
-    engine = pyttsx3.init()
-    engine.setProperty('rate', 150)
-    with tempfile.NamedTemporaryFile(suffix='.mp3', delete=False) as temp_file:
-        engine.save_to_file(text, temp_file.name)
-        temp_file.flush()
-        os.fsync(temp_file.fileno())
-        audio_filename = os.path.basename(temp_file.name)
-    with open(temp_file.name, 'rb') as f:
-        audio_data = f.read()
-    audio_content = ContentFile(audio_data)
-    ebook.book_audioFile.save(audio_filename, audio_content)
-    print('Temp file:', temp_file.name)
-    print('Audio file:', audio_filename)
-    # render template
-    audio_files = [ebook.book_audioFile.url]
-    return render(request, 'pdf_to_audio.html', {'audio_files': audio_files})
+# def pdf_to_audio(request, id):
+#     ebook = get_object_or_404(eBooks, book_id=id)
+#     if not ebook.book_pdf:
+#         return render(request, 'error.html', {'message': 'PDF not found'})
+#     pdf_reader = PyPDF2.PdfReader(BytesIO(ebook.book_pdf.read()))
+#     num_pages = len(pdf_reader.pages)
+#     text = ''
+#     for page_num in range(num_pages):
+#         page = pdf_reader.pages[page_num]
+#         text += page.extract_text()
+#     engine = pyttsx3.init()
+#     engine.setProperty('rate', 150)
+#     with tempfile.NamedTemporaryFile(suffix='.mp3', delete=False) as temp_file:
+#         engine.save_to_file(text, temp_file.name)
+#         temp_file.flush()
+#         os.fsync(temp_file.fileno())
+#         audio_filename = os.path.basename(temp_file.name)
+#     with open(temp_file.name, 'rb') as f:
+#         audio_data = f.read()
+#     audio_content = ContentFile(audio_data)
+#     ebook.book_audioFile.save(audio_filename, audio_content)
+#     print('Temp file:', temp_file.name)
+#     print('Audio file:', audio_filename)
+#     # render template
+#     # audio_file = [ebook.book_audioFile.url]
+#     engine.say(audio_data)
+#     engine.runAndWait()
+#     print('Audio files:', audio_data)
+#     return render(request, 'pdf_to_audio.html', {'audio_filename': audio_filename})
+
+
 # def pdf_to_audio(request,id):
 #     ebooks = eBooks.objects.all()
 #     audio_files = []

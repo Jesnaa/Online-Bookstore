@@ -2,6 +2,10 @@ from logapp.models import User
 from django.db import models
 from django.utils.text import slugify
 from django.urls.base import reverse
+
+from bookstore.settings import audio_storage
+
+
 class Category(models.Model):
     category_id = models.AutoField(primary_key=True)
     category_name = models.CharField(max_length=50, unique=True)
@@ -160,7 +164,7 @@ class eBooks(models.Model):
     narrator = models.CharField(max_length=50,blank=True, null=True)
     audibleRelease_date = models.DateTimeField(auto_now_add=True)
     book_type = models.ForeignKey(BookTypes, verbose_name="BookType", on_delete=models.PROTECT)
-    book_audioFile = models.FileField(blank=True, null=True, upload_to='AudioFiles')
+    book_audioFile = models.FileField(blank=True, null=True, storage=audio_storage)
     book_pdf = models.FileField(blank=True, null=True, upload_to='PdfFiles')
     def __str__(self):
         return '{}'.format(self.ebook_name)

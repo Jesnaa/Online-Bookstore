@@ -1,6 +1,7 @@
 {% extends 'base1.html' %}
 {% load static %}
 {% block content %}
+{% csrf_token %}
 <body>
 <!--	<h1>PDF to Audio</h1>-->
 <!--	<form method="POST" enctype="multipart/form-data">-->
@@ -9,23 +10,35 @@
 <!--		<input type="file" name="pdf_file" id="pdf_file"><br><br>-->
 <!--		<button type="submit">Convert to Audio</button>-->
 <!--	</form>-->
-   <div style="height:500px;text-align: center;">
-	   <div style="margin-top: 150px;">
-			{% if audio_files %}
-		   {% for audio_file in audio_files %}
-               <audio controls>
-               <source src="{{ audio_file.book_audioFile }}" type="audio/mpeg">
-               </audio>
-           {% endfor %}
-<!--		       {% for i in audio_files %}-->
-<!--				<br><h2>AudioBook</h2>-->
-<!--				<audio controls>-->
-<!--					<source src="{{ i.book_audioFile }}" type="audio/mpeg">-->
-<!--					Your browser does not support the audio element.-->
-<!--				</audio>-->
-<!--		       {% endfor %}-->
-			{% endif %}
-	   </div>
-   </div>
-</body>
+<!--   <div style="height:500px;text-align: center;">-->
+<!--	   <div style="margin-top: 150px;">-->
+<!--               <br><h2>AudioBook</h2>-->
+<!--           <br>-->
+<!--               <audio controls>-->
+<!--               <source src="{{ audio_filename }}" type="audio/mpeg">-->
+<!--               </audio>-->
+<!--&lt;!&ndash;           			{% if audio_files %}&ndash;&gt;-->
+
+<!--&lt;!&ndash;                  {% for i in audio_files %}&ndash;&gt;-->
+<!--&lt;!&ndash;                               <br><h2>AudioBook</h2>&ndash;&gt;-->
+<!--&lt;!&ndash;                               <audio controls>&ndash;&gt;-->
+<!--&lt;!&ndash;                               <source src="{{ i.eBooks.book_audioFile }}" type="audio/mpeg">&ndash;&gt;-->
+<!--&lt;!&ndash;                                   <source src="{{ i.eBooks.book_audioFile }}" type="audio/mpeg">&ndash;&gt;-->
+<!--&lt;!&ndash;                               </audio>&ndash;&gt;-->
+<!--&lt;!&ndash;                           {% endfor %}&ndash;&gt;-->
+<!--&lt;!&ndash;           {% endif %}&ndash;&gt;-->
+
+
+<!--   </div>-->
+<!--   </div>-->
+<!--</body>-->
+<!--{% endblock content %}-->
+{% if audio_files %}
+{% for i in audio_files %}
+  <audio controls>
+    <source src="{{ i.audio_file.url }}" type="audio/mpeg">
+    Your browser does not support the audio tag.
+  </audio>
+{% endfor %}
+ {% endif %}
 {% endblock content %}
