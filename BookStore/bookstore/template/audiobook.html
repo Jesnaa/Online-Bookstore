@@ -139,13 +139,13 @@ table, th, td {
 							<div class="add-to-cart">
 								        <button class="add-to-cart-btn" >  <a href="{{ i.book_pdf.url }}">Read</a></button>
 <!--                                          <button class="add-to-cart-btn" >  <a href="{% url 'pdf_to_audio' i.book_id%}">Audio</a></button>-->
-                                               <button class="add-to-cart-btn" >  <a href="{% url 'pdf_to_audio' i.book_id %}">Audio</a></button>
+                                               <button class="add-to-cart-btn" >  <a href="{% url 'pdf_to_audio' i.book_id %}" target="_blank">Audio</a></button>
 <!--                                                   <audio controls>-->
 <!--														<source src="{% url 'pdf_to_audio' i.book_id %}" type="audio/mpeg">-->
 <!--													</audio>-->
 <!--								                                   {% url 'pdf_to_audio' i.book_id%}-->
 								        <button class="add-to-cart-btn" ><a href="{{ i.book_pdf.url }}" download class="btn btn-outline-success">Download</a></button>
-								<button class="add-to-cart-btn" >  <a href=" https://online.anyflip.com/vlphe/eilj/mobile/index.html">FlipBook</a></button>
+								<button class="add-to-cart-btn" >  <a href="{{ i.book_flipbook }}">FlipBook</a></button>
 
 <!--								        <button class="add-to-cart-btn" >  <a href="{% url 'text_summarizer' %}">summary</a></button>-->
 

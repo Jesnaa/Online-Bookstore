@@ -8,6 +8,10 @@ from django.contrib import messages
 from logapp.models import User
 from django.conf import settings
 import razorpay
+from django.shortcuts import render
+from django.http import HttpResponse
+from django.views.generic import View
+from .utils import render_to_pdf
 
 # from importlib.metadata import files
 # # from settings import RAZORPAY_API_KEY, RAZORPAY_API_SECRET_KEY
@@ -26,6 +30,7 @@ def audiobooks(request):
      book = eBooks.objects.all()
      cart = Cart.objects.all()
      return render(request,'audiobooks.html',{'datas':book,'category':category,'cart':cart})
+
 def ebooks(request):
     category = Category.objects.all()
     book = eBooks.objects.all()
@@ -196,8 +201,10 @@ def view_wishlist(request):
         user = request.user
         wish=Whishlist.objects.filter(user_id=user)
         category=Category.objects.all()
-
-        return render(request,"wishlist.html",{'wishlist':wish,'category':category})
+        w_count=0
+        for i in wish:
+            w_count=w_count+1
+        return render(request,"wishlist.html",{'wishlist':wish,'category':category,'w_count':w_count})
 
 
 # Remove Items From Wishlist
@@ -348,7 +355,7 @@ from .models import eBooks
 
 # Define the file storage for the audio files
 audio_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'audio'))
-
+@login_required(login_url='login')
 def pdf_to_audio(request, id):
     ebook = get_object_or_404(eBooks, book_id=id)
     if not ebook.book_pdf:
@@ -435,6 +442,65 @@ def pdf_to_audio(request, id):
 #     # Render the template with the audio file URL
 #     return render(request, 'pdf_to_audio.html', {'audio_file_url': audio_file_url})
 
+def get(request, id, *args, **kwargs, ):
+        place = OrderPlaced.objects.get(id=id)
+        date = place.payment.created_at
+
+        orders = OrderPlaced.objects.filter(user_id=request.user.id, payment__created_at=date)
+        total = 0
+        for o in orders:
+            total = total + (o.product.book_price * o.quantity)
+        addrs = User.objects.get(id=request.user.id)
+        # place=orderplaced.objects.filter(user_id=request.user.id)
+
+        # addresss=user_address.objects.get(user_id=request.user.id)
+
+        # for i in addrs:
+        #     print(i.user,"#######################")
+        data = {
+            "total": total,
+            "orders": orders,
+            "shipping": addrs,
+            # "name": "Mama",    #you can feach the data from database
+            # "id":"Order Placed",
+            #  "users":request.user,
+            #  "total":Order.amount,
+            #  "add":addresss.fname,
+            #  "addd":addresss.lname,
+            #  "adddd":addresss.phone_no,
+            #  "addddd":addresss.email,
+            #  "adddddd":addresss.hname,
+            #  "ad":addresss.street,
+            #  "dd":addresss.city,
+            #  "aa":addresss.district,
+            #  "p":addresss.pin,
+            #  "dates":Order.created_at,
+            #  "productname":place.product,
+            #  "firstname":addresss.fname,
+            #  "phoneno":addresss.phone_no,
+            #  "staus":place.is_ordered,
+
+            # "amount": 333,
+        }
+        pdf = render_to_pdf('report.html', data)
+        if pdf:
+            response = HttpResponse(pdf, content_type='application/pdf')
+            # filename = "Report_for_%s.pdf" %(data['id'])
+            filename = "Bill"
+
+            content = "inline; filename= %s" % (filename)
+            response['Content-Disposition'] = content
+            return response
+        return HttpResponse("Page Not Found")
+
+
+
+
+
+
+
+
+
 
 
 import nltk
@@ -449,13 +515,13 @@ analyzer = SentimentIntensityAnalyzer()
 nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('vader_lexicon')
+
 @method_decorator(csrf_exempt, name='dispatch')
 class TextSummarizerView(View):
     template_name = 'summary.html'
 
     def get(self, request):
         return render(request, self.template_name)
-
     def post(self, request):
         input_text = request.POST.get('input_text', '')
         num_sentences = int(request.POST.get('num_sentences', 5))
@@ -465,6 +531,7 @@ class TextSummarizerView(View):
         summaries = []
         for i in range(len(sentences)):
             score = nltk.sentiment.vader.SentimentIntensityAnalyzer().polarity_scores(sentences[i])['compound']
+            print('score',score)
             summaries.append((sentences[i], score))
         summaries = sorted(summaries, key=lambda x: x[1], reverse=True)
         summaries = [summary[0] for summary in summaries[:num_sentences]]

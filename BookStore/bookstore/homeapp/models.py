@@ -166,5 +166,6 @@ class eBooks(models.Model):
     book_type = models.ForeignKey(BookTypes, verbose_name="BookType", on_delete=models.PROTECT)
     book_audioFile = models.FileField(blank=True, null=True, storage=audio_storage)
     book_pdf = models.FileField(blank=True, null=True, upload_to='PdfFiles')
+    book_flipbook = models.CharField(max_length=100 ,blank=True, null=True)
     def __str__(self):
         return '{}'.format(self.ebook_name)
