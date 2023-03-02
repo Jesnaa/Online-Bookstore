@@ -276,8 +276,8 @@ def payment_done(request):
     for c in cart:
         OrderPlaced(user=request.user,product=c.product,quantity=c.product_qty,payment=payment,is_ordered=True).save()
         c.delete()
-    messages.success(request, 'Payment done successfully you can view the order details on your profile'
-                              'Continue Shopping')
+    # messages.success(request, 'Payment done successfully you can view the order details on your profile'
+    #                           'Continue Shopping')
     return redirect('orders')
 
 
@@ -287,7 +287,7 @@ def dboyindex(request):
 def dboyblank(request):
     return render(request,'dboyblank.html')
 def dboy1(request):
-    orders = OrderPlaced.objects.all()
+    orders = OrderPlaced.objects.exclude(status='Delivered')
     context = {
         'orders': orders,
     }
@@ -297,7 +297,20 @@ def dboy2(request,id):
     context = {
         'orders': orders,
     }
+    for order in orders:
+       if order.status == 'Pending':
+                 order.status = 'Delivered'
+                 order.save()
+
     return render(request,'dboy2.html',context)
+# def order_delivered(request, id):
+#     orders = OrderPlaced.objects.filter(id=id)
+#     for order in orders:
+#         if order.status == 'Pending':
+#             order.status = 'Delivered'
+#             order.save()
+#     return redirect('dboy2', id=id)
+
 def dboysetting(request):
     return render(request,'dboysetting.html')
 # @login_required(login_url='login')

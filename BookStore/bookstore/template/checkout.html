@@ -220,7 +220,7 @@
 
                                 var a = response.razorpay_payment_id;
 
-                                alert({{order_id}}'Thanks for Ordering....Continue Shopping')
+                                alert({{order_id}}'Payment done successfully.....Thanks for Ordering..... you can view the order details on your profile...Continue Shopping')
 
                                 window.location.href = 'http://127.0.0.1:8000/paymentdone?order_id=${response.razorpay_order_id}&user_id=${response.USER}&payment_id='+a
 

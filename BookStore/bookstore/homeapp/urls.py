@@ -37,4 +37,5 @@ urlpatterns = [
     path('dboy2/<int:id>/', views.dboy2, name='dboy2'),
     path('dboysetting/', views.dboysetting, name='dboysetting'),
     path('pdf/<int:id>/', views.get,name='pdf'),
+    # path('order-delivered/<int:id>/',views.order_delivered, name='order-delivered'),
 ]

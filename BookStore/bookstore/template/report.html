@@ -124,7 +124,7 @@ Arial, sans-serif;
             <tr>
 
               <td class="title">
-                <h5>Spare Store</h5>
+                <h5>BookRak</h5>
 
               </td>
 
@@ -135,6 +135,7 @@ Arial, sans-serif;
                 {% for i in orders|slice:":1" %}
 
                 Order Date: {{i.payment.created_at}}<br>
+                Order Id  : {{i.payment.razorpay_order_id}}<br>
                 {% endfor %}
 
               </td>
@@ -216,7 +217,7 @@ Arial, sans-serif;
 <!--        <td colspan="2">-->
 
 <!--        </td>-->
-<!--    </table>-->
-<!--  </div>-->
+    </table>
+  </div>
 </body>
 </html>

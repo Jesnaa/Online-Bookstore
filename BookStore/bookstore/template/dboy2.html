@@ -56,6 +56,7 @@
                                                                                 <div class="border bottom">
                                                                                     <p>Date: <span class="pull-right">{{order.ordered_date}}</span></p>
                                                                                     <p>Book Name: <span class="pull-right">{{order.product}}</span></p>
+                                                                                     <p>Quantity: <span class="pull-right">{{order.quantity}}</span></p>
                                                                                     <p>Customer Name: <span class="pull-right">{{order.user.first_name}}</span></p>
                                                                                     <p>Phone Number: <span class="pull-right">{{order.user.phonenumber}}</span></p>
                                                                                     <p class="mrg-top-20">Address: <span class="pull-right">{{order.user.hname}}, {{order.user.city}}, {{order.user.pincode}}, {{order.user.state}}</span></p>
@@ -110,13 +111,26 @@
                                                                         <span>Enter The OTP </span>
 
                                                                     </p>
-                                                                    <div class="mrg-top-40">
-                                                                        <div class="row">
-                                                                            <div class="form-group col-md-6">
-                                                                                <input type="text" onkeypress="return event.charCode >= 48 &amp; event.charCode <= 57" class="form-control" placeholder="_ _ _" name="cvv">
+
+                                                                            <div class="mrg-top-40">
+                                                                                <div class="row">
+                                                                                    <div class="form-group col-md-6">
+                                                                                        <input type="text" onkeypress="return event.charCode >= 48 &amp; event.charCode <= 57" class="form-control" placeholder="_ _ _" name="cvv">
+                                                                                    </div>
+                                                                                </div>
+<!--                                                                                {% for order in orders %}-->
+<!--                                                                                {% if order.status == "Pending" %}-->
+<!--                                                                                        <div class="form-group col-md-6">-->
+<!--                                                                                            <form action="{% url 'order-delivered' order.id %}" method="post">-->
+<!--                                                                                                {% csrf_token %}-->
+<!--                                                                                                <button type="submit">Delivered</button>-->
+<!--                                                                                            </form>-->
+<!--                                                                                        </div>-->
+<!--                                                                                    {% endif %}-->
+<!--                                                                                {% endfor %}-->
                                                                             </div>
-                                                                        </div>
-                                                                    </div>
+
+
                                                                 </div>
                                                             </div>
                                                         </div>
