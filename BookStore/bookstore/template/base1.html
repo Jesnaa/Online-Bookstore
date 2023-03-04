@@ -10,6 +10,10 @@
 
 		<title>BOOKRAK</title>
 
+
+    <link href="{% static 'assets/css/themify-icons.css' %}" rel="stylesheet">
+
+
 		<!-- Google font -->
 		<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
 
@@ -176,9 +180,9 @@
 
 									<ul class="dropdown-menu">
 
-										<li><a class="dropdown-item" href="{% url 'profile' %}">My Account</a></li>
-										<li><a class="dropdown-item" href="{% url 'changepassword' %}">Change Password</a></li>
-										<li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+										<li><a class="dropdown-item" href="{% url 'profile' %}"><i class="ti-user pdd-right-10"></i> My Account</a></li>
+										<li><a class="dropdown-item" href="{% url 'changepassword' %}"><i class="ti-settings pdd-right-10"></i> Change Password</a></li>
+										<li><a class="dropdown-item" href="{% url 'logout' %}"><i class="ti-power-off pdd-right-10"></i> Logout</a></li>
 
 									</ul>
 
