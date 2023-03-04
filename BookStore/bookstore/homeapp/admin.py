@@ -77,7 +77,7 @@ class OrderPlacedAdmin(admin.ModelAdmin):
         return object.payment.amount
     def username(self, object):
         return object.user.first_name
-    list_display=('username','ordered_date','product','price','is_ordered','status')
+    list_display=('username','ordered_date','product','is_ordered','status')
     actions = [export_log]
 
     # def has_delete_permission(self, request, obj=None):

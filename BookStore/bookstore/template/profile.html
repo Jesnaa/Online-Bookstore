@@ -64,11 +64,11 @@
                                         <tr>
                                             <td>{{order.quantity}}</td>
                                             <td>{{order.product.book_name}}</td>
-                                            <td>₹{{order.payment.amount}}.00 </td>
+                                            <td>₹{{order.product.book_price}}.00 </td>
 <!--                                            {% for i in orders|slice:":1" %}-->
                                             <td><a href="{% url 'pdf' i.id %}" style="font-weight:bold;color:rgb(240, 16, 16);">View</a></td>
 <!--                                            {% endfor %}-->
-<!--                                            <td>{{order.status}}</td>-->
+                                            <td>{{order.status}}</td>
                                         </tr>
 
                                     {% endfor %}

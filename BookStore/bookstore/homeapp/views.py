@@ -234,8 +234,6 @@ def checkout(request):
     }
     payment_response = client.order.create(data=data)
     print(payment_response)
-    # {'id': 'order_Ki9yWEa6goK1si', 'entity': 'order', 'amount': 419, 'amount_paid': 0, 'amount_due': 419,
-    #  'currency': 'INR', 'receipt': 'order_rcptid_11', 'offer_id': None, 'status': 'created ', 'attempts': 0, 'notes': [],'created_at': 1668918227}
     order_id = payment_response['id']
     request.session['order_id'] = order_id
     order_status = payment_response['status']
@@ -303,54 +301,10 @@ def dboy2(request,id):
                  order.save()
 
     return render(request,'dboy2.html',context)
-# def order_delivered(request, id):
-#     orders = OrderPlaced.objects.filter(id=id)
-#     for order in orders:
-#         if order.status == 'Pending':
-#             order.status = 'Delivered'
-#             order.save()
-#     return redirect('dboy2', id=id)
 
 def dboysetting(request):
     return render(request,'dboysetting.html')
-# @login_required(login_url='login')
-# def orders(request):
-#     orders = OrderPlaced.objects.filter(
-#         user=request.user, is_ordered=True).order_by('ordered_date')
-#     context = {
-#         'orders': orders,
-#     }
-#     return render(request, 'orders.html', context)
-#
-# def checkoutDetails(request):
-#     if request.method == "POST":
-#
-#         last_name = request.POST.get('last_name')
-#         first_name = request.POST.get('first_name')
-#         email = request.POST.get('email')
-#         phonenumber = request.POST.get('phonenumber')
-#         user_id = request.user.id
-#         username = request.POST.get('username')
-#         hname = request.POST.get('hname')
-#         country = request.POST.get('country')
-#         state = request.POST.get('state')
-#         city = request.POST.get('city')
-#         pincode = request.POST.get('pincode')
-#
-#         user = User.objects.get(id=user_id)
-#         user.first_name = first_name
-#         user.last_name = last_name
-#         user.phonenumber = phonenumber
-#         user.email = email
-#         user.city = city
-#         user.country = country
-#         user.state = state
-#         user.pincode = pincode
-#         user.username = username
-#         user.hname = hname
-#
-#         user.save()
-#         return redirect('checkout')
+
 
 import os
 import tempfile
@@ -464,36 +418,12 @@ def get(request, id, *args, **kwargs, ):
         for o in orders:
             total = total + (o.product.book_price * o.quantity)
         addrs = User.objects.get(id=request.user.id)
-        # place=orderplaced.objects.filter(user_id=request.user.id)
 
-        # addresss=user_address.objects.get(user_id=request.user.id)
-
-        # for i in addrs:
-        #     print(i.user,"#######################")
         data = {
             "total": total,
             "orders": orders,
             "shipping": addrs,
-            # "name": "Mama",    #you can feach the data from database
-            # "id":"Order Placed",
-            #  "users":request.user,
-            #  "total":Order.amount,
-            #  "add":addresss.fname,
-            #  "addd":addresss.lname,
-            #  "adddd":addresss.phone_no,
-            #  "addddd":addresss.email,
-            #  "adddddd":addresss.hname,
-            #  "ad":addresss.street,
-            #  "dd":addresss.city,
-            #  "aa":addresss.district,
-            #  "p":addresss.pin,
-            #  "dates":Order.created_at,
-            #  "productname":place.product,
-            #  "firstname":addresss.fname,
-            #  "phoneno":addresss.phone_no,
-            #  "staus":place.is_ordered,
 
-            # "amount": 333,
         }
         pdf = render_to_pdf('report.html', data)
         if pdf:
@@ -505,9 +435,6 @@ def get(request, id, *args, **kwargs, ):
             response['Content-Disposition'] = content
             return response
         return HttpResponse("Page Not Found")
-
-
-
 
 
 
