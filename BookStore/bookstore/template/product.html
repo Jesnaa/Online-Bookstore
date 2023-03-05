@@ -83,8 +83,13 @@ table, th, td {
 							</div>
 							<div>
 								<h3 class="product-price">₹{{i.book_price}}.00 <del class="product-old-price">₹{{i.book_oldprice}}.00 </del></h3>
-								<span class="product-available">In Stock</span>
 							</div>
+							{% if i.book_quantity > 0 %}
+							&#9830;<span class="product-available">In Stock </span>
+							<span class="sku"> {{ i.book_quantity }} Available</span><br><br>
+							{% endif %}
+
+
 
 							<p>
 								&#9830; Pay on Delivery<br><br>
@@ -120,10 +125,19 @@ table, th, td {
 
 
 <!--							</div>-->
+
 							<div class="add-to-cart">
+
+								 {% if i.book_quantity > 0 %}
 									<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i><a  href="{% url 'addcart' i.book_id %}">add to cart </a></button>
-									<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i><a  href="{% url 'add_wishlist' i.book_id %}">add to wishlist</a></button>
-									</div>
+								{% else %}
+								<h4 style="color:red;">Out of Stock</h4>
+                                {% endif %}
+                                <br>
+
+								<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i><a  href="{% url 'add_wishlist' i.book_id %}">add to wishlist</a></button>
+
+							</div>
 
 						</div>
 					</div>

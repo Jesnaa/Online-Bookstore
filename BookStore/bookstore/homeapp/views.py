@@ -274,6 +274,8 @@ def payment_done(request):
     for c in cart:
         OrderPlaced(user=request.user,product=c.product,quantity=c.product_qty,payment=payment,is_ordered=True).save()
         c.delete()
+        c.product.book_quantity -= c.product_qty
+        c.product.save()
     # messages.success(request, 'Payment done successfully you can view the order details on your profile'
     #                           'Continue Shopping')
     return redirect('orders')

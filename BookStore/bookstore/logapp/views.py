@@ -23,6 +23,7 @@ def profile(request):
     context = {
         'orders': orders,
     }
+
     return render(request,'profile.html',context)
 
 def index(request):
