@@ -18,18 +18,22 @@ from .utils import render_to_pdf
 # # Create your views here.
 
 def index(request):
+    count = Cart.objects.filter(user=request.user).count()
+    w_count = Whishlist.objects.filter(user=request.user).count()
     tblBook = Book.objects.all()
     category = Category.objects.all()
     cart = Cart.objects.all()
-    return render(request,'index.html',{'datas':tblBook,'category':category,'cart':cart})
+    return render(request,'index.html',{'datas':tblBook,'category':category,'cart':cart,'count':count,'w_count':w_count})
 def ebook(request):
  return render(request,'E-Book.html')
 
 def audiobooks(request):
+     w_count = Whishlist.objects.filter(user=request.user).count()
+     count = Cart.objects.filter(user=request.user).count()
      category = Category.objects.all()
      book = eBooks.objects.all()
      cart = Cart.objects.all()
-     return render(request,'audiobooks.html',{'datas':book,'category':category,'cart':cart})
+     return render(request,'audiobooks.html',{'datas':book,'category':category,'cart':cart,'count':count,'w_count':w_count})
 
 def ebooks(request):
     category = Category.objects.all()
@@ -38,18 +42,22 @@ def ebooks(request):
     return render(request, 'audiobooks.html', {'datas': book, 'category': category, 'cart': cart})
 
 def audiobook(request,id):
+    w_count = Whishlist.objects.filter(user=request.user).count()
+    count = Cart.objects.filter(user=request.user).count()
     rproduct = eBooks.objects.all()
     single = eBooks.objects.filter(book_id=id)
     cart = Cart.objects.all()
     category = Category.objects.all()
-    return render(request, 'audiobook.html', {'result': single,'products':rproduct,'category':category,'cart':cart})
+    return render(request, 'audiobook.html', {'result': single,'products':rproduct,'category':category,'cart':cart,'count':count,'w_count':w_count})
 
 def product(request,id):
+    w_count = Whishlist.objects.filter(user=request.user).count()
+    count = Cart.objects.filter(user=request.user).count()
     rproduct = Book.objects.all()
     single = Book.objects.filter(book_id=id)
     cart = Cart.objects.all()
     category = Category.objects.all()
-    return render(request, 'product.html', {'result': single,'products':rproduct,'category':category,'cart':cart})
+    return render(request, 'product.html', {'result': single,'products':rproduct,'category':category,'cart':cart,'count':count,'w_count':w_count})
 
 
 # def product(request,book_slug):
@@ -62,11 +70,13 @@ def product(request,id):
 
 
 def categorys(request,id):
+    w_count = Whishlist.objects.filter(user=request.user).count()
+    count = Cart.objects.filter(user=request.user).count()
     category = Category.objects.all()
     books = Book.objects.all()
     if( Category.objects.filter(category_id=id)):
          book = Book.objects.filter(book_category_id=id)
-    return render(request,'categorys.html',{'datas':book,'category':category,'books':books})
+    return render(request,'categorys.html',{'datas':book,'category':category,'books':books,'count':count,'w_count':w_count})
 # def pricefilter(request,id):
 #     category = Category.objects.all()
 #     books = Book.objects.all()
@@ -85,20 +95,24 @@ def categorys(request,id):
 #     return render(request, 'categorys.html',{'products': products})
 
 def allproduct(request):
+     w_count = Whishlist.objects.filter(user=request.user).count()
+     count = Cart.objects.filter(user=request.user).count()
      category = Category.objects.all()
      book = Book.objects.all()
      cart = Cart.objects.all()
-     return render(request,'all product.html',{'datas':book,'category':category,'cart':cart})
+     return render(request,'all product.html',{'datas':book,'category':category,'cart':cart,'count':count,'w_count':w_count})
 
 # def allproduct(request):
 #     tblBook = Book.objects.all()
 #     category = Category.objects.all()
 #     return render(request,'all product.html',{'datas':tblBook,'category':category})
 def base(request,id):
+    w_count = Whishlist.objects.filter(user=request.user).count()
+    count = Cart.objects.filter(user=request.user).count()
     tblBook = Book.objects.all()
     category = Category.objects.filter(category_id=id)
     cart = Cart.objects.all()
-    return render(request,'base1.html',{'datas':tblBook,'category':category,'cart':cart})
+    return render(request,'base1.html',{'datas':tblBook,'category':category,'cart':cart,'count':count,'w_count':w_count})
 
 
 def searchbar(request):
@@ -161,6 +175,8 @@ def minusqty(request,id):
 # View Cart Page
 @login_required(login_url='login')
 def cart(request):
+    w_count = Whishlist.objects.filter(user=request.user).count()
+    count = Cart.objects.filter(user=request.user).count()
     user = request.user
     cart=Cart.objects.filter(user_id=user)
     totalitem=0
@@ -171,7 +187,7 @@ def cart(request):
 
     category=Category.objects.all()
     # subcategory=Subcategory.objects.all()
-    return render(request,'cart.html',{'cart':cart,'total':total,'category':category,'totalitem':totalitem})
+    return render(request,'cart.html',{'cart':cart,'total':total,'category':category,'totalitem':totalitem,'count':count,'w_count':w_count})
 
 # Remove Items From Cart
 def de_cart(request,id):
@@ -198,13 +214,12 @@ def add_wishlist(request,id):
 #Wishlist View page
 @login_required(login_url='login')
 def view_wishlist(request):
+        count = Cart.objects.filter(user=request.user).count()
+        w_count = Whishlist.objects.filter(user=request.user).count()
         user = request.user
         wish=Whishlist.objects.filter(user_id=user)
         category=Category.objects.all()
-        w_count=0
-        for i in wish:
-            w_count=w_count+1
-        return render(request,"wishlist.html",{'wishlist':wish,'category':category,'w_count':w_count})
+        return render(request,"wishlist.html",{'wishlist':wish,'category':category,'w_count':w_count,'count':count})
 
 
 # Remove Items From Wishlist
@@ -278,8 +293,15 @@ def payment_done(request):
         c.product.save()
     # messages.success(request, 'Payment done successfully you can view the order details on your profile'
     #                           'Continue Shopping')
-    return redirect('orders')
+    return redirect('billview')
 
+def billview(request):
+    orders = OrderPlaced.objects.filter(
+        user=request.user, is_ordered=True).order_by('ordered_date')
+    context = {
+        'orders': orders,
+    }
+    return render(request,'bill_view.html',context)
 
 
 def dboyindex(request):
@@ -308,6 +330,8 @@ def dboysetting(request):
     return render(request,'dboysetting.html')
 
 
+
+
 import os
 import tempfile
 from io import BytesIO
@@ -321,12 +345,12 @@ from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 
 from .models import eBooks
-
-# Define the file storage for the audio files
-audio_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'audio'))
+engine = pyttsx3.init()
+# audio_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'audio'))
 @login_required(login_url='login')
 def pdf_to_audio(request, id):
     ebook = get_object_or_404(eBooks, book_id=id)
+    audio_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'audio'))
     if not ebook.book_pdf:
         return render(request, 'error.html', {'message': 'PDF not found'})
     pdf_reader = PyPDF2.PdfReader(BytesIO(ebook.book_pdf.read()))
@@ -339,13 +363,16 @@ def pdf_to_audio(request, id):
     engine.setProperty('rate', 150)
     with tempfile.NamedTemporaryFile(suffix='.mp3', delete=False) as temp_file:
         engine.save_to_file(text, temp_file.name)
+        print(os.path.exists(temp_file.name))
         temp_file.flush()
         os.fsync(temp_file.fileno())
         audio_filename = os.path.basename(temp_file.name)
+        temp_file.close()
     with open(temp_file.name, 'rb') as f:
         audio_data = f.read()
     audio_content = ContentFile(audio_data)
-    # Save the audio file to the book_audioFile field on the eBooks model
+    print(len(audio_data))
+
     ebook.book_audioFile.save(audio_filename, audio_content)
     print('Temp file:', temp_file.name)
     print('Audio file:', audio_filename)
@@ -353,11 +380,35 @@ def pdf_to_audio(request, id):
 
     # Get the URL of the saved audio file
     audio_file_url = audio_storage.url(ebook.book_audioFile.name)
-    engine.say(text)
-    engine.runAndWait()
 
+
+    engine.say(text)
+    print(audio_data)
+    # engine.runAndWait()
     print('audio_file_url:', audio_file_url)
     return render(request, 'pdf_to_audio.html', {'audio_file_url': audio_file_url})
+import threading
+stop_flag = False
+def run(request):
+    global stop_flag
+    while not stop_flag:
+        engine.runAndWait()
+
+    return redirect('pdf_to_audio')
+def pause(request):
+    engine.pause()
+    return redirect('pdf_to_audio')
+def resume(request):
+    engine.resume()
+    return redirect('pdf_to_audio')
+def stop(request):
+    global stop_flag
+    stop_flag = True
+    t = threading.Thread(target=run)
+    t.start()
+    stop_flag = True
+    t.join()
+    return redirect('pdf_to_audio')
 
 
 # import spacy
@@ -431,7 +482,7 @@ def get(request, id, *args, **kwargs, ):
         if pdf:
             response = HttpResponse(pdf, content_type='application/pdf')
             # filename = "Report_for_%s.pdf" %(data['id'])
-            filename = "Bill"
+            filename = "Bill.pdf"
 
             content = "inline; filename= %s" % (filename)
             response['Content-Disposition'] = content

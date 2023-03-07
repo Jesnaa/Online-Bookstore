@@ -30,6 +30,7 @@ urlpatterns = [
     path('de_cart/<int:id>/', views.de_cart, name='de_cart'),
     path('plusqty/<int:id>/',views.plusqty,name='plusqty'),
     path('minusqty/<int:id>/',views.minusqty,name='minusqty'),
+    path('billview/', views.billview, name='billview'),
     path('text_summarizer/', TextSummarizerView.as_view(), name='text_summarizer'),
     path('dboyindex/', views.dboyindex, name='dboyindex'),
     path('dboyblank/', views.dboyblank, name='dboyblank'),
@@ -37,5 +38,9 @@ urlpatterns = [
     path('dboy2/<int:id>/', views.dboy2, name='dboy2'),
     path('dboysetting/', views.dboysetting, name='dboysetting'),
     path('pdf/<int:id>/', views.get,name='pdf'),
+    path('run/', views.run, name='run'),
+    # path('pause/<int:id>/', views.pause, name='pause'),
+    # path('resume/<int:id>/', views.resume, name='resume'),
+    path('stop/', views.stop, name='stop'),
     # path('order-delivered/<int:id>/',views.order_delivered, name='order-delivered'),
 ]

@@ -30,7 +30,7 @@
                     <div style="height:300px;text-align: center;">
                           <h2 style="font-family: sans-serif;color: rgb(246,86, 12);">Your Wishlist is Empty !!!!</h2><br>
                           <div class="button-area">
-                            <a href="{% url 'allproduct' %}" style="font-weight:bold;color:rgb(240, 16, 16);">Continue Shopping</a>
+                            <a href="{% url 'allproduct' %}" class="btn btn-warning">Continue Shopping</a>
                             </div>
                     </div>
 
@@ -59,7 +59,13 @@
 											<i class="fa fa-star"></i>
 										</div>
 
-                                        <button  ><a  href="{% url 'de_wishlist' i.id %}">X</a></button>
+
+                                         <div class="action-wrapper">
+                                                 <a href="{% url 'de_wishlist' i.id %}" class="btn btn-danger">
+                                                <i class="ti-trash pdd-right-5"></i>
+                                                <span>Delete</span>
+                                            </a>
+                                         </div>
 
 									</div>
 									<div class="add-to-cart">
@@ -73,38 +79,6 @@
 								{% endfor %}
 						</div>
 
-<!--                            <tbody>-->
-<!--                            {% for i in wishlist %}-->
-<!--                                <tr>-->
-<!--                                    <td>-->
-<!--                                        <div class="cart-anchor-image">-->
-<!--                                            <a href="single-product.html">-->
-<!--                                                 <img src="{{i.product.img.url}}" alt="Product" height="100px">-->
-<!--                                                <h6>{{i.product.book_name}}</h6>-->
-<!--                                            </a>-->
-<!--                                        </div>-->
-<!--                                    </td>-->
-<!--                                    <td>-->
-<!--                                        <div class="cart-price">-->
-<!--                                             {{i.product.book_price}}-->
-<!--                                        </div>-->
-<!--                                    </td>-->
-<!--&lt;!&ndash;                                    <td>&ndash;&gt;-->
-<!--&lt;!&ndash;                                        <div class="cart-stock">&ndash;&gt;-->
-<!--&lt;!&ndash;                                            In Stock&ndash;&gt;-->
-<!--&lt;!&ndash;                                        </div>&ndash;&gt;-->
-<!--&lt;!&ndash;                                    </td>&ndash;&gt;-->
-<!--                                    <td>-->
-<!--                                        <div class="action-wrapper">-->
-<!--                                            <button class="button button-outline-secondary">Add to Cart</button>-->
-<!--                                            <button class="add-to-cart-btn">X</button>-->
-<!--                                        </div>-->
-<!--                                    </td>-->
-<!--                                </tr>-->
-<!--                             {% endfor %}-->
-<!--                            </tbody>-->
-<!--                        </table>-->
-<!--                    </div>-->
                     {% endif %}
                     <!-- Products-List-Wrapper /- -->
                 </div>
