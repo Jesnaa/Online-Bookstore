@@ -1,16 +1,37 @@
 from django.contrib import admin
-from .models import Book,Category,SubCategory,Payment, OrderPlaced,eBooks,BookTypes
+from .models import Book,Category,SubCategory,Payment, OrderPlaced,eBooks,BookTypes,ReviewRating
 from django.http import HttpResponse
 import csv
+from django.contrib import messages
 # Register your models here.
 class BookAdmin(admin.ModelAdmin):
     list_display=['book_name','book_quantity','book_price','book_category']
     search_fields = ['book_name']
+
+    def notify_low_stock(self, request, queryset):
+        for book in queryset:
+            if book.book_quantity < 5:
+                messages.warning(
+                    request,
+                    message=f"The stock level for book {book.title} is below 5.",
+                    extra_tags='stock_level'
+                )
+        self.message_user(request, f"{queryset.count()} books checked for low stock.")
+
+    notify_low_stock.short_description = "Notify low stock"
+
+    actions = [notify_low_stock]
 admin.site.register(Book,BookAdmin)
 
 class SubCategoryAdmin(admin.ModelAdmin):
     list_display = ['subcategory_name']
 admin.site.register(SubCategory)
+class ReviewRatingAdmin(admin.ModelAdmin):
+    def username(self, object):
+      return object.user.first_name
+    list_display = ['headline','product','rating','username']
+
+admin.site.register(ReviewRating,ReviewRatingAdmin)
 
 
 
@@ -22,6 +43,7 @@ admin.site.register(eBooks,eBookAdmin)
 class BooktypeAdmin(admin.ModelAdmin):
     list_display = ['book_types']
     search_fields = ['book_types']
+
 admin.site.register(BookTypes,BooktypeAdmin)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ['category_name']

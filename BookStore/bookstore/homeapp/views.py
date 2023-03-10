@@ -1,6 +1,8 @@
+from audioop import reverse
+
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Book,Category,Payment, OrderPlaced,eBooks,BookTypes
+from .models import Book,Category,Payment, OrderPlaced,eBooks,BookTypes,ReviewRating
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from .models import Cart,Whishlist
@@ -18,8 +20,8 @@ from .utils import render_to_pdf
 # # Create your views here.
 
 def index(request):
-    count = Cart.objects.filter(user=request.user).count()
-    w_count = Whishlist.objects.filter(user=request.user).count()
+    count = Cart.objects.filter(user=request.user.id).count()
+    w_count = Whishlist.objects.filter(user=request.user.id).count()
     tblBook = Book.objects.all()
     category = Category.objects.all()
     cart = Cart.objects.all()
@@ -28,8 +30,8 @@ def ebook(request):
  return render(request,'E-Book.html')
 
 def audiobooks(request):
-     w_count = Whishlist.objects.filter(user=request.user).count()
-     count = Cart.objects.filter(user=request.user).count()
+     w_count = Whishlist.objects.filter(user=request.user.id).count()
+     count = Cart.objects.filter(user=request.user.id).count()
      category = Category.objects.all()
      book = eBooks.objects.all()
      cart = Cart.objects.all()
@@ -42,8 +44,8 @@ def ebooks(request):
     return render(request, 'audiobooks.html', {'datas': book, 'category': category, 'cart': cart})
 
 def audiobook(request,id):
-    w_count = Whishlist.objects.filter(user=request.user).count()
-    count = Cart.objects.filter(user=request.user).count()
+    w_count = Whishlist.objects.filter(user=request.user.id).count()
+    count = Cart.objects.filter(user=request.user.id).count()
     rproduct = eBooks.objects.all()
     single = eBooks.objects.filter(book_id=id)
     cart = Cart.objects.all()
@@ -51,13 +53,15 @@ def audiobook(request,id):
     return render(request, 'audiobook.html', {'result': single,'products':rproduct,'category':category,'cart':cart,'count':count,'w_count':w_count})
 
 def product(request,id):
-    w_count = Whishlist.objects.filter(user=request.user).count()
-    count = Cart.objects.filter(user=request.user).count()
-    rproduct = Book.objects.all()
+    w_count = Whishlist.objects.filter(user=request.user.id).count()
+    count = Cart.objects.filter(user=request.user.id).count()
+    products = Book.objects.all()
     single = Book.objects.filter(book_id=id)
     cart = Cart.objects.all()
     category = Category.objects.all()
-    return render(request, 'product.html', {'result': single,'products':rproduct,'category':category,'cart':cart,'count':count,'w_count':w_count})
+    orderproduct = OrderPlaced.objects.filter(user=request.user, is_ordered=True).exists()
+    review = ReviewRating.objects.filter(product_id=id, status=True)
+    return render(request, 'product.html', {'result': single,'products':products,'category':category,'cart':cart,'count':count,'w_count':w_count,'orderproduct':orderproduct,'review':review})
 
 
 # def product(request,book_slug):
@@ -67,11 +71,44 @@ def product(request,id):
 #     category = Category.objects.all()
 #     return render(request, 'product.html', {'result': single,'products':rproduct,'category':category,'cart':cart})
 #
+def reviewss(request,id):
+        if request.method == 'POST':
+            try:
+                reviews = ReviewRating.objects.get(user_id=request.user.id, product_id=id)
+                headline = request.POST.get('headline')
+                rating = request.POST.get('rating')
+                review = request.POST.get('review')
+                reviews.headline = headline
+                reviews.rating = rating
+                reviews.review = review
+                reviews.save()
+                messages.success(request, 'Thank you! Your review has been updated.')
+                return redirect(request.META.get('HTTP_REFERER'))
+            except ReviewRating.DoesNotExist:
+                headline = request.POST.get('headline')
+                rating = request.POST.get('rating')
+                review = request.POST.get('review')
+                data = ReviewRating()
+                data.headline = headline
+                data.rating = rating
+                data.review = review
+                data.ip = request.META.get('REMOTE_ADDR')
+                data.product_id = id
+                data.user_id = request.user.id
+                if OrderPlaced.objects.filter(user_id=request.user.id, product_id=id, is_ordered=True).exists():
+                    data.save()
+                    messages.success(request, 'Thank you! Your review has been submitted.')
+                    return redirect(request.META.get('HTTP_REFERER'))
+                else:
+                    messages.warning(request, 'You can only review products that you have purchased.')
+                    return redirect(request.META.get('HTTP_REFERER'))
+        else:
+            return redirect('/')
 
 
 def categorys(request,id):
-    w_count = Whishlist.objects.filter(user=request.user).count()
-    count = Cart.objects.filter(user=request.user).count()
+    w_count = Whishlist.objects.filter(user=request.user.id).count()
+    count = Cart.objects.filter(user=request.user.id).count()
     category = Category.objects.all()
     books = Book.objects.all()
     if( Category.objects.filter(category_id=id)):
@@ -95,8 +132,8 @@ def categorys(request,id):
 #     return render(request, 'categorys.html',{'products': products})
 
 def allproduct(request):
-     w_count = Whishlist.objects.filter(user=request.user).count()
-     count = Cart.objects.filter(user=request.user).count()
+     w_count = Whishlist.objects.filter(user=request.user.id).count()
+     count = Cart.objects.filter(user=request.user.id).count()
      category = Category.objects.all()
      book = Book.objects.all()
      cart = Cart.objects.all()
@@ -107,8 +144,8 @@ def allproduct(request):
 #     category = Category.objects.all()
 #     return render(request,'all product.html',{'datas':tblBook,'category':category})
 def base(request,id):
-    w_count = Whishlist.objects.filter(user=request.user).count()
-    count = Cart.objects.filter(user=request.user).count()
+    w_count = Whishlist.objects.filter(user=request.user.id).count()
+    count = Cart.objects.filter(user=request.user.id).count()
     tblBook = Book.objects.all()
     category = Category.objects.filter(category_id=id)
     cart = Cart.objects.all()
@@ -175,8 +212,8 @@ def minusqty(request,id):
 # View Cart Page
 @login_required(login_url='login')
 def cart(request):
-    w_count = Whishlist.objects.filter(user=request.user).count()
-    count = Cart.objects.filter(user=request.user).count()
+    w_count = Whishlist.objects.filter(user=request.user.id).count()
+    count = Cart.objects.filter(user=request.user.id).count()
     user = request.user
     cart=Cart.objects.filter(user_id=user)
     totalitem=0
@@ -214,8 +251,8 @@ def add_wishlist(request,id):
 #Wishlist View page
 @login_required(login_url='login')
 def view_wishlist(request):
-        count = Cart.objects.filter(user=request.user).count()
-        w_count = Whishlist.objects.filter(user=request.user).count()
+        count = Cart.objects.filter(user=request.user.id).count()
+        w_count = Whishlist.objects.filter(user=request.user.id).count()
         user = request.user
         wish=Whishlist.objects.filter(user_id=user)
         category=Category.objects.all()
@@ -296,12 +333,11 @@ def payment_done(request):
     return redirect('billview')
 
 def billview(request):
+    count = Cart.objects.filter(user=request.user.id).count()
+    w_count = Whishlist.objects.filter(user=request.user.id).count()
     orders = OrderPlaced.objects.filter(
         user=request.user, is_ordered=True).order_by('ordered_date')
-    context = {
-        'orders': orders,
-    }
-    return render(request,'bill_view.html',context)
+    return render(request,'bill_view.html',{ 'orders': orders,'w_count':w_count,'count':count})
 
 
 def dboyindex(request):
@@ -343,12 +379,15 @@ from django.shortcuts import get_object_or_404, render
 from django.core.files.base import ContentFile
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
-
+import keyboard
 from .models import eBooks
 engine = pyttsx3.init()
 # audio_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'audio'))
 @login_required(login_url='login')
 def pdf_to_audio(request, id):
+    count = Cart.objects.filter(user=request.user.id).count()
+    w_count = Whishlist.objects.filter(user=request.user.id).count()
+    global stop_flag
     ebook = get_object_or_404(eBooks, book_id=id)
     audio_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'audio'))
     if not ebook.book_pdf:
@@ -380,38 +419,39 @@ def pdf_to_audio(request, id):
 
     # Get the URL of the saved audio file
     audio_file_url = audio_storage.url(ebook.book_audioFile.name)
-
-
+    engine.stop()
     engine.say(text)
     print(audio_data)
+    if stop_flag:
+        engine.stop()
+        stop_flag = False
     # engine.runAndWait()
     print('audio_file_url:', audio_file_url)
-    return render(request, 'pdf_to_audio.html', {'audio_file_url': audio_file_url})
+    return render(request, 'pdf_to_audio.html', {'audio_file_url': audio_file_url,'count':count,'w_count':w_count})
 import threading
 stop_flag = False
 def run(request):
+    count = Cart.objects.filter(user=request.user.id).count()
+    w_count = Whishlist.objects.filter(user=request.user.id).count()
     global stop_flag
     while not stop_flag:
         engine.runAndWait()
+    return render(request, 'pdf_to_audio.html',{'count':count,'w_count':w_count})
 
-    return redirect('pdf_to_audio')
+def stop(request):
+    global stop_flag
+    stop_flag = True
+    engine.setProperty('rate', 0)
+    engine.stop()
+    # engine.stop()
+    return render(request, 'pdf_to_audio.html')
 def pause(request):
     engine.pause()
+
     return redirect('pdf_to_audio')
 def resume(request):
     engine.resume()
     return redirect('pdf_to_audio')
-def stop(request):
-    global stop_flag
-    stop_flag = True
-    t = threading.Thread(target=run)
-    t.start()
-    stop_flag = True
-    t.join()
-    return redirect('pdf_to_audio')
-
-
-# import spacy
 # import pyttsx3
 # import spacy
 # import en_core_web_sm
@@ -511,11 +551,14 @@ nltk.download('vader_lexicon')
 
 @method_decorator(csrf_exempt, name='dispatch')
 class TextSummarizerView(View):
+
     template_name = 'summary.html'
 
     def get(self, request):
         return render(request, self.template_name)
     def post(self, request):
+        count = Cart.objects.filter(user=request.user).count()
+        w_count = Whishlist.objects.filter(user=request.user).count()
         input_text = request.POST.get('input_text', '')
         num_sentences = int(request.POST.get('num_sentences', 5))
         sentences = nltk.sent_tokenize(input_text)
@@ -529,6 +572,6 @@ class TextSummarizerView(View):
         summaries = sorted(summaries, key=lambda x: x[1], reverse=True)
         summaries = [summary[0] for summary in summaries[:num_sentences]]
         summary_text = ' '.join(summaries)
-        return render(request, self.template_name, {'input_text': input_text, 'summary_text': summary_text, 'num_sentences': num_sentences})
+        return render(request, self.template_name, {'input_text': input_text, 'summary_text': summary_text, 'num_sentences': num_sentences,'count':count,'w_count':w_count})
 
 

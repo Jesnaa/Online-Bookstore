@@ -14,17 +14,15 @@ from django.core.mail import EmailMessage
 from django.core.mail import send_mail
 
 
-from homeapp.models import OrderPlaced,Payment
+from homeapp.models import OrderPlaced,Payment,Cart,Whishlist
 
 
 def profile(request):
+    count = Cart.objects.filter(user=request.user.id).count()
+    w_count = Whishlist.objects.filter(user=request.user.id).count()
     orders = OrderPlaced.objects.filter(
         user=request.user, is_ordered=True).order_by('ordered_date')
-    context = {
-        'orders': orders,
-    }
-
-    return render(request,'profile.html',context)
+    return render(request,'profile.html', { 'orders': orders,'count':count,'w_count':w_count})
 
 def index(request):
     return render(request,'index.html')

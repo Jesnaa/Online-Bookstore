@@ -5,6 +5,7 @@ from .views import TextSummarizerView
 urlpatterns = [
      path('',views.index,name='index'),
      path('product/<int:id>/',views.product,name='product'),
+     path('reviewss/<int:id>/', views.reviewss, name='reviewss'),
     # path('category/<slug:category_slug>',views.category, name='category'),
      path('checkout/',views.checkout,name='checkout'),
      path('ebook/',views.ebook,name='ebook'),
@@ -39,7 +40,7 @@ urlpatterns = [
     path('dboysetting/', views.dboysetting, name='dboysetting'),
     path('pdf/<int:id>/', views.get,name='pdf'),
     path('run/', views.run, name='run'),
-    # path('pause/<int:id>/', views.pause, name='pause'),
+    # path('pause/', views.pause, name='pause'),
     # path('resume/<int:id>/', views.resume, name='resume'),
     path('stop/', views.stop, name='stop'),
     # path('order-delivered/<int:id>/',views.order_delivered, name='order-delivered'),
