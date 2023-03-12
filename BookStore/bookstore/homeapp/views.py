@@ -25,6 +25,7 @@ def index(request):
     tblBook = Book.objects.all()
     category = Category.objects.all()
     cart = Cart.objects.all()
+
     return render(request,'index.html',{'datas':tblBook,'category':category,'cart':cart,'count':count,'w_count':w_count})
 def ebook(request):
  return render(request,'E-Book.html')
@@ -61,7 +62,14 @@ def product(request,id):
     category = Category.objects.all()
     orderproduct = OrderPlaced.objects.filter(user=request.user, is_ordered=True).exists()
     review = ReviewRating.objects.filter(product_id=id, status=True)
-    return render(request, 'product.html', {'result': single,'products':products,'category':category,'cart':cart,'count':count,'w_count':w_count,'orderproduct':orderproduct,'review':review})
+    book = get_object_or_404(Book, book_id=id)
+    average_review = book.averageReview()
+    context = {
+        'book': book,
+        'review_count': book.countReview(),
+        'averageReview' : average_review
+    }
+    return render(request, 'product.html', {'context':context,'result': single,'products':products,'category':category,'cart':cart,'count':count,'w_count':w_count,'orderproduct':orderproduct,'review':review})
 
 
 # def product(request,book_slug):

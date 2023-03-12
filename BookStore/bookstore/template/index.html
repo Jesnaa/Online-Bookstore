@@ -376,11 +376,12 @@
 												<h3 class="product-name"><a href="{% url 'product' i.book_id %}">{{i.book_name}}</a></h3>
 												<h4 class="product-price">₹{{i.book_price}}.00  <del class="product-old-price">₹{{i.book_oldprice}}.00 </del></h4>
 												<div class="product-rating">
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
+															<i class="fa fa-star{% if context.averageReview < 0.5 %}-o{% elif context.averageReview >= 0.5 and context.averageReview < 1 %}-half-o {% endif %}" aria-hidden="true"></i>
+			<i class="fa fa-star{% if context.averageReview < 1.5 %}-o{% elif context.averageReview >= 1.5 and context.averageReview < 2 %}-half-o {% endif %}" aria-hidden="true"></i>
+			<i class="fa fa-star{% if context.averageReview < 2.5 %}-o{% elif context.averageReview >= 2.5 and context.averageReview < 3 %}-half-o {% endif %}" aria-hidden="true"></i>
+			<i class="fa fa-star{% if context.averageReview < 3.5 %}-o{% elif context.averageReview >= 3.5 and context.averageReview < 4 %}-half-o {% endif %}" aria-hidden="true"></i>
+			<i class="fa fa-star{% if context.averageReview < 4.5 %}-o{% elif context.averageReview >= 4.5 and context.averageReview < 5 %}-half-o {% endif %}" aria-hidden="true"></i>
+
 												</div>
 												<div class="product-btns">
 
