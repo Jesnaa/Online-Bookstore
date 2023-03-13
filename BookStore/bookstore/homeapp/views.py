@@ -581,5 +581,37 @@ class TextSummarizerView(View):
         summaries = [summary[0] for summary in summaries[:num_sentences]]
         summary_text = ' '.join(summaries)
         return render(request, self.template_name, {'input_text': input_text, 'summary_text': summary_text, 'num_sentences': num_sentences,'count':count,'w_count':w_count})
+# views.py
+from django.shortcuts import render
+from googletrans import Translator, LANGUAGES
 
 
+def translation(request):
+    if request.method == 'POST':
+        text = request.POST.get('text')
+        source_language = request.POST.get('source_language')
+        target_language = request.POST.get('target_language')
+
+        # Check if the source and target languages are valid
+        if source_language not in LANGUAGES or target_language not in LANGUAGES:
+            context = {'error_message': 'Invalid source or target language'}
+            return render(request, 'translation.html', context)
+
+        try:
+            # Create a Translator object and translate the text to the target language
+            translator = Translator()
+            translated_text = translator.translate(text, src=source_language, dest=target_language)
+
+            # Render the translated text in the template
+            context = {'translated_text': translated_text.text}
+            return render(request, 'translation.html', context)
+        except Exception as e:
+            # Handle any exceptions and display an error message
+            context = {'error_message': str(e)}
+            return render(request, 'translation.html', context)
+    else:
+        # Render the initial form with dropdown menus for selecting the source and target languages
+        source_language_choices = [(lang_code, lang_name) for lang_code, lang_name in LANGUAGES.items()]
+        target_language_choices = [(lang_code, lang_name) for lang_code, lang_name in LANGUAGES.items()]
+        context = {'source_language_choices': source_language_choices, 'target_language_choices': target_language_choices}
+        return render(request, 'translation.html', context)

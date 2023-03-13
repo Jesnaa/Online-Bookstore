@@ -44,4 +44,5 @@ urlpatterns = [
     # path('resume/<int:id>/', views.resume, name='resume'),
     path('stop/', views.stop, name='stop'),
     # path('order-delivered/<int:id>/',views.order_delivered, name='order-delivered'),
+    path('translation/', views.translation, name='translation'),
 ]
