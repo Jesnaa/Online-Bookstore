@@ -1,0 +1,19 @@
+{% extends 'base1.html' %}
+
+{% block content %}
+  <h1>Book Recommendations</h1>
+  {% if book_recommendations %}
+    <ul>
+      {% for book, rating in book_recommendations.items %}
+        <li>
+          {{ book.title }} ({{ book.author }})
+          {% if rating %}
+            - Average rating: {{ rating }}
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No book recommendations found.</p>
+  {% endif %}
+{% endblock %}

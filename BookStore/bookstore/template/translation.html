@@ -1,10 +1,11 @@
 {% extends 'base1.html' %}
-
+{% load static %}
 {% block content %}
 <div id="breadcrumb" class="section" xmlns="http://www.w3.org/1999/html">
 			<!-- container -->
 			<div class="container">
    <center> <h1>Translate Now</h1></center>
+                <img class="pull-right" src="{% static 'images/translate.jpg' %}"  height="350"alt="">
   <form method="POST" id="translation-form" action="{% url 'translation' %}">
  {% csrf_token %}
     <div>
@@ -27,6 +28,7 @@
       <label for="text">Text:</label>
       <textarea name="text" id="text"  rows="10" cols="80"></textarea>
     </div>
+      <br>
     <button type="submit"  class="btn btn-danger" >Translate</button>
   </form>
 

@@ -581,8 +581,7 @@ class TextSummarizerView(View):
         summaries = [summary[0] for summary in summaries[:num_sentences]]
         summary_text = ' '.join(summaries)
         return render(request, self.template_name, {'input_text': input_text, 'summary_text': summary_text, 'num_sentences': num_sentences,'count':count,'w_count':w_count})
-# views.py
-from django.shortcuts import render
+
 from googletrans import Translator, LANGUAGES
 
 
@@ -615,3 +614,183 @@ def translation(request):
         target_language_choices = [(lang_code, lang_name) for lang_code, lang_name in LANGUAGES.items()]
         context = {'source_language_choices': source_language_choices, 'target_language_choices': target_language_choices}
         return render(request, 'translation.html', context)
+
+
+
+
+
+
+
+
+# import pandas as pd
+# import numpy as np
+# from scipy.sparse import csr_matrix
+# from sklearn.metrics.pairwise import cosine_similarity
+
+
+
+# def book_recommendations(request):
+#     ratings = ReviewRating.objects.all().select_related('product', 'user')
+#
+#     # Create a user-book matrix
+#     user_book_matrix = pd.pivot_table(ratings, values='rating', index='user_id', columns='product_id')
+#
+#     # Fill missing values with 0
+#     user_book_matrix.fillna(0, inplace=True)
+#
+#     # Populate the rating field in the user-book matrix
+#     for user_id in user_book_matrix.index:
+#         for product_id in user_book_matrix.columns:
+#             try:
+#                 rating = ratings.get(user_id=user_id, product_id=product_id).rating
+#                 user_book_matrix.loc[user_id, product_id] = rating
+#             except ReviewRating.DoesNotExist:
+#                 pass
+#
+#     # Convert the matrix to a sparse matrix
+#     user_book_sparse = csr_matrix(user_book_matrix.values)
+#
+#     # Calculate cosine similarity between the books
+#     cosine_sim = cosine_similarity(user_book_sparse)
+#
+#     # Get the books the user has rated
+#     user_ratings = ratings.filter(user=request.user)
+#
+#     # Get the average rating for each book
+#     book_ratings = ReviewRating.objects.values('product_id').annotate(rating_avg=Avg('rating'))
+#
+#     # Create a dictionary of book ratings
+#     book_ratings_dict = {r['product_id']: r['rating_avg'] for r in book_ratings}
+#
+#     # Get the book indices and similarity scores for the books the user has rated
+#     book_indices = [user_book_matrix.columns.get_loc(r.product_id) for r in user_ratings]
+#     similarity_scores = cosine_sim[book_indices].mean(axis=0)
+#
+#     # Get the top 10 book recommendations based on the similarity scores
+#     top_books = sorted(list(enumerate(similarity_scores)), key=lambda x: x[1], reverse=True)[:10]
+#     book_indices = [i[0] for i in top_books]
+#
+#     # Get the book objects for the recommended books
+#     recommended_books = Book.objects.filter(id__in=[user_book_matrix.columns[i] for i in book_indices])
+#
+#     # Create a dictionary of book recommendations with their average ratings
+#     book_recommendations_dict = {}
+#     for book in recommended_books:
+#         book_recommendations_dict[book] = book_ratings_dict.get(book.id, 0)
+#
+#     # Render the template with the book recommendations
+#     return render(request, 'book_recommendations.html', {'book_recommendations': book_recommendations_dict})
+
+
+from django.shortcuts import render, get_object_or_404
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+
+
+import numpy as np
+
+def book_recommendations(request):
+    user = request.user
+    # get all books that the user has rated
+    rated_books = ReviewRating.objects.filter(user=user, status=True)
+    # get the IDs of the rated books
+    rated_book_ids = [r.product.book_id for r in rated_books]
+    # get the books that the user has not rated
+    unrated_books = Book.objects.exclude(book_id__in=rated_book_ids)
+    # get the text descriptions of the rated and unrated books
+    rated_desc = [r.product.book_desc for r in rated_books]
+    unrated_desc = [b.book_desc for b in unrated_books]
+    # create a TF-IDF vectorizer
+    vectorizer = TfidfVectorizer()
+    # fit the vectorizer to the text descriptions
+    vectorizer.fit(rated_desc + unrated_desc)
+    # transform the rated and unrated descriptions to TF-IDF vectors
+    rated_vectors = vectorizer.transform(rated_desc)
+    unrated_vectors = vectorizer.transform(unrated_desc)
+    # calculate the cosine similarity between the rated and unrated vectors
+    similarity = cosine_similarity(rated_vectors, unrated_vectors)
+    # get the indices of the most similar unrated books for each rated book
+    top_indices = similarity.argsort(axis=1)[:, ::-1][:, :10]
+    # get the book objects corresponding to the top indices
+    recommended_books = []
+    for i, book_indices in enumerate(top_indices):
+        rated_book = get_object_or_404(Book, book_id=rated_book_ids[i])
+        for j in book_indices:
+            unrated_book = unrated_books[j]
+            recommended_books.append((rated_book, unrated_book))
+    recommended_books = np.array(recommended_books).tolist()  # convert to Python list
+    return render(request, 'book_recommendations.html', {'recommended_books': recommended_books})
+import nltk
+nltk.download('vader_lexicon')
+#
+# from django.shortcuts import render
+# from nltk.tokenize import word_tokenize
+# from nltk.corpus import stopwords
+# from nltk.stem.snowball import SnowballStemmer
+# from nltk.sentiment.vader import SentimentIntensityAnalyzer
+# import pandas as pd
+# from .models import ReviewRating
+#
+# def review_analysis(request):
+#     # Load the review data from the database, filtering by status=True
+#     reviews = ReviewRating.objects.filter(status=True)
+#
+#     # Convert the review data to a Pandas DataFrame
+#     review_data = pd.DataFrame(list(reviews.values()))
+#
+#     # Tokenize the review text
+#     stop_words = stopwords.words('english')
+#     stemmer = SnowballStemmer('english')
+#     review_data['tokens'] = review_data['review'].apply(
+#         lambda x: [stemmer.stem(token.lower()) for token in word_tokenize(x) if token.lower() not in stop_words])
+#
+#     # Analyze the sentiment of each review using VADER
+#     sia = SentimentIntensityAnalyzer()
+#     review_data['sentiment_scores'] = review_data['review'].apply(lambda x: sia.polarity_scores(x))
+#
+#     # Calculate the average sentiment score for each book
+#     book_sentiment = review_data.groupby('product_id')['sentiment_scores'].apply(
+#         lambda x: pd.DataFrame(list(x)).mean()['compound']).reset_index()
+#     book_data = pd.DataFrame(list(Book.objects.all().values()))
+#     book_data = book_data.merge(book_sentiment, left_on='book_id', right_on='product_id')
+#     print(book_data)
+#     book_data = book_data.sort_values(by='sentiment_scores', ascending=False)
+#
+#     # Render the results
+#     return render(request, 'review_analysis.html', {'book_data': book_data})
+from django.shortcuts import render
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from nltk.stem.snowball import SnowballStemmer
+from nltk.sentiment import SentimentIntensityAnalyzer
+import pandas as pd
+from .models import ReviewRating
+
+def review_analysis(request):
+    # Load the review data from the database, filtering by status=True
+    reviews = ReviewRating.objects.filter(status=True)
+
+    # Convert the review data to a Pandas DataFrame
+    review_data = pd.DataFrame(list(reviews.values()))
+
+    # Tokenize the review text
+    stop_words = stopwords.words('english')
+    stemmer = SnowballStemmer('english')
+    review_data['tokens'] = review_data['review'].apply(
+        lambda x: [stemmer.stem(token.lower()) for token in word_tokenize(x) if token.lower() not in stop_words])
+
+    # Calculate the sentiment score for each review using VADER
+    sia = SentimentIntensityAnalyzer()
+    review_data['sentiment_scores'] = review_data.apply(
+        lambda x: sia.polarity_scores(x['review'])['compound'] if x['rating'] >= 3 else -sia.polarity_scores(x['review'])['compound'], axis=1)
+
+    # Calculate the average sentiment score for each book
+    book_sentiment = review_data.groupby('product_id')['sentiment_scores'].mean().reset_index()
+    book_data = pd.DataFrame(list(Book.objects.all().values()))
+    book_data = book_data.merge(book_sentiment, left_on='book_id', right_on='product_id')
+    # print(book_data)
+    book_data = book_data.sort_values(by='sentiment_scores', ascending=False)
+    # print(book_data)
+    # Render the results
+    return render(request, 'review_analysis.html', {'book_data': book_data})

@@ -45,4 +45,6 @@ urlpatterns = [
     path('stop/', views.stop, name='stop'),
     # path('order-delivered/<int:id>/',views.order_delivered, name='order-delivered'),
     path('translation/', views.translation, name='translation'),
+    path('book_recommendations/', views.book_recommendations, name='book_recommendations'),
+    path('review_analysis/', views.review_analysis, name='review_analysis'),
 ]
