@@ -9,23 +9,25 @@
 <table class="table">
   <thead>
     <tr>
-      <th>Book Title</th>
+      <th>No:</th>
+      <th>Book Name</th>
       <th>Sentiment Score</th>
     </tr>
   </thead>
   <tbody>
-<!--    {% for book, score in books.items %}-->
+    {% for i in book_data %}
+      <tr>
+        <td>{{forloop.counter}}</td>
+        <td>{{ i.book_name }}</td>
+        <td>{{ i.sentiment_scores }}</td>
+      </tr>
+    {% endfor %}
+<!--  {% for  data in book_data %}-->
 <!--    <tr>-->
-<!--      <td>{{ book }}</td>-->
-<!--      <td>{{ score }}</td>-->
+<!--      <td>{{ data.book_name }}</td>-->
+<!--      <td>{{ data.sentiment_scores }}</td>-->
 <!--    </tr>-->
-<!--    {% endfor %}-->
-
-    <tr>
-      <td>{{ book_data.book_name }}</td>
-      <td>{{ book_data.sentiment_scores }}</td>
-    </tr>
-
+<!--{% endfor %}-->
   </tbody>
 </table>
 

@@ -1,19 +1,39 @@
 {% extends 'base1.html' %}
 
 {% block content %}
+<div class="section">
+			<!-- container -->
+    <div class="container">
   <h1>Book Recommendations</h1>
-  {% if book_recommendations %}
-    <ul>
-      {% for book, rating in book_recommendations.items %}
-        <li>
-          {{ book.title }} ({{ book.author }})
-          {% if rating %}
-            - Average rating: {{ rating }}
-          {% endif %}
-        </li>
-      {% endfor %}
-    </ul>
+  {% if recommended_books %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Rated Book</th>
+
+
+        </tr>
+      </thead>
+      <tbody>
+
+          {% for book_id, book_info in recommended_books.items|slice:":3" %}
+        <tr> <td>{{ book_info.rated_book.book_name }} </td>
+
+
+         </tr>
+    {% endfor %}
+<!--        {% for i in dict %}-->
+<!--          <tr>-->
+<!--            <td>{{ i.book_name }}</td>-->
+<!--&lt;!&ndash;            <td>{{ i.book_name }}</td>&ndash;&gt;-->
+<!--          </tr>-->
+<!--        {% endfor %}-->
+      </tbody>
+    </table>
   {% else %}
     <p>No book recommendations found.</p>
   {% endif %}
+                </div>
+
+</div>
 {% endblock %}

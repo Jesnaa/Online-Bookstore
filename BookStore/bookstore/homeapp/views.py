@@ -26,6 +26,8 @@ def index(request):
     category = Category.objects.all()
     cart = Cart.objects.all()
 
+
+
     return render(request,'index.html',{'datas':tblBook,'category':category,'cart':cart,'count':count,'w_count':w_count})
 def ebook(request):
  return render(request,'E-Book.html')
@@ -685,86 +687,211 @@ def translation(request):
 from django.shortcuts import render, get_object_or_404
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-
-
-
 import numpy as np
+# def book_recommendations(request):
+#     user = request.user
+#     # get all books that the user has rated
+#     rated_books = ReviewRating.objects.filter(user=user, status=True)
+#     # get the IDs of the rated books
+#     rated_book_ids = [r.product.book_id for r in rated_books]
+#     # get the books that the user has not rated
+#     unrated_books = Book.objects.exclude(book_id__in=rated_book_ids)
+#     # get the text descriptions of the rated and unrated books
+#     rated_desc = [r.product.book_desc for r in rated_books]
+#     unrated_desc = [b.book_desc for b in unrated_books]
+#     # create a TF-IDF vectorizer
+#     vectorizer = TfidfVectorizer()
+#     # fit the vectorizer to the text descriptions
+#     vectorizer.fit(rated_desc + unrated_desc)
+#     # transform the rated and unrated descriptions to TF-IDF vectors
+#     rated_vectors = vectorizer.transform(rated_desc)
+#     unrated_vectors = vectorizer.transform(unrated_desc)
+#     # calculate the cosine similarity between the rated and unrated vectors
+#     similarity = cosine_similarity(rated_vectors, unrated_vectors)
+#     # get the indices of the most similar unrated books for each rated book
+#     top_indices = similarity.argsort(axis=1)[:, ::-1][:, :10]
+#     # get the book objects corresponding to the top indices
+#     recommended_books = []
+#     for i, book_indices in enumerate(top_indices):
+#         rated_book = get_object_or_404(Book, book_id=rated_book_ids[i])
+#         for j in book_indices:
+#             unrated_book = unrated_books[int(j)]
+#             recommended_books.append((rated_book, unrated_book))
+#     recommended_books = np.array(recommended_books).tolist()  # convert to Python list
+#     return render(request, 'book_recommendations.html', {'recommended_books': recommended_books})
+
+
+# from django.shortcuts import render, get_object_or_404
+# from django.contrib.auth.decorators import login_required
+# from .models import Book, ReviewRating
+# from sklearn.feature_extraction.text import TfidfVectorizer
+# from sklearn.metrics.pairwise import cosine_similarity
+#
+# @login_required
+# def book_recommendations(request):
+#     user = request.user
+#
+#     # Get all books that the user has rated
+#     rated_books = ReviewRating.objects.filter(user=user, status=True)
+#
+#     # Get the IDs of the rated books
+#     rated_book_ids = [r.product.book_id for r in rated_books]
+#
+#     # Get the genres of the rated books
+#     rated_genres = set()
+#     for rating in rated_books:
+#         rated_genres.add(rating.product.book_category.category_id)
+#
+#     # Get the books that the user has not rated but are in the same genres as the rated books
+#     unrated_books = Book.objects.exclude(book_id__in=rated_book_ids).filter(book_category_id__in=rated_genres)
+#
+#     # Get the text descriptions of the rated and unrated books
+#     rated_desc = [r.product.book_desc for r in rated_books if r.product.book_category.category_id in rated_genres]
+#     unrated_desc = [b.book_desc for b in unrated_books if b.book_category_id in rated_genres]
+#
+#     # Create a TF-IDF vectorizer
+#     vectorizer = TfidfVectorizer()
+#
+#     # Fit the vectorizer to the text descriptions
+#     vectorizer.fit(rated_desc + unrated_desc)
+#
+#     # Transform the rated and unrated descriptions to TF-IDF vectors
+#     rated_vectors = vectorizer.transform(rated_desc)
+#     unrated_vectors = vectorizer.transform(unrated_desc)
+#
+#     # Calculate the cosine similarity between the rated and unrated vectors
+#     similarity = cosine_similarity(rated_vectors, unrated_vectors)
+#
+#     # Get the indices of the most similar unrated books for each rated book
+#     top_indices = similarity.argsort(axis=1)[:, ::-1][:, :10]
+#
+#     # Get the book objects corresponding to the top indices
+#     recommended_books = []
+#     for i, book_indices in enumerate(top_indices):
+#         rated_book = get_object_or_404(Book, book_id=rated_book_ids[i])
+#         for j in book_indices:
+#             unrated_book = unrated_books[int(j)]
+#             recommended_books.append((rated_book, unrated_book))
+#
+#     recommended_books = np.array(recommended_books).tolist()  # Convert to Python list
+#
+#     return render(request, 'book_recommendations.html', {'recommended_books': recommended_books})
+
+
+# def book_recommendations(request):
+#     user = request.user
+#
+#     # Get all books that the user has rated
+#     rated_books = ReviewRating.objects.filter(user=user, status=True)
+#
+#     # Get the IDs of the rated books
+#     rated_book_ids = [r.product.book_id for r in rated_books]
+#
+#     # Get the genres and authors of the rated books
+#     rated_genres = set()
+#     rated_authors = set()
+#     for rating in rated_books:
+#         rated_genres.add(rating.product.book_category_id)
+#         rated_authors.add(rating.product.book_author)
+#
+#     # Get the books that the user has not rated but are in the same genres and authors as the rated books
+#     unrated_books = Book.objects.exclude(book_id__in=rated_book_ids).filter(book_category_id__in=rated_genres, book_author__in=rated_authors)
+#
+#     if not unrated_books:
+#         return render(request, 'book_recommendations.html', {'recommended_books': []})
+#
+#     # Get the text descriptions of the rated and unrated books
+#     rated_desc = [r.product.book_desc for r in rated_books if r.product.book_category_id in rated_genres and r.product.book_author in rated_authors]
+#     unrated_desc = [b.book_desc for b in unrated_books if b.book_category_id in rated_genres and b.book_author in rated_authors]
+#
+#     # Create a TF-IDF vectorizer
+#     vectorizer = TfidfVectorizer()
+#
+#     # Fit the vectorizer to the text descriptions
+#     vectorizer.fit(rated_desc + unrated_desc)
+#
+#     # Transform the rated and unrated descriptions to TF-IDF vectors
+#     rated_vectors = vectorizer.transform(rated_desc)
+#     unrated_vectors = vectorizer.transform(unrated_desc)
+#
+#     # Calculate the cosine similarity between the rated and unrated vectors
+#     similarity = cosine_similarity(rated_vectors, unrated_vectors)
+#
+#     # Get the indices of the most similar unrated books for each rated book
+#     top_indices = similarity.argsort(axis=1)[:, ::-1][:, :10]
+#
+#     # Get the book objects corresponding to the top indices
+#     recommended_books = []
+#     for i, book_indices in enumerate(top_indices):
+#         rated_book = get_object_or_404(Book, book_id=rated_book_ids[i])
+#         for j in book_indices:
+#             unrated_book = unrated_books[int(j)]
+#             recommended_books.append((rated_book, unrated_book))
+#
+#     recommended_books = np.array(recommended_books).tolist()  # Convert to Python list
+#
+#     return render(request, 'book_recommendations.html', {'recommended_books': recommended_books})
+
+from django.shortcuts import render, get_object_or_404
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+import numpy as np
+
+from .models import Book, ReviewRating
+
 
 def book_recommendations(request):
     user = request.user
-    # get all books that the user has rated
+    # Get all books that the user has rated
     rated_books = ReviewRating.objects.filter(user=user, status=True)
-    # get the IDs of the rated books
+    # Get the IDs of the rated books
     rated_book_ids = [r.product.book_id for r in rated_books]
-    # get the books that the user has not rated
+    # Get the books that the user has not rated
     unrated_books = Book.objects.exclude(book_id__in=rated_book_ids)
-    # get the text descriptions of the rated and unrated books
+    if not unrated_books:
+        return render(request, 'book_recommendations.html', {'recommended_books': []})
+    # Get the text descriptions of the rated and unrated books
     rated_desc = [r.product.book_desc for r in rated_books]
     unrated_desc = [b.book_desc for b in unrated_books]
-    # create a TF-IDF vectorizer
+    # Create a TF-IDF vectorizer
     vectorizer = TfidfVectorizer()
-    # fit the vectorizer to the text descriptions
+    # Fit the vectorizer to the text descriptions
     vectorizer.fit(rated_desc + unrated_desc)
-    # transform the rated and unrated descriptions to TF-IDF vectors
+    # Transform the rated and unrated descriptions to TF-IDF vectors
     rated_vectors = vectorizer.transform(rated_desc)
     unrated_vectors = vectorizer.transform(unrated_desc)
-    # calculate the cosine similarity between the rated and unrated vectors
+    # Calculate the cosine similarity between the rated and unrated vectors
     similarity = cosine_similarity(rated_vectors, unrated_vectors)
-    # get the indices of the most similar unrated books for each rated book
-    top_indices = similarity.argsort(axis=1)[:, ::-1][:, :10]
-    # get the book objects corresponding to the top indices
+    # Get the indices of the most similar unrated books for each rated book
+    top_indices = similarity.argsort(axis=1)[:, ::-1][:, :2]
+    # Get the book objects corresponding to the top indices
     recommended_books = []
     for i, book_indices in enumerate(top_indices):
         rated_book = get_object_or_404(Book, book_id=rated_book_ids[i])
-        for j in book_indices:
-            unrated_book = unrated_books[j]
-            recommended_books.append((rated_book, unrated_book))
-    recommended_books = np.array(recommended_books).tolist()  # convert to Python list
+        j = book_indices[0]
+        unrated_book = unrated_books[int(j)]
+        recommended_books.append((rated_book, unrated_book))
+
+    recommended_books = np.array(recommended_books).tolist()  # Convert to Python list
+
+    recommended_books = {i: {'rated_book': book_tuple[0], 'unrated_book': book_tuple[1]} for i, book_tuple in
+                              enumerate(recommended_books)}
+
     return render(request, 'book_recommendations.html', {'recommended_books': recommended_books})
+
+
+
+
+
 import nltk
 nltk.download('vader_lexicon')
-#
-# from django.shortcuts import render
-# from nltk.tokenize import word_tokenize
-# from nltk.corpus import stopwords
-# from nltk.stem.snowball import SnowballStemmer
-# from nltk.sentiment.vader import SentimentIntensityAnalyzer
-# import pandas as pd
-# from .models import ReviewRating
-#
-# def review_analysis(request):
-#     # Load the review data from the database, filtering by status=True
-#     reviews = ReviewRating.objects.filter(status=True)
-#
-#     # Convert the review data to a Pandas DataFrame
-#     review_data = pd.DataFrame(list(reviews.values()))
-#
-#     # Tokenize the review text
-#     stop_words = stopwords.words('english')
-#     stemmer = SnowballStemmer('english')
-#     review_data['tokens'] = review_data['review'].apply(
-#         lambda x: [stemmer.stem(token.lower()) for token in word_tokenize(x) if token.lower() not in stop_words])
-#
-#     # Analyze the sentiment of each review using VADER
-#     sia = SentimentIntensityAnalyzer()
-#     review_data['sentiment_scores'] = review_data['review'].apply(lambda x: sia.polarity_scores(x))
-#
-#     # Calculate the average sentiment score for each book
-#     book_sentiment = review_data.groupby('product_id')['sentiment_scores'].apply(
-#         lambda x: pd.DataFrame(list(x)).mean()['compound']).reset_index()
-#     book_data = pd.DataFrame(list(Book.objects.all().values()))
-#     book_data = book_data.merge(book_sentiment, left_on='book_id', right_on='product_id')
-#     print(book_data)
-#     book_data = book_data.sort_values(by='sentiment_scores', ascending=False)
-#
-#     # Render the results
-#     return render(request, 'review_analysis.html', {'book_data': book_data})
 from django.shortcuts import render
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem.snowball import SnowballStemmer
 from nltk.sentiment import SentimentIntensityAnalyzer
 import pandas as pd
+from django.db.models import Avg
 from .models import ReviewRating
 
 def review_analysis(request):
@@ -793,4 +920,7 @@ def review_analysis(request):
     book_data = book_data.sort_values(by='sentiment_scores', ascending=False)
     # print(book_data)
     # Render the results
-    return render(request, 'review_analysis.html', {'book_data': book_data})
+    # book_data_dict = book_data.to_dict('list')
+    book_data = book_data.to_dict('records')
+
+    return render(request, 'review_analysis.html', {'book_data':book_data})
