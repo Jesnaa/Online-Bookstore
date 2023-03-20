@@ -38,6 +38,7 @@ urlpatterns = [
     path('dboy1/', views.dboy1, name='dboy1'),
     path('dboy2/<int:id>/', views.dboy2, name='dboy2'),
     path('dboysetting/', views.dboysetting, name='dboysetting'),
+    path('admin_index/', views.admin_index, name='admin_index'),
     path('pdf/<int:id>/', views.get,name='pdf'),
     path('run/', views.run, name='run'),
     # path('pause/', views.pause, name='pause'),
@@ -46,5 +47,7 @@ urlpatterns = [
     # path('order-delivered/<int:id>/',views.order_delivered, name='order-delivered'),
     path('translation/', views.translation, name='translation'),
     path('book_recommendations/', views.book_recommendations, name='book_recommendations'),
+    path('rating_analysis/', views.rating_analysis, name='rating_analysis'),
     path('review_analysis/', views.review_analysis, name='review_analysis'),
+    # path('generate_chart/', views.generate_chart, name='generate_chart'),
 ]

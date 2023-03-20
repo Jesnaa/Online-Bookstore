@@ -349,7 +349,8 @@ def billview(request):
         user=request.user, is_ordered=True).order_by('ordered_date')
     return render(request,'bill_view.html',{ 'orders': orders,'w_count':w_count,'count':count})
 
-
+def admin_index(request):
+    return render(request,'admin_index.html')
 def dboyindex(request):
     return render(request,'dboyindex.html')
 def dboyblank(request):
@@ -891,6 +892,14 @@ from nltk.corpus import stopwords
 from nltk.stem.snowball import SnowballStemmer
 from nltk.sentiment import SentimentIntensityAnalyzer
 import pandas as pd
+import plotly.graph_objs as go
+from plotly.offline import plot
+
+import seaborn as sns
+import base64
+import matplotlib.pyplot as plt
+import io
+import urllib
 from django.db.models import Avg
 from .models import ReviewRating
 
@@ -923,4 +932,42 @@ def review_analysis(request):
     # book_data_dict = book_data.to_dict('list')
     book_data = book_data.to_dict('records')
 
-    return render(request, 'review_analysis.html', {'book_data':book_data})
+    book_names = [d['book_name'] for d in book_data]
+    sentiment_scores = [d['sentiment_scores'] for d in book_data]
+    fig = go.Figure([go.Bar(x=book_names, y=sentiment_scores)])
+    plot_div = plot(fig, output_type='div')
+    context = {
+        'book_data': book_data,
+        'plot_div': plot_div
+    }
+    return render(request, 'review_analysis.html', context)
+
+
+
+
+
+from django.shortcuts import render
+from django.db.models import Avg
+from .models import Book, ReviewRating
+import plotly.graph_objs as go
+from plotly.offline import plot
+
+def rating_analysis(request):
+    book_data = []
+    for book in Book.objects.all():
+        avg_review = book.reviewrating_set.filter(status=True).aggregate(Avg('rating'))['rating__avg']
+        if avg_review is not None:
+            book_data.append({
+                'book_name': book.book_name,
+                'avg_review': avg_review
+            })
+    book_names = [d['book_name'] for d in book_data]
+    sentiment_scores = [d['avg_review'] for d in book_data]
+
+    fig = go.Figure([go.Bar(x=book_names, y=sentiment_scores)])
+    plot_div = plot(fig, output_type='div')
+    context = {
+        'book_data': book_data,
+        'plot_div': plot_div
+    }
+    return render(request, 'rating_analysis.html', context)

@@ -1,0 +1,59 @@
+
+{% extends 'base1.html' %}
+
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        <br><br>
+        <h2>Rating Analysis of Books</h2>
+        {% if book_data %}
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Book Name</th>
+                <th>Average Rating</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for book in book_data %}
+                <tr>
+                  <td>{{ book.book_name }}</td>
+                  <td>{{ book.avg_review }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% endif %}
+      </div>
+      <div class="col-md-4">
+        <br>
+        <h2>Bar Chart</h2>
+        {% if plot_div %}
+          {{ plot_div|safe }}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+
+
+<!--  <div class="col-md-4">-->
+<!--    <h2>Top Rated Books</h2>-->
+<!--    {% if top_rated_books %}-->
+<!--      <ul class="list-group">-->
+<!--        {% for book in top_rated_books %}-->
+<!--          <li class="list-group-item">-->
+<!--            <a href="{% url 'book_detail' book.pk %}">{{ book.title }}</a>-->
+<!--            <span class="badge">{{ book.avg_rating }}</span>-->
+<!--          </li>-->
+<!--        {% endfor %}-->
+<!--      </ul>-->
+<!--    {% else %}-->
+<!--      <p>No book data available.</p>-->
+<!--    {% endif %}-->
+<!--  </div>-->
+
+
+
