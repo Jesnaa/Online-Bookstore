@@ -19,10 +19,10 @@ from django.contrib import admin
 from django.urls import path,include
 from django.conf.urls.static import static
 urlpatterns = [
-    path('login/login/admin/', admin.site.urls),
+    # path('login/login/admin_index/', admin.site.urls),
     path('', include('homeapp.urls')),
     path('login/',include('logapp.urls'))
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
-admin.site.site_title="Admin"
+# admin.site.site_title="Admin"
 admin.site.site_header='BOOKRAK'
 admin.site.index_title="BOOKRAK"

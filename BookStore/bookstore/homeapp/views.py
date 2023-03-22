@@ -349,8 +349,46 @@ def billview(request):
         user=request.user, is_ordered=True).order_by('ordered_date')
     return render(request,'bill_view.html',{ 'orders': orders,'w_count':w_count,'count':count})
 
+@login_required(login_url='login')
 def admin_index(request):
-    return render(request,'admin_index.html')
+    user=request.user
+    users = User.objects.all().count()
+    book = Book.objects.all().count()
+    ebook = eBooks.objects.all().count()
+    review = ReviewRating.objects.all().count()
+    order = OrderPlaced.objects.all().count()
+    amount = OrderPlaced.objects.all()
+    Revenue = 0
+    for i in amount:
+        Revenue += i.product.book_price
+    # amount=OrderPlaced.objects.filter(amount=OrderPlaced.payment.amount)
+    # Revenue = order * amount.payment.amount
+
+    return render(request,'admin_index.html',{'users':users,'book':book,'ebook':ebook,'review':review,'order':order,'Revenue':Revenue,'user':user})
+
+
+def admin_base(request):
+    return render(request, 'admin_base.html')
+def admin_users(request):
+    users = User.objects.all()
+    return render(request, 'admin_users.html',{'users':users})
+def admin_ebook(request):
+    ebook = eBooks.objects.all()
+    return render(request, 'admin_ebook.html', {'ebook': ebook})
+def admin_category(request):
+    cat = Category.objects.all()
+    return render(request, 'admin_category.html',{'cat':cat})
+def admin_book(request):
+    book = Book.objects.all()
+    return render(request, 'admin_book.html',{'book':book})
+def admin_orders(request):
+    order = OrderPlaced.objects.all()
+    return render(request, 'admin_orders.html',{'order':order})
+def admin_reviews(request):
+    review = ReviewRating.objects.all()
+    return render(request, 'admin_reviews.html',{'review':review})
+
+
 def dboyindex(request):
     return render(request,'dboyindex.html')
 def dboyblank(request):
@@ -556,9 +594,9 @@ from nltk.sentiment import SentimentIntensityAnalyzer
 
 analyzer = SentimentIntensityAnalyzer()
 # sentiment_score = analyzer.polarity_scores(text)
-nltk.download('punkt')
-nltk.download('stopwords')
-nltk.download('vader_lexicon')
+# nltk.download('punkt')
+# nltk.download('stopwords')
+# nltk.download('vader_lexicon')
 
 @method_decorator(csrf_exempt, name='dispatch')
 class TextSummarizerView(View):
@@ -906,21 +944,17 @@ from .models import ReviewRating
 def review_analysis(request):
     # Load the review data from the database, filtering by status=True
     reviews = ReviewRating.objects.filter(status=True)
-
     # Convert the review data to a Pandas DataFrame
     review_data = pd.DataFrame(list(reviews.values()))
-
     # Tokenize the review text
     stop_words = stopwords.words('english')
     stemmer = SnowballStemmer('english')
     review_data['tokens'] = review_data['review'].apply(
         lambda x: [stemmer.stem(token.lower()) for token in word_tokenize(x) if token.lower() not in stop_words])
-
     # Calculate the sentiment score for each review using VADER
     sia = SentimentIntensityAnalyzer()
     review_data['sentiment_scores'] = review_data.apply(
         lambda x: sia.polarity_scores(x['review'])['compound'] if x['rating'] >= 3 else -sia.polarity_scores(x['review'])['compound'], axis=1)
-
     # Calculate the average sentiment score for each book
     book_sentiment = review_data.groupby('product_id')['sentiment_scores'].mean().reset_index()
     book_data = pd.DataFrame(list(Book.objects.all().values()))
@@ -931,7 +965,6 @@ def review_analysis(request):
     # Render the results
     # book_data_dict = book_data.to_dict('list')
     book_data = book_data.to_dict('records')
-
     book_names = [d['book_name'] for d in book_data]
     sentiment_scores = [d['sentiment_scores'] for d in book_data]
     fig = go.Figure([go.Bar(x=book_names, y=sentiment_scores)])

@@ -105,7 +105,7 @@ def login(request):
             # save email in session
             request.session['email'] = email
             if user.is_admin:
-                return redirect('admin/')
+                return redirect('admin_index')
 
             if user.is_staff:
                 return redirect('dboy1')

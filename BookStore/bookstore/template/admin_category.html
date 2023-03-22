@@ -1,0 +1,55 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% block content %}
+
+    <!-- Content Wrapper START -->
+                <div class="main-content">
+                    <div class="container-fluid">
+                        <div class="page-title">
+                            <h4>Users List</h4>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-block">
+                                        <div class="table-overflow">
+                                            <table id="dt-opt" class="table table-lg table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Category</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                 {% for cat in cat %}
+                                                    <tr>
+                                                        <td>
+                                                            <div class="list-info mrg-top-10">
+                                                                <div class="info">
+                                                                    <span class="title">{{cat.category_name}}</span>
+<!--                                                                    <span class="sub-title">{{users.id}}</span>-->
+                                                                </div>
+                                                            </div>
+                                                        </td>
+
+                                                        <td>
+                                                            <div class="mrg-top-10 text-center">
+                                                                <button class="btn btn-icon btn-flat btn-rounded dropdown-toggle">
+                                                                    <i class="ti-more-alt"></i>
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                     {% endfor %}
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Content Wrapper END -->
+{% endblock %}

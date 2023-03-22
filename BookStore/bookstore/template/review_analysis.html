@@ -1,37 +1,60 @@
-{% extends 'base1.html' %}
+{% extends 'admin_base.html' %}
 
 {% block content %}
-  <div class="container">
-    <div class="row">
-      <div class="col-md-8">
+ <div class="main-content">
+   <div class="container-fluid">
+     <div class="page-title">
+
         <br><br>
 
-        <h2>Review Analysis of Books</h2>
-        {% if book_data %}
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>Book Name</th>
-                <th>Sentiment_scores ofReview</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for i in book_data %}
-                <tr>
-                  <td>{{ i.book_name }}</td>
-                  <td>{{ i.sentiment_scores }}</td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        {% endif %}
-      </div>
-      <div class="col-md-4">
-        <br>
-        <h2>Bar Chart</h2>
-        {% if plot_div %}
-          {{ plot_div|safe }}
-        {% endif %}
+            <h2>Review Analysis of Books</h2>
+             <span>Sentiment Analysis of Customer Review</span>
+            {% if book_data %}
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Book Name</th>
+                    <th>Sentiment_scores of Review</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for i in book_data %}
+                    <tr>
+                      <td>{{ i.book_name }}</td>
+                      <td>{{ i.sentiment_scores }}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            {% endif %}
+          </div>
+<!--                      <div class="col-md-12">-->
+<!--                        <div class="card">-->
+<!--                          -->
+<!--                          <h2>Bar Chart</h2>-->
+
+<!--                          {% if plot_div %}-->
+<!--                            {{ plot_div|safe }}-->
+<!--                          {% endif %}-->
+<!--                        </div>-->
+<!--                      </div>-->
+                        <div class="row" >
+                            <div class="col-md-12 ">
+                                <div class="card" >
+                                    <div class="card-heading border bottom">
+                                        <h4 class="card-title">Bar Chart</h4>
+                                    </div>
+                                    <div class="card-block">
+                                        <div>
+
+                                           {% if plot_div %}
+                                           {{ plot_div|safe }}
+                                          {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
       </div>
     </div>
   </div>
