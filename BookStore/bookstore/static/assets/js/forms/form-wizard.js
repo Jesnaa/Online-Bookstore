@@ -47,8 +47,8 @@
 		    },
 		    cvv: {
 		    	required: true,
-		    	minlength: 3,
-		    	maxlength: 3
+		    	minlength: 6,
+		    	maxlength: 6
 		    },
 		    mmyy: {
 		    	required: true,

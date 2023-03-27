@@ -7,7 +7,7 @@ from django.urls.base import reverse
 
 from bookstore.settings import audio_storage
 from django.db.models import Avg, Count
-
+import random
 class Category(models.Model):
     category_id = models.AutoField(primary_key=True)
     category_name = models.CharField(max_length=50, unique=True)
@@ -145,6 +145,7 @@ class OrderPlaced(models.Model):
     product = models.ForeignKey(Book, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
     status = models.CharField(max_length=10, choices=STATUS, default='Pending')
+    otp = models.CharField(max_length=6, blank=True, null=True)
     is_ordered = models.BooleanField(default=False)
     ordered_date = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -155,6 +156,11 @@ class OrderPlaced(models.Model):
 
     def __str__(self):
         return str(self.user)
+
+    def save(self, *args, **kwargs):
+        if not self.pk and not self.otp:
+            self.otp = str(random.randint(100000, 999999))
+        super().save(*args, **kwargs)
 
 class ReviewRating(models.Model):
     product = models.ForeignKey(Book, on_delete=models.CASCADE)

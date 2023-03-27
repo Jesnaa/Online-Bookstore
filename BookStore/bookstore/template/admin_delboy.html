@@ -4,9 +4,22 @@
 
     <!-- Content Wrapper START -->
                 <div class="main-content">
+                    {% include 'alert.html' %}
+
+  <script>
+      setTimeout(function(){
+        if ($('#msg').length > 0){
+          $('#msg').remove();
+          }
+        },4000)
+
+  </script>
                     <div class="container-fluid">
                         <div class="page-title">
-                            <h4>Users List</h4>
+                            <h4>Delivery Boy List</h4>
+                                       <a href="{% url 'add_deliveryboy' %}">
+                                       <button class="btn btn-sm btn-primary" > Add Delivery Boy</button>
+                                       </a>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
@@ -59,7 +72,7 @@
                                                         <td>
                                                             <div class="mrg-top-10 text-center">
                                                                 <button class="btn btn-icon btn-flat btn-rounded dropdown-toggle">
-                                                                  <a href="{% url 'admin_uprofile' users.id  %}" >View</a>
+                                                                    <a href="{% url 'admin_dprofile' users.id  %}" >View</a>
                                                                 </button>
                                                             </div>
                                                         </td>

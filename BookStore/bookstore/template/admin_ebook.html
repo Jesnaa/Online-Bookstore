@@ -5,6 +5,12 @@
     <!-- Content Wrapper START -->
                 <div class="main-content">
                     <div class="container-fluid">
+                          <div class="page-title">
+                            <h4>Books</h4>
+                             <a href="{% url 'add_ebook' %}">
+                                       <button class="btn btn-sm btn-primary" > Add e-Book +</button>
+                                       </a>
+                        </div>
                         <div class="page-title">
                             <h4>Users List</h4>
                         </div>
@@ -22,6 +28,7 @@
                                                         <th>Language</th>
                                                         <th>Year</th>
                                                         <th>Publisher</th>
+                                                         <th></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -59,6 +66,13 @@
                                                          <td>
                                                             <div class="mrg-top-15">
                                                                 <b class="title">{{ebook.book_publisher}}</b>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="mrg-top-10 text-center">
+                                                                <button class="btn btn-icon btn-flat btn-rounded dropdown-toggle">
+                                                                    <a href="{% url 'admin_ebookview' ebook.book_id %}">View</a>
+                                                                </button>
                                                             </div>
                                                         </td>
                                                     </tr>

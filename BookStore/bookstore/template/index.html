@@ -243,8 +243,8 @@
 						<li> <a href="{% url 'text_summarizer' %}">SummarizeNow</a></li>
 						<li> <a href="{% url 'translation' %}">TranslateNow</a></li>
 						<li> <a href="{% url 'book_recommendations' %}">Recommendation</a></li>
-						<li> <a href="{% url 'rating_analysis' %}">Rating Analysis</a></li>
-						<li> <a href="{% url 'review_analysis' %}">Review Analysis</a></li>
+<!--						<li> <a href="{% url 'rating_analysis' %}">Rating Analysis</a></li>-->
+<!--						<li> <a href="{% url 'review_analysis' %}">Review Analysis</a></li>-->
 
 
 <!--      <li><a href="#">HTML</a></li>-->
@@ -283,8 +283,8 @@
 
 								<h3>Horror</h3>
 								<a href="{% url 'allproduct' %}" class="cta-btn">Shop now <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right-circle-fill" viewBox="0 0 16 16">
-  <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
-</svg></a>
+								  <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
+								</svg></a>
 							</div>
 						</div>
 					</div>
@@ -382,10 +382,10 @@
 												<h4 class="product-price">₹{{i.book_price}}.00  <del class="product-old-price">₹{{i.book_oldprice}}.00 </del></h4>
 												<div class="product-rating">
 															<i class="fa fa-star{% if context.averageReview < 0.5 %}-o{% elif context.averageReview >= 0.5 and context.averageReview < 1 %}-half-o {% endif %}" aria-hidden="true"></i>
-			<i class="fa fa-star{% if context.averageReview < 1.5 %}-o{% elif context.averageReview >= 1.5 and context.averageReview < 2 %}-half-o {% endif %}" aria-hidden="true"></i>
-			<i class="fa fa-star{% if context.averageReview < 2.5 %}-o{% elif context.averageReview >= 2.5 and context.averageReview < 3 %}-half-o {% endif %}" aria-hidden="true"></i>
-			<i class="fa fa-star{% if context.averageReview < 3.5 %}-o{% elif context.averageReview >= 3.5 and context.averageReview < 4 %}-half-o {% endif %}" aria-hidden="true"></i>
-			<i class="fa fa-star{% if context.averageReview < 4.5 %}-o{% elif context.averageReview >= 4.5 and context.averageReview < 5 %}-half-o {% endif %}" aria-hidden="true"></i>
+															<i class="fa fa-star{% if context.averageReview < 1.5 %}-o{% elif context.averageReview >= 1.5 and context.averageReview < 2 %}-half-o {% endif %}" aria-hidden="true"></i>
+															<i class="fa fa-star{% if context.averageReview < 2.5 %}-o{% elif context.averageReview >= 2.5 and context.averageReview < 3 %}-half-o {% endif %}" aria-hidden="true"></i>
+															<i class="fa fa-star{% if context.averageReview < 3.5 %}-o{% elif context.averageReview >= 3.5 and context.averageReview < 4 %}-half-o {% endif %}" aria-hidden="true"></i>
+															<i class="fa fa-star{% if context.averageReview < 4.5 %}-o{% elif context.averageReview >= 4.5 and context.averageReview < 5 %}-half-o {% endif %}" aria-hidden="true"></i>
 
 												</div>
 												<div class="product-btns">
@@ -416,6 +416,7 @@
 			<!-- /container -->
 		</div>
 		<!-- /SECTION -->
+
 
 
 

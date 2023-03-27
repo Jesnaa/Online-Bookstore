@@ -14,7 +14,15 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.generic import View
 from .utils import render_to_pdf
-
+import random
+from django.template.loader import render_to_string
+from django.core.mail import send_mail
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import EmailMessage
 # from importlib.metadata import files
 # # from settings import RAZORPAY_API_KEY, RAZORPAY_API_SECRET_KEY
 # # Create your views here.
@@ -317,29 +325,45 @@ def checkout(request):
     # }
 
     return render(request, 'checkout.html', {'datas': tblBook, 'category': category, 'product': cart, 'total':total,'razoramount':razoramount})
+def send_order_confirmation_email(order):
+    otp_code = order.otp
+    user = order.user
+    email_body = render_to_string('order_confirmation_email.html', {'order': order, 'otp_code': otp_code})
+
+    message = render_to_string('order_confirmation_email.html', {
+        'user': user,
+        'otp_code': otp_code,
+        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+        'token': default_token_generator.make_token(user),
+        'email_body': email_body
+    })
+
+    send_mail(
+        'Order Confirmation and OTP',
+        message,
+        'bookrakbook@gmail.com',
+        [user.email],
+        fail_silently=False,
+    )
+
 
 def payment_done(request):
-    order_id=request.session['order_id']
+    order_id = request.session['order_id']
     payment_id = request.GET.get('payment_id')
     print(payment_id)
 
-    payment=Payment.objects.get(razorpay_order_id = order_id)
+    payment = Payment.objects.get(razorpay_order_id=order_id)
 
-    payment.paid = True
-    payment.razorpay_payment_id = payment_id
-    payment.save()
-    # customer=Address_Book.objects.get(user=request.user,status=True)
-
-    cart=Cart.objects.filter(user=request.user)
-    # item = Product.objects.get(product=product, id=item_id)
-
+    cart = Cart.objects.filter(user=request.user)
     for c in cart:
-        OrderPlaced(user=request.user,product=c.product,quantity=c.product_qty,payment=payment,is_ordered=True).save()
-        c.delete()
+        otp_code = str(random.randint(100000, 999999))
+        order = OrderPlaced(user=request.user, product=c.product, payment=payment, otp=otp_code, is_ordered=True)
+        order.save()
+        send_order_confirmation_email(order)
         c.product.book_quantity -= c.product_qty
         c.product.save()
-    # messages.success(request, 'Payment done successfully you can view the order details on your profile'
-    #                           'Continue Shopping')
+        c.delete()
+
     return redirect('billview')
 
 def billview(request):
@@ -366,27 +390,274 @@ def admin_index(request):
 
     return render(request,'admin_index.html',{'users':users,'book':book,'ebook':ebook,'review':review,'order':order,'Revenue':Revenue,'user':user})
 
-
+@login_required(login_url='login')
 def admin_base(request):
     return render(request, 'admin_base.html')
+
+@login_required(login_url='login')
+def admin_delboy(request):
+    users = User.objects.filter(is_staff=True,is_superadmin=False)
+    return render(request, 'admin_delboy.html',{'users':users})
+
+@login_required(login_url='login')
 def admin_users(request):
     users = User.objects.all()
     return render(request, 'admin_users.html',{'users':users})
+
+@login_required(login_url='login')
+def admin_uprofile(request,id):
+    users = User.objects.get(id=id)
+    return render(request, 'admin_uprofile.html',{'users':users})
+
+@login_required(login_url='login')
+def admin_dprofile(request,id):
+    users = User.objects.get(id=id)
+    if request.method == "POST":
+        last_name = request.POST.get('last_name')
+        first_name = request.POST.get('first_name')
+        email = request.POST.get('email')
+        phonenumber = request.POST.get('phonenumber')
+        user_id = User.objects.get(id=id)
+        username = request.POST.get('username')
+        hname = request.POST.get('hname')
+        country = request.POST.get('country')
+        state = request.POST.get('state')
+        city = request.POST.get('city')
+        pincode = request.POST.get('pincode')
+
+        users = User.objects.get(id=id)
+        users.first_name = first_name
+        users.last_name = last_name
+        users.phonenumber = phonenumber
+        users.email = email
+        users.city = city
+        users.country = country
+        users.state = state
+        users.pincode = pincode
+        users.username = username
+        users.hname = hname
+
+        users.save()
+        messages.success(request, 'Profile Successfully Updated. ')
+
+    return render(request, 'admin_dprofile.html',{'users':users})
+def add_deliveryboy(request):
+    if request.method == "POST":
+        username = request.POST.get('username')
+        last_name = request.POST.get('last_name')
+        first_name = request.POST.get('first_name')
+        email = request.POST.get('email')
+        phonenumber = request.POST.get('phonenumber')
+        hname = request.POST.get('hname')
+        country = request.POST.get('country')
+        state = request.POST.get('state')
+        city = request.POST.get('city')
+        pincode = request.POST.get('pincode')
+        users = User(username=username,last_name=last_name,first_name=first_name,email=email,
+                     phonenumber=phonenumber,hname=hname,country=country,state=state,city=city,pincode=pincode)
+        users.is_active = True
+        users.is_user = True
+        users.is_staff=True
+        users.save()
+        messages.success(request, 'Delivery Boy Added. ')
+        return redirect('admin_delboy')
+    return render(request, 'add_deliveryboy.html')
+def delete_dboy(request,id):
+    users = User.objects.get(id=id)
+    users.delete()
+    messages.success(request, 'Delivery Boy Deleted. ')
+    return redirect(admin_delboy)
+
+@login_required(login_url='login')
 def admin_ebook(request):
     ebook = eBooks.objects.all()
     return render(request, 'admin_ebook.html', {'ebook': ebook})
+
+
+@login_required(login_url='login')
+def admin_ebookview(request,id):
+    ebook = eBooks.objects.filter(book_id=id)
+    return render(request, 'admin_ebookview.html',{'ebook':ebook})
+
+@login_required(login_url='login')
+def add_ebook(request):
+    category = Category.objects.all()
+    book_type = BookTypes.objects.all()
+    if request.method == "POST":
+        ebook_name= request.POST.get('ebook_name')
+        category_id = request.POST.get('book_category')
+        booktype_id = request.POST.get('book_types')
+        book_category = Category.objects.get(category_id=category_id)
+        book_types = BookTypes.objects.get(booktype_id=booktype_id)
+        book_author = request.POST.get('book_author')
+        book_year = request.POST.get('book_year')
+        book_language = request.POST.get('book_language')
+        book_publisher = request.POST.get('book_publisher')
+        book_desc = request.POST.get('book_desc')
+        img = request.FILES['img']
+        img2 = request.FILES['img2']
+        listening_length = request.POST.get('listening_length')
+        narrator = request.POST.get('narrator')
+        audibleRelease_date = request.POST.get('audibleRelease_date')
+        book_pdf = request.FILES['book_pdf']
+        book_flipbook = request.POST.get('book_flipbook')
+        book = eBooks(ebook_name=ebook_name, book_category=book_category, book_author=book_author, book_year=book_year, book_language=book_language,
+                     book_publisher=book_publisher, book_desc=book_desc, img = img, img2 = img2, listening_length=listening_length, narrator=narrator,
+                     audibleRelease_date=audibleRelease_date, book_type=book_types, book_pdf = book_pdf ,book_flipbook = book_flipbook)
+        book.save()
+        messages.success(request, 'E-Book Added. ')
+        return redirect(admin_ebook)
+    return render(request, 'add_ebook.html',{'category':category,'book_type':book_type})
+
+@login_required(login_url='login')
+def deleteebook(request,id):
+    item  = eBooks.objects.get(book_id=id)
+    item.delete()
+    messages.success(request, 'Book Deleted. ')
+    return redirect(admin_ebook)
+
+@login_required(login_url='login')
+def ebookupdate(request,id):
+    cat = Category.objects.all()
+    if request.method == "POST":
+        book_id = request.POST.get('book_id')
+        ebook_name= request.POST.get('ebook_name')
+        book_author = request.POST.get('book_author')
+        book_year = request.POST.get('book_year')
+        book_language = request.POST.get('book_language')
+        book_publisher = request.POST.get('book_publisher')
+        book_desc = request.POST.get('book_desc')
+        narrator = request.POST.get('narrator')
+
+        book = eBooks.objects.get(book_id=id)
+        book.ebook_name = ebook_name
+        book.book_author = book_author
+        book.book_year = book_year
+        book.book_language = book_language
+        book.book_publisher = book_publisher
+        book.book_desc = book_desc
+        book.narrator = narrator
+
+        book.save()
+        messages.success(request, 'E-Book Updated. ')
+    return redirect(admin_ebook)
+
+
+
+@login_required(login_url='login')
 def admin_category(request):
     cat = Category.objects.all()
     return render(request, 'admin_category.html',{'cat':cat})
+def addcat (request):
+    if request.method == "POST":
+        cat = request.POST.get('cat')
+        category = Category(category_name=cat)
+        category.save()
+        messages.success(request, 'Category Added. ')
+        return redirect(admin_category)
+def deletecat(request,id):
+    item  = Category.objects.get(category_id=id)
+    item.delete()
+    messages.success(request, 'Category Deleted. ')
+    return redirect(admin_category)
+def editcat(request,id):
+    if request.method == "POST":
+
+        cat = request.POST.get('cat')
+        value = Category.objects.get(category_id=id)
+        value.category_name = cat
+        value.save()
+        messages.success(request, 'Category Updated. ')
+    return redirect(admin_category)
+
+@login_required(login_url='login')
 def admin_book(request):
     book = Book.objects.all()
     return render(request, 'admin_book.html',{'book':book})
+
+@login_required(login_url='login')
+def admin_bookview(request,id):
+    book = Book.objects.filter(book_id=id)
+    return render(request, 'admin_bookview.html',{'book':book})
+
+@login_required(login_url='login')
+def add_book(request):
+    category = Category.objects.all()
+    if request.method == "POST":
+        book_name= request.POST.get('book_name')
+        category_id = request.POST.get('book_category')
+        print("category_id:", category_id)
+        book_category = Category.objects.get(category_id=category_id)
+        book_quantity = request.POST.get('book_quantity')
+        book_price = request.POST.get('book_price')
+        book_oldprice = request.POST.get('book_oldprice')
+        book_author = request.POST.get('book_author')
+        book_year = request.POST.get('book_year')
+        book_language = request.POST.get('book_language')
+        book_publisher = request.POST.get('book_publisher')
+        book_desc = request.POST.get('book_desc')
+        img = request.FILES['img']
+        img2 = request.FILES['img2']
+        book = Book(book_name=book_name, book_category=book_category, book_quantity=book_quantity, book_price=book_price,
+                     book_oldprice=book_oldprice, book_author=book_author, book_year=book_year, book_language=book_language,
+                     book_publisher=book_publisher, book_desc=book_desc, img = img, img2 = img2)
+        book.save()
+        return redirect(admin_book)
+    return render(request, 'add_book.html',{'category':category})
+
+@login_required(login_url='login')
+def deletebook(request,id):
+    item  = Book.objects.get(book_id=id)
+    item.delete()
+    messages.success(request, 'Book Deleted. ')
+    return redirect(admin_book)
+
+@login_required(login_url='login')
+def bookupdate(request,id):
+    cat = Category.objects.all()
+    if request.method == "POST":
+        book_id = request.POST.get('book_id')
+        book_name = request.POST.get('book_name')
+        # category_id = request.POST.get('book_category')
+        # book_category = Category.objects.get(category_id=category_id)
+        book_quantity = request.POST.get('book_quantity')
+        book_price = request.POST.get('book_price')
+        book_oldprice = request.POST.get('book_oldprice')
+        book_author = request.POST.get('book_author')
+        book_year = request.POST.get('book_year')
+        book_language = request.POST.get('book_language')
+        book_publisher = request.POST.get('book_publisher')
+        book_desc = request.POST.get('book_desc')
+        # img = request.FILES['img']
+        # img2 = request.FILES['img2']
+        book = Book.objects.get(book_id=id)
+        book.book_name = book_name
+        # book.book_category = book_category
+        book.book_quantity = book_quantity
+        book.book_price = book_price
+        book.book_oldprice = book_oldprice
+        book.book_authorock = book_author
+        book.book_year = book_year
+        book.book_language = book_language
+        book.book_publisher = book_publisher
+        book.book_desc = book_desc
+        # book.img = img
+        # book.img2 = img2
+        book.save()
+        messages.success(request, 'Category Updated. ')
+    return redirect(admin_book)
+
+@login_required(login_url='login')
 def admin_orders(request):
     order = OrderPlaced.objects.all()
     return render(request, 'admin_orders.html',{'order':order})
+
+@login_required(login_url='login')
 def admin_reviews(request):
     review = ReviewRating.objects.all()
     return render(request, 'admin_reviews.html',{'review':review})
+
+
 
 
 def dboyindex(request):
@@ -399,17 +670,39 @@ def dboy1(request):
         'orders': orders,
     }
     return render(request,'dboy1.html',context)
-def dboy2(request,id):
+# def dboy2(request,id):
+#     orders = OrderPlaced.objects.filter(id=id)
+#     context = {
+#         'orders': orders,
+#     }
+#     for order in orders:
+#        if order.status == 'Pending':
+#                  order.status = 'Delivered'
+#                  order.save()
+#
+#     return render(request,'dboy2.html',context)
+# 916287
+def dboy2(request, id):
     orders = OrderPlaced.objects.filter(id=id)
+    print('orders',orders)
+    if request.method == 'POST':
+        order = OrderPlaced.objects.get(id=id)
+        otp = request.POST.get('otp')
+        print('otp', otp)
+        if otp == order.otp:
+            order.status = 'Delivered'
+            order.save()
+            messages.success(request, 'Order delivered successfully')
+            return redirect('dboy2', id=id)
+        else:
+            messages.error(request, 'Invalid OTP')
+
     context = {
         'orders': orders,
-    }
-    for order in orders:
-       if order.status == 'Pending':
-                 order.status = 'Delivered'
-                 order.save()
 
-    return render(request,'dboy2.html',context)
+    }
+    return render(request, 'dboy2.html', context)
+
 
 def dboysetting(request):
     return render(request,'dboysetting.html')
@@ -876,14 +1169,15 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 
-from .models import Book, ReviewRating
 
 
 def book_recommendations(request):
     user = request.user
     # Get all books that the user has rated
     rated_books = ReviewRating.objects.filter(user=user, status=True)
+    # rated_books = ReviewRating.objects.filter(status=True)
     # Get the IDs of the rated books
+
     rated_book_ids = [r.product.book_id for r in rated_books]
     # Get the books that the user has not rated
     unrated_books = Book.objects.exclude(book_id__in=rated_book_ids)
@@ -915,7 +1209,6 @@ def book_recommendations(request):
 
     recommended_books = {i: {'rated_book': book_tuple[0], 'unrated_book': book_tuple[1]} for i, book_tuple in
                               enumerate(recommended_books)}
-
     return render(request, 'book_recommendations.html', {'recommended_books': recommended_books})
 
 

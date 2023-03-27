@@ -6,6 +6,9 @@
                     <div class="container-fluid">
                         <div class="page-title">
                             <h4>Books</h4>
+                             <a href="{% url 'add_book' %}">
+                                       <button class="btn btn-sm btn-primary" > Add Book + </button>
+                                       </a>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
@@ -65,7 +68,7 @@
                                                         <td>
                                                             <div class="mrg-top-10 text-center">
                                                                 <button class="btn btn-icon btn-flat btn-rounded dropdown-toggle">
-                                                                    <i class="ti-more-alt"></i>
+                                                                    <a href="{% url 'admin_bookview' book.book_id %}">View</a>
                                                                 </button>
                                                             </div>
                                                         </td>
