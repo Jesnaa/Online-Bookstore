@@ -36,6 +36,7 @@ urlpatterns = [
     path('dboyindex/', views.dboyindex, name='dboyindex'),
     path('dboyblank/', views.dboyblank, name='dboyblank'),
     path('dboy1/', views.dboy1, name='dboy1'),
+    path('dboy3/', views.dboy3, name='dboy3'),
     path('dboy2/<int:id>/', views.dboy2, name='dboy2'),
     path('dboysetting/', views.dboysetting, name='dboysetting'),
 
@@ -64,6 +65,7 @@ urlpatterns = [
     path('admin_orders/', views.admin_orders, name='admin_orders'),
     path('admin_reviews/', views.admin_reviews, name='admin_reviews'),
 
+
     path('pdf/<int:id>/', views.get,name='pdf'),
     path('run/', views.run, name='run'),
     # path('pause/', views.pause, name='pause'),
@@ -76,4 +78,5 @@ urlpatterns = [
     path('review_analysis/', views.review_analysis, name='review_analysis'),
     # path('generate_chart/', views.generate_chart, name='generate_chart'),
     path('send_order_confirmation_email/', views.send_order_confirmation_email, name='send_order_confirmation_email'),
+
 ]

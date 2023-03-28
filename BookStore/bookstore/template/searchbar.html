@@ -23,7 +23,7 @@
 									<input type="checkbox" id="{{x.category_id}}">
 									<label for="{{x.category_id}}">
 										<span></span>
-										{{x.category_name}}
+										<a href="{% url 'categorys' x.category_id %}">{{x.category_name}}</a>
 <!--										<small>(10)</small>-->
 									</label>
 

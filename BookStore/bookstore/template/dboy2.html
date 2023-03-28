@@ -9,7 +9,6 @@
                 <div class="main-content">
                     <div class="container-fluid">
                         <div class="page-title">
-                            <h4>Order Summary</h4>
                              {% include 'alert.html' %}
                                                                               <script>
                                                                                   setTimeout(function(){
@@ -19,13 +18,14 @@
                                                                                     },4000)
 
                                                                               </script>
+                            <h4>Order Summary</h4>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-block">
                                         <div class="row relative">
-                                            <form id="shipping-form" class="width-100" method="get" action="{% url 'dboy1' %}" >
+<!--                                            <form id="shipping-form" class="width-100" method="get" action="{% url 'dboy1' %}" >-->
                                                 <div id="rootwizard" class="form-wizard col-md-10 ml-auto mr-auto">
                                                     <ul class="nav nav-pills nav-fill">
                                                         <li class="nav-item">
@@ -41,12 +41,12 @@
                                                                 <span class="title">OTP Verification</span>
                                                             </a>
                                                         </li>
-                                                        <li class="nav-item">
-                                                            <a href="#step3" data-toggle="tab">
-                                                                <span class="step">3</span>
-                                                                <span class="title">Confirmation</span>
-                                                            </a>
-                                                        </li>
+<!--                                                        <li class="nav-item">-->
+<!--                                                            <a href="#step3" data-toggle="tab">-->
+<!--                                                                <span class="step">3</span>-->
+<!--                                                                <span class="title">Confirmation</span>-->
+<!--                                                            </a>-->
+<!--                                                        </li>-->
                                                     </ul>
                                                     <div id="bar" class="progress progress-info" style="width: 75%">
                                                         <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
@@ -75,7 +75,8 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
- <div class="col-md-8">
+
+                                                                <div class="col-md-4">
                                                                     <div class="pdd-horizon-30">
                                                                         <div class="card">
                                                                             <div class="card-block">
@@ -113,66 +114,43 @@
                                                             </div>
                                                         </div>
 
-                                                        <div id="step2" class="tab-pane fade in active">
+                                                        <div id="step2" class="tab-pane fade">
                                                             <div class="row">
                                                                 <div class="col-md-8 mr-auto ml-auto">
                                                                     <p class="font-size-18">
                                                                         <span>Enter The OTP </span>
-
                                                                     </p>
-
                                                                             <div class="mrg-top-40">
                                                                                 <div class="row">
                                                                                     <div class="form-group col-md-6">
-<!--                                                                                        <form action="otp"  method="post" enctype="multipart/form-data">-->
-<!--                                                                                            {% csrf_token %}-->
-<!--                                                                                            <div class="row">-->
-<!--                                                                                                <div class="form-group col-md-6">-->
-<!--                                                                                                    <input type="text" onkeypress="return event.charCode >= 48 &amp; event.charCode <= 57" class="form-control" placeholder="_ _ _ _ _ _" name="cvv">-->
-<!--                                                                                                    <a href="/"> <button class="btn btn-sm btn-primary" type="submit">Confirm</button></a>-->
-<!--                                                                                                </div>-->
-<!--                                                                                            </div>-->
-
-<!--                                                                                        </form>-->
-                                                                                         {% for order in orders %}
-                                                                                             <form action="{% url 'dboy2' order.id %}"  method="post" enctype="multipart/form-data">
-                                                                                            {% csrf_token %}
-                                                                                            <div class="row">
-                                                                                                <div class="form-group col-md-6">
-                                                                                                    <input type="text" class="form-control" placeholder="_ _ _ _ _ _" name="otp"/>
-                                                                                                    <button class="btn btn-sm btn-primary" type="submit">Confirm</button>
-                                                                                                </div>
-                                                                                            </div>
-
-                                                                                        </form>
-                                                                                         {% endfor %}
-
-
-
-
+                                                                                             <form method="post" action="{% url 'dboy2' order.id %}">
+                                                                                                {% csrf_token %}
+                                                                                                <label for="otp">Enter delivery OTP:</label>
+                                                                                                 <table>
+                                                                                                <th><input type="text" name="otp" id="otp" onkeypress="return event.charCode >= 48 &amp; event.charCode <= 57" placeholder="_ _ _ _ _ _"  class="form-control" ></th>
+                                                                                                <th>  <button class="btn btn-sm btn-primary" type="submit">Confirm</button></th>
+                                                                                                 </table>
+                                                                                            </form>
                                                                                     </div>
                                                                                 </div>
-
                                                                             </div>
-
-
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div id="step3" class="tab-pane fade">
-                                                            <div class="row">
-                                                                <div class="col-md-6 mr-auto ml-auto">
-                                                                    <img class="img-fluid d-block mrg-horizon-auto" src="{% static 'assets/images/others/cart.png' %}" alt="">
-                                                                    <div class="text-center">
-                                                                        <h2>Delivered</h2>
-                                                                        <p>Order has been  successfully Delivered.
-                                                                            <br>
-                                                                        </p>
-                                                                        <a href="{% url 'dboy1'  %}"><button class="btn btn-info btn-inverse btn-lg">View All Orders</button></a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+<!--                                                        <div id="step3" class="tab-pane fade">-->
+<!--                                                            <div class="row">-->
+<!--                                                                <div class="col-md-6 mr-auto ml-auto">-->
+<!--                                                                    <img class="img-fluid d-block mrg-horizon-auto" src="{% static 'assets/images/others/cart.png' %}" alt="">-->
+<!--                                                                    <div class="text-center">-->
+<!--                                                                        <h2>Delivered</h2>-->
+<!--                                                                        <p>Order has been  successfully Delivered.-->
+<!--                                                                            <br>-->
+<!--                                                                        </p>-->
+<!--                                                                        <a href="{% url 'dboy1'  %}"><button class="btn btn-info btn-inverse btn-lg">View All Orders</button></a>-->
+<!--                                                                    </div>-->
+<!--                                                                </div>-->
+<!--                                                            </div>-->
+<!--                                                        </div>-->
 
                                                         <div class="wizard-pager">
                                                             <div class="">

@@ -38,23 +38,56 @@
 <!--                          {% endif %}-->
 <!--                        </div>-->
 <!--                      </div>-->
-                        <div class="row" >
-                            <div class="col-md-12 ">
-                                <div class="card" >
+<!--                        <div class="row" >-->
+<!--                            <div class="col-md-12 ">-->
+       <table style="width:100%">
+                                <th><div class="card"  >
                                     <div class="card-heading border bottom">
                                         <h4 class="card-title">Bar Chart</h4>
                                     </div>
-                                    <div class="card-block">
-                                        <div>
+                                        <div class="card-block" style="width:57%">
+                                            <div>
 
-                                           {% if plot_div %}
-                                           {{ plot_div|safe }}
-                                          {% endif %}
+                                               {% if plot_div %}
+                                               {{ plot_div|safe }}
+                                              {% endif %}
+                                            </div>
+
+                                        </div></div>
+                                </th>
+                                    <th><div class="card">
+                                        <div class="card-heading border bottom">
+                                            <h4 class="card-title">Pie Chart</h4>
                                         </div>
-                                    </div>
-                                </div>
+                                        <div class="card-block">
+                                            <div>
+                                               {% if plot_divs %}
+                                               {{ plot_divs|safe }}
+                                              {% endif %}
+                                            </div>
+                                        </div>
+                                        </div>
+                                    </th>
+
+           </table>
                             </div>
                         </div>
+<!--                        <div class="row" >-->
+<!--                            <div class="col-md-12 ">-->
+<!--                                <div class="card" >-->
+<!--                                    <div class="card-heading border bottom">-->
+<!--                                        <h4 class="card-title">Pie Chart</h4>-->
+<!--                                    </div>-->
+<!--                                    <div class="card-block">-->
+<!--                                        <div>-->
+<!--                                           {% if plot_divs %}-->
+<!--                                           {{ plot_divs|safe }}-->
+<!--                                          {% endif %}-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
       </div>
     </div>
   </div>

@@ -128,7 +128,7 @@ def categorys(request,id):
     w_count = Whishlist.objects.filter(user=request.user.id).count()
     count = Cart.objects.filter(user=request.user.id).count()
     category = Category.objects.all()
-    books = Book.objects.all()
+    books = Book.objects.filter(reviewrating__rating__gte=4.0).annotate(avg_rating=Avg('reviewrating__rating')).order_by('-avg_rating')
     if( Category.objects.filter(category_id=id)):
          book = Book.objects.filter(book_category_id=id)
     return render(request,'categorys.html',{'datas':book,'category':category,'books':books,'count':count,'w_count':w_count})
@@ -387,8 +387,45 @@ def admin_index(request):
         Revenue += i.product.book_price
     # amount=OrderPlaced.objects.filter(amount=OrderPlaced.payment.amount)
     # Revenue = order * amount.payment.amount
+    # Get the count of each ordered product by month
+    order_count_by_month = OrderPlaced.objects.filter(is_ordered=True) \
+        .annotate(month=TruncMonth('ordered_date')) \
+        .values('month', 'product__book_name') \
+        .annotate(count=Count('product')) \
+        .order_by('month')
 
-    return render(request,'admin_index.html',{'users':users,'book':book,'ebook':ebook,'review':review,'order':order,'Revenue':Revenue,'user':user})
+    # Get the unique products
+    products = OrderPlaced.objects.filter(is_ordered=True) \
+        .values('product__book_name').distinct()
+
+    # Create a list of traces for each product
+    traces = []
+    for product in products:
+        product_name = product['product__book_name']
+        product_count_by_month = [0] * len(order_count_by_month)
+        for i, count in enumerate(order_count_by_month):
+            if count['product__book_name'] == product_name:
+                product_count_by_month[i] = count['count']
+        traces.append(go.Scatter(x=[count['month'] for count in order_count_by_month],
+                                 y=product_count_by_month,
+                                 mode='lines',
+                                 name=product_name))
+
+    # Create the layout for the chart
+    layout = go.Layout(title='Most Ordered Products by Month',
+                       xaxis=dict(title='Month'),
+                       yaxis=dict(title='Quantity'))
+
+    # Create the figure and render it as a div
+    fig = go.Figure(data=traces, layout=layout)
+    plot_div = plot(fig, output_type='div')
+
+    # Pass the plot div to the template
+    context = {
+        'plot_div': plot_div
+    }
+
+    return render(request,'admin_index.html',{'users':users,'book':book,'ebook':ebook,'review':review,'order':order,'Revenue':Revenue,'user':user,'context':context})
 
 @login_required(login_url='login')
 def admin_base(request):
@@ -682,27 +719,45 @@ def dboy1(request):
 #
 #     return render(request,'dboy2.html',context)
 # 916287
+# def dboy2(request, id):
+#     order = OrderPlaced.objects.filter(id=id)
+#     print('orders',order)
+#     print('orders', OrderPlaced.otp)
+#     if request.method == 'POST':
+#         otp = request.POST.get('otp')
+#         print('otp',otp)
+#         if otp == OrderPlaced.otp:
+#             order.status = 'Delivered'
+#             order.save()
+#             messages.success(request, 'Order delivered successfully')
+#             return redirect('dboy2', id=id)
+#         else:
+#             messages.error(request, 'Invalid OTP')
+#             return redirect('dboy2', id=id)
+#     context = {
+#         'orders': order,
+#
+#     }
+#     return render(request, 'dboy2.html', context)
 def dboy2(request, id):
     orders = OrderPlaced.objects.filter(id=id)
-    print('orders',orders)
+    order = get_object_or_404(OrderPlaced, id=id, status='Pending')
+    print(order.status)
+    print(order.otp)
     if request.method == 'POST':
-        order = OrderPlaced.objects.get(id=id)
-        otp = request.POST.get('otp')
-        print('otp', otp)
-        if otp == order.otp:
+        entered_otp = request.POST.get('otp')
+        print(entered_otp)
+        if entered_otp == order.otp:
             order.status = 'Delivered'
+            order.is_ordered = True
             order.save()
-            messages.success(request, 'Order delivered successfully')
-            return redirect('dboy2', id=id)
+            print(order.status)
+            return redirect(dboy3)
         else:
-            messages.error(request, 'Invalid OTP')
-
-    context = {
-        'orders': orders,
-
-    }
-    return render(request, 'dboy2.html', context)
-
+          messages.success(request, 'Invalid OTP. ')
+    return render(request, 'dboy2.html', {'order': order,'orders': orders})
+def dboy3(request):
+    return render(request, 'dboy3.html')
 
 def dboysetting(request):
     return render(request,'dboysetting.html')
@@ -951,219 +1006,6 @@ def translation(request):
 
 
 
-
-
-
-
-
-# import pandas as pd
-# import numpy as np
-# from scipy.sparse import csr_matrix
-# from sklearn.metrics.pairwise import cosine_similarity
-
-
-
-# def book_recommendations(request):
-#     ratings = ReviewRating.objects.all().select_related('product', 'user')
-#
-#     # Create a user-book matrix
-#     user_book_matrix = pd.pivot_table(ratings, values='rating', index='user_id', columns='product_id')
-#
-#     # Fill missing values with 0
-#     user_book_matrix.fillna(0, inplace=True)
-#
-#     # Populate the rating field in the user-book matrix
-#     for user_id in user_book_matrix.index:
-#         for product_id in user_book_matrix.columns:
-#             try:
-#                 rating = ratings.get(user_id=user_id, product_id=product_id).rating
-#                 user_book_matrix.loc[user_id, product_id] = rating
-#             except ReviewRating.DoesNotExist:
-#                 pass
-#
-#     # Convert the matrix to a sparse matrix
-#     user_book_sparse = csr_matrix(user_book_matrix.values)
-#
-#     # Calculate cosine similarity between the books
-#     cosine_sim = cosine_similarity(user_book_sparse)
-#
-#     # Get the books the user has rated
-#     user_ratings = ratings.filter(user=request.user)
-#
-#     # Get the average rating for each book
-#     book_ratings = ReviewRating.objects.values('product_id').annotate(rating_avg=Avg('rating'))
-#
-#     # Create a dictionary of book ratings
-#     book_ratings_dict = {r['product_id']: r['rating_avg'] for r in book_ratings}
-#
-#     # Get the book indices and similarity scores for the books the user has rated
-#     book_indices = [user_book_matrix.columns.get_loc(r.product_id) for r in user_ratings]
-#     similarity_scores = cosine_sim[book_indices].mean(axis=0)
-#
-#     # Get the top 10 book recommendations based on the similarity scores
-#     top_books = sorted(list(enumerate(similarity_scores)), key=lambda x: x[1], reverse=True)[:10]
-#     book_indices = [i[0] for i in top_books]
-#
-#     # Get the book objects for the recommended books
-#     recommended_books = Book.objects.filter(id__in=[user_book_matrix.columns[i] for i in book_indices])
-#
-#     # Create a dictionary of book recommendations with their average ratings
-#     book_recommendations_dict = {}
-#     for book in recommended_books:
-#         book_recommendations_dict[book] = book_ratings_dict.get(book.id, 0)
-#
-#     # Render the template with the book recommendations
-#     return render(request, 'book_recommendations.html', {'book_recommendations': book_recommendations_dict})
-
-
-from django.shortcuts import render, get_object_or_404
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
-import numpy as np
-# def book_recommendations(request):
-#     user = request.user
-#     # get all books that the user has rated
-#     rated_books = ReviewRating.objects.filter(user=user, status=True)
-#     # get the IDs of the rated books
-#     rated_book_ids = [r.product.book_id for r in rated_books]
-#     # get the books that the user has not rated
-#     unrated_books = Book.objects.exclude(book_id__in=rated_book_ids)
-#     # get the text descriptions of the rated and unrated books
-#     rated_desc = [r.product.book_desc for r in rated_books]
-#     unrated_desc = [b.book_desc for b in unrated_books]
-#     # create a TF-IDF vectorizer
-#     vectorizer = TfidfVectorizer()
-#     # fit the vectorizer to the text descriptions
-#     vectorizer.fit(rated_desc + unrated_desc)
-#     # transform the rated and unrated descriptions to TF-IDF vectors
-#     rated_vectors = vectorizer.transform(rated_desc)
-#     unrated_vectors = vectorizer.transform(unrated_desc)
-#     # calculate the cosine similarity between the rated and unrated vectors
-#     similarity = cosine_similarity(rated_vectors, unrated_vectors)
-#     # get the indices of the most similar unrated books for each rated book
-#     top_indices = similarity.argsort(axis=1)[:, ::-1][:, :10]
-#     # get the book objects corresponding to the top indices
-#     recommended_books = []
-#     for i, book_indices in enumerate(top_indices):
-#         rated_book = get_object_or_404(Book, book_id=rated_book_ids[i])
-#         for j in book_indices:
-#             unrated_book = unrated_books[int(j)]
-#             recommended_books.append((rated_book, unrated_book))
-#     recommended_books = np.array(recommended_books).tolist()  # convert to Python list
-#     return render(request, 'book_recommendations.html', {'recommended_books': recommended_books})
-
-
-# from django.shortcuts import render, get_object_or_404
-# from django.contrib.auth.decorators import login_required
-# from .models import Book, ReviewRating
-# from sklearn.feature_extraction.text import TfidfVectorizer
-# from sklearn.metrics.pairwise import cosine_similarity
-#
-# @login_required
-# def book_recommendations(request):
-#     user = request.user
-#
-#     # Get all books that the user has rated
-#     rated_books = ReviewRating.objects.filter(user=user, status=True)
-#
-#     # Get the IDs of the rated books
-#     rated_book_ids = [r.product.book_id for r in rated_books]
-#
-#     # Get the genres of the rated books
-#     rated_genres = set()
-#     for rating in rated_books:
-#         rated_genres.add(rating.product.book_category.category_id)
-#
-#     # Get the books that the user has not rated but are in the same genres as the rated books
-#     unrated_books = Book.objects.exclude(book_id__in=rated_book_ids).filter(book_category_id__in=rated_genres)
-#
-#     # Get the text descriptions of the rated and unrated books
-#     rated_desc = [r.product.book_desc for r in rated_books if r.product.book_category.category_id in rated_genres]
-#     unrated_desc = [b.book_desc for b in unrated_books if b.book_category_id in rated_genres]
-#
-#     # Create a TF-IDF vectorizer
-#     vectorizer = TfidfVectorizer()
-#
-#     # Fit the vectorizer to the text descriptions
-#     vectorizer.fit(rated_desc + unrated_desc)
-#
-#     # Transform the rated and unrated descriptions to TF-IDF vectors
-#     rated_vectors = vectorizer.transform(rated_desc)
-#     unrated_vectors = vectorizer.transform(unrated_desc)
-#
-#     # Calculate the cosine similarity between the rated and unrated vectors
-#     similarity = cosine_similarity(rated_vectors, unrated_vectors)
-#
-#     # Get the indices of the most similar unrated books for each rated book
-#     top_indices = similarity.argsort(axis=1)[:, ::-1][:, :10]
-#
-#     # Get the book objects corresponding to the top indices
-#     recommended_books = []
-#     for i, book_indices in enumerate(top_indices):
-#         rated_book = get_object_or_404(Book, book_id=rated_book_ids[i])
-#         for j in book_indices:
-#             unrated_book = unrated_books[int(j)]
-#             recommended_books.append((rated_book, unrated_book))
-#
-#     recommended_books = np.array(recommended_books).tolist()  # Convert to Python list
-#
-#     return render(request, 'book_recommendations.html', {'recommended_books': recommended_books})
-
-
-# def book_recommendations(request):
-#     user = request.user
-#
-#     # Get all books that the user has rated
-#     rated_books = ReviewRating.objects.filter(user=user, status=True)
-#
-#     # Get the IDs of the rated books
-#     rated_book_ids = [r.product.book_id for r in rated_books]
-#
-#     # Get the genres and authors of the rated books
-#     rated_genres = set()
-#     rated_authors = set()
-#     for rating in rated_books:
-#         rated_genres.add(rating.product.book_category_id)
-#         rated_authors.add(rating.product.book_author)
-#
-#     # Get the books that the user has not rated but are in the same genres and authors as the rated books
-#     unrated_books = Book.objects.exclude(book_id__in=rated_book_ids).filter(book_category_id__in=rated_genres, book_author__in=rated_authors)
-#
-#     if not unrated_books:
-#         return render(request, 'book_recommendations.html', {'recommended_books': []})
-#
-#     # Get the text descriptions of the rated and unrated books
-#     rated_desc = [r.product.book_desc for r in rated_books if r.product.book_category_id in rated_genres and r.product.book_author in rated_authors]
-#     unrated_desc = [b.book_desc for b in unrated_books if b.book_category_id in rated_genres and b.book_author in rated_authors]
-#
-#     # Create a TF-IDF vectorizer
-#     vectorizer = TfidfVectorizer()
-#
-#     # Fit the vectorizer to the text descriptions
-#     vectorizer.fit(rated_desc + unrated_desc)
-#
-#     # Transform the rated and unrated descriptions to TF-IDF vectors
-#     rated_vectors = vectorizer.transform(rated_desc)
-#     unrated_vectors = vectorizer.transform(unrated_desc)
-#
-#     # Calculate the cosine similarity between the rated and unrated vectors
-#     similarity = cosine_similarity(rated_vectors, unrated_vectors)
-#
-#     # Get the indices of the most similar unrated books for each rated book
-#     top_indices = similarity.argsort(axis=1)[:, ::-1][:, :10]
-#
-#     # Get the book objects corresponding to the top indices
-#     recommended_books = []
-#     for i, book_indices in enumerate(top_indices):
-#         rated_book = get_object_or_404(Book, book_id=rated_book_ids[i])
-#         for j in book_indices:
-#             unrated_book = unrated_books[int(j)]
-#             recommended_books.append((rated_book, unrated_book))
-#
-#     recommended_books = np.array(recommended_books).tolist()  # Convert to Python list
-#
-#     return render(request, 'book_recommendations.html', {'recommended_books': recommended_books})
-
 from django.shortcuts import render, get_object_or_404
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -1262,9 +1104,12 @@ def review_analysis(request):
     sentiment_scores = [d['sentiment_scores'] for d in book_data]
     fig = go.Figure([go.Bar(x=book_names, y=sentiment_scores)])
     plot_div = plot(fig, output_type='div')
+    fig = go.Figure(data=[go.Pie(labels=book_names, values=sentiment_scores)])
+    plot_divs = plot(fig, output_type='div')
     context = {
         'book_data': book_data,
-        'plot_div': plot_div
+        'plot_div': plot_div,
+        'plot_divs': plot_divs
     }
     return render(request, 'review_analysis.html', context)
 
@@ -1297,3 +1142,10 @@ def rating_analysis(request):
         'plot_div': plot_div
     }
     return render(request, 'rating_analysis.html', context)
+from django.shortcuts import render
+from django.db.models import Count
+from django.db.models.functions import TruncMonth
+import plotly.graph_objs as go
+from plotly.offline import plot
+from .models import OrderPlaced
+
