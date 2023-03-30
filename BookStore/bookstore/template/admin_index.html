@@ -19,7 +19,6 @@
     <!-- page plugins css -->
     <link rel="stylesheet" href="{% static 'assets/vendors/bower-jvectormap/jquery-jvectormap-1.2.2.css' %}" />
     <link rel="stylesheet" href="{% static 'assets/vendors/nvd3/build/nv.d3.min.css' %}" />
-
     <!-- core css -->
     <link href="{% static 'assets/css/themify-icons.css' %}" rel="stylesheet">
     <link href="{% static 'assets/css/flag-icon.min.css' %}" rel="stylesheet">
@@ -282,14 +281,33 @@
                                     </div>
                                 </div>
                             </div>
-                             <div class="card">
-                                  <div class="card-header">
-                                    <h4 class="card-title">Most Ordered Products by Month</h4>
-                                  </div>
-                                  <div class="card-body">
-                                    {{ plot_div|safe }}
-                                  </div>
-                             </div>
+<!--                             <div class="card">-->
+<!--                                  <div class="card-header">-->
+<!--                                    <h4 class="card-title">Most Ordered Products by Month</h4>-->
+<!--                                  </div>-->
+<!--                                  <div plot_div style="width:100%;height:100%;">-->
+
+<!--                                               {{ plot_div|safe }}-->
+
+<!--                                  </div>-->
+<!--                             </div>-->
+                            <div class="container-fluid">
+                              <div class="row">
+                                <div class="col-md-12">
+                                  <h1>Most Ordered Products</h1>
+                                  {{ plot_div|safe }}
+                                </div>
+                              </div>
+                            </div>
+                             <div class="container-fluid">
+                              <div class="row">
+                                <div class="col-md-12">
+                                  <h1>Most Ordered Products </h1>
+                                  {{ plot_divs|safe }}
+                                </div>
+                              </div>
+                            </div>
+
 
                         </div>
 
@@ -364,5 +382,6 @@
     <script src="{% static 'assets/vendors/chart.js/dist/Chart.min.js' %}"></script>
     <script src="{% static 'assets/js/app.js' %}"></script>
     <script src="{% static 'assets/js/dashboard/dashboard.js' %}"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </body>
 </html>

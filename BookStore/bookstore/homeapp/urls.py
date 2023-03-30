@@ -63,6 +63,8 @@ urlpatterns = [
     path('deletebook/<int:id>/', views.deletebook, name='deletebook'),
     path('bookupdate/<int:id>/', views.bookupdate, name='bookupdate'),
     path('admin_orders/', views.admin_orders, name='admin_orders'),
+    path('order_detailslog/', views.order_detailslog, name='order_detailslog'),
+    path('book_export/', views.book_export, name='book_export'),
     path('admin_reviews/', views.admin_reviews, name='admin_reviews'),
 
 

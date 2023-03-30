@@ -388,44 +388,54 @@ def admin_index(request):
     # amount=OrderPlaced.objects.filter(amount=OrderPlaced.payment.amount)
     # Revenue = order * amount.payment.amount
     # Get the count of each ordered product by month
-    order_count_by_month = OrderPlaced.objects.filter(is_ordered=True) \
-        .annotate(month=TruncMonth('ordered_date')) \
-        .values('month', 'product__book_name') \
-        .annotate(count=Count('product')) \
-        .order_by('month')
-
-    # Get the unique products
-    products = OrderPlaced.objects.filter(is_ordered=True) \
-        .values('product__book_name').distinct()
+    order_count_by_product = OrderPlaced.objects.filter(is_ordered=True) \
+        .values('product__book_name') \
+        .annotate(count=Count('product'))
 
     # Create a list of traces for each product
     traces = []
-    for product in products:
-        product_name = product['product__book_name']
-        product_count_by_month = [0] * len(order_count_by_month)
-        for i, count in enumerate(order_count_by_month):
-            if count['product__book_name'] == product_name:
-                product_count_by_month[i] = count['count']
-        traces.append(go.Scatter(x=[count['month'] for count in order_count_by_month],
-                                 y=product_count_by_month,
-                                 mode='lines',
-                                 name=product_name))
+    for count in order_count_by_product:
+        product_name = count['product__book_name']
+        product_count = count['count']
+        traces.append(go.Bar(x=[product_name],
+                             y=[product_count],
+                             name=product_name))
 
     # Create the layout for the chart
-    layout = go.Layout(title='Most Ordered Products by Month',
-                       xaxis=dict(title='Month'),
+    layout = go.Layout(title='Most Ordered Products',
+                       xaxis=dict(title='Product'),
                        yaxis=dict(title='Quantity'))
 
     # Create the figure and render it as a div
     fig = go.Figure(data=traces, layout=layout)
     plot_div = plot(fig, output_type='div')
 
-    # Pass the plot div to the template
-    context = {
-        'plot_div': plot_div
-    }
 
-    return render(request,'admin_index.html',{'users':users,'book':book,'ebook':ebook,'review':review,'order':order,'Revenue':Revenue,'user':user,'context':context})
+
+
+    order_count_by_product = OrderPlaced.objects.filter(is_ordered=True) \
+        .values('product__book_name') \
+        .annotate(count=Count('product'))
+
+    # Create a list of traces for each product
+    traces = []
+    for count in order_count_by_product:
+        product_name = count['product__book_name']
+        product_count = count['count']
+        traces.append(go.Scatter(x=[product_name],
+                                 y=[product_count],
+                                 mode='lines',
+                                 name=product_name))
+
+    # Create the layout for the chart
+    layout = go.Layout(title='Most Ordered Products',
+                       xaxis=dict(title='Product'),
+                       yaxis=dict(title='Quantity'))
+
+    # Create the figure and render it as a div
+    fig = go.Figure(data=traces, layout=layout)
+    plot_divs = plot(fig, output_type='div')
+    return render(request,'admin_index.html',{'users':users,'book':book,'ebook':ebook,'review':review,'order':order,'Revenue':Revenue,'user':user,'plot_div':plot_div,'plot_divs':plot_divs})
 
 @login_required(login_url='login')
 def admin_base(request):
@@ -440,6 +450,16 @@ def admin_delboy(request):
 def admin_users(request):
     users = User.objects.all()
     return render(request, 'admin_users.html',{'users':users})
+import csv
+def order_detailslog(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="order_details.csv"'
+    writer = csv.writer(response)
+    writer.writerow(['user', 'ordered_date','product'])
+    order_details = OrderPlaced.objects.all().values_list('user', 'ordered_date','product')
+    for i in order_details:
+        writer.writerow(i)
+    return response
 
 @login_required(login_url='login')
 def admin_uprofile(request,id):
@@ -611,7 +631,15 @@ def editcat(request,id):
 def admin_book(request):
     book = Book.objects.all()
     return render(request, 'admin_book.html',{'book':book})
-
+def book_export( request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="user_details.csv"'
+    writer = csv.writer(response)
+    writer.writerow(['Usename', 'Phonenumber','Email'])
+    user_details =  User.objects.all().values_list('first_name', 'phonenumber','email')
+    for i in user_details:
+        writer.writerow(i)
+    return response
 @login_required(login_url='login')
 def admin_bookview(request,id):
     book = Book.objects.filter(book_id=id)
