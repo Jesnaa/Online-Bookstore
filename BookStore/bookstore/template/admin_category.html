@@ -21,10 +21,12 @@
                                  <div class="d-flex flex-row align-items-center mb-4">
                                    <div class="form-outline flex-fill mb-0">
                                        <table>
-                                       <th><input type="text" id="form3Example1c"  name="cat" class="form-control" placeholder="category"/></th>
-                                       <a href="/">
-                                       <th><button class="btn btn-sm btn-primary" type="submit"> Add Category +</button></th>
-                                       </a>
+                                           <th> <input type="text" id="form3Example1c" value="{{cat.category_name}}" name="cat" class="form-control" pattern="^[A-Za_z][A-Za-z -]+$" placeholder="category" />
+
+                                                </th>
+                                                <a href="/">
+                                                  <th><button class="btn btn-sm btn-primary" type="submit"> Add Category +</button></th>
+                                                </a>
                                        </table>
                                     </div>
                                  </div>
@@ -52,7 +54,7 @@
                                                                 {% csrf_token %}
                                                             <div class="list-info mrg-top-10">
                                                                 <div class="info">
-                                                                     <input type="text" class="form-control"  name="cat" value="{{cat.category_name}}" >
+                                                                     <input type="text" class="form-control" pattern="^[A-Za_z][A-Za-z -]+$" name="cat" value="{{cat.category_name}}" >
 
                                                                 </div>
                                                             </div>

@@ -24,6 +24,9 @@
     <link href="{% static 'assets/css/flag-icon.min.css' %}" rel="stylesheet">
     <link href="{% static 'assets/css/animate.min.css' %}" rel="stylesheet">
     <link href="{% static 'assets/css/app.css' %}" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-1.58.4.min.js"></script>
+
 </head>
 
 <body>
@@ -151,7 +154,7 @@
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a href="{% url 'profile' %}">
+                                        <a href="{% url 'admin_profile' %}">
                                             <i class="ti-user pdd-right-10"></i>
                                             <span>My Account</span>
                                         </a>
@@ -294,19 +297,19 @@
                             <div class="container-fluid">
                               <div class="row">
                                 <div class="col-md-12">
-                                  <h1>Most Ordered Products</h1>
+                                  <h1>Selling Analysis</h1>
                                   {{ plot_div|safe }}
                                 </div>
                               </div>
                             </div>
-                             <div class="container-fluid">
-                              <div class="row">
-                                <div class="col-md-12">
-                                  <h1>Most Ordered Products </h1>
-                                  {{ plot_divs|safe }}
-                                </div>
-                              </div>
-                            </div>
+<!--                             <div class="container-fluid">-->
+<!--                              <div class="row">-->
+<!--                                <div class="col-md-12">-->
+<!--                                  <h1>Most Ordered Products </h1>-->
+<!--                                  {{ plot_divs|safe }}-->
+<!--                                </div>-->
+<!--                              </div>-->
+<!--                            </div>-->
 
 
                         </div>
@@ -383,5 +386,7 @@
     <script src="{% static 'assets/js/app.js' %}"></script>
     <script src="{% static 'assets/js/dashboard/dashboard.js' %}"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-1.58.4.min.js"></script>
+
 </body>
 </html>

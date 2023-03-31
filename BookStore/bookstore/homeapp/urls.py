@@ -41,6 +41,7 @@ urlpatterns = [
     path('dboysetting/', views.dboysetting, name='dboysetting'),
 
     path('admin_index/', views.admin_index, name='admin_index'),
+    path('admin_profile/', views.admin_profile, name='admin_profile'),
     path('admin_base/', views.admin_base, name='admin_base'),
     path('admin_delboy/', views.admin_delboy, name='admin_delboy'),
     path('add_deliveryboy/', views.add_deliveryboy, name='add_deliveryboy'),

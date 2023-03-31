@@ -53,7 +53,7 @@ def ebooks(request):
     book = eBooks.objects.all()
     cart = Cart.objects.all()
     return render(request, 'audiobooks.html', {'datas': book, 'category': category, 'cart': cart})
-
+@login_required(login_url='login')
 def audiobook(request,id):
     w_count = Whishlist.objects.filter(user=request.user.id).count()
     count = Cart.objects.filter(user=request.user.id).count()
@@ -128,7 +128,7 @@ def categorys(request,id):
     w_count = Whishlist.objects.filter(user=request.user.id).count()
     count = Cart.objects.filter(user=request.user.id).count()
     category = Category.objects.all()
-    books = Book.objects.filter(reviewrating__rating__gte=4.0).annotate(avg_rating=Avg('reviewrating__rating')).order_by('-avg_rating')
+    books = Book.objects.filter(reviewrating__rating__gte=4.0).annotate(avg_rating=Avg('reviewrating__rating')).order_by('avg_rating')
     if( Category.objects.filter(category_id=id)):
          book = Book.objects.filter(book_category_id=id)
     return render(request,'categorys.html',{'datas':book,'category':category,'books':books,'count':count,'w_count':w_count})
@@ -155,7 +155,9 @@ def allproduct(request):
      category = Category.objects.all()
      book = Book.objects.all()
      cart = Cart.objects.all()
-     return render(request,'all product.html',{'datas':book,'category':category,'cart':cart,'count':count,'w_count':w_count})
+     books = Book.objects.filter(reviewrating__rating__gte=4.0).annotate( avg_rating=Avg('reviewrating__rating')).order_by('avg_rating')
+
+     return render(request,'all product.html',{'datas':book,'category':category,'cart':cart,'books':books,'count':count,'w_count':w_count})
 
 # def allproduct(request):
 #     tblBook = Book.objects.all()
@@ -374,6 +376,11 @@ def billview(request):
     return render(request,'bill_view.html',{ 'orders': orders,'w_count':w_count,'count':count})
 
 @login_required(login_url='login')
+def admin_profile(request):
+
+    return render(request,'admin_profile.html')
+
+@login_required(login_url='login')
 def admin_index(request):
     user=request.user
     users = User.objects.all().count()
@@ -402,16 +409,13 @@ def admin_index(request):
                              name=product_name))
 
     # Create the layout for the chart
-    layout = go.Layout(title='Most Ordered Products',
+    layout = go.Layout(title='Most Ordered Books',
                        xaxis=dict(title='Product'),
                        yaxis=dict(title='Quantity'))
 
     # Create the figure and render it as a div
     fig = go.Figure(data=traces, layout=layout)
     plot_div = plot(fig, output_type='div')
-
-
-
 
     order_count_by_product = OrderPlaced.objects.filter(is_ordered=True) \
         .values('product__book_name') \
@@ -435,6 +439,7 @@ def admin_index(request):
     # Create the figure and render it as a div
     fig = go.Figure(data=traces, layout=layout)
     plot_divs = plot(fig, output_type='div')
+
     return render(request,'admin_index.html',{'users':users,'book':book,'ebook':ebook,'review':review,'order':order,'Revenue':Revenue,'user':user,'plot_div':plot_div,'plot_divs':plot_divs})
 
 @login_required(login_url='login')
@@ -630,6 +635,9 @@ def editcat(request,id):
 @login_required(login_url='login')
 def admin_book(request):
     book = Book.objects.all()
+    for product in book:
+        if product.book_quantity < 5:
+            messages.warning(request, f'Stock for {product.book_name} is below 5')
     return render(request, 'admin_book.html',{'book':book})
 def book_export( request):
     response = HttpResponse(content_type='text/csv')
@@ -722,7 +730,10 @@ def admin_reviews(request):
     review = ReviewRating.objects.all()
     return render(request, 'admin_reviews.html',{'review':review})
 
-
+def send_stock_alert(sender, **kwargs):
+    product = kwargs['Book']
+    message = f'The stock for {product.book_name} is below 5. Current stock: {product.book_quantity}'
+    messages.warning( message)
 
 
 def dboyindex(request):
@@ -1040,7 +1051,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 
 
-
+@login_required(login_url='login')
 def book_recommendations(request):
     user = request.user
     # Get all books that the user has rated
@@ -1074,9 +1085,7 @@ def book_recommendations(request):
         j = book_indices[0]
         unrated_book = unrated_books[int(j)]
         recommended_books.append((rated_book, unrated_book))
-
     recommended_books = np.array(recommended_books).tolist()  # Convert to Python list
-
     recommended_books = {i: {'rated_book': book_tuple[0], 'unrated_book': book_tuple[1]} for i, book_tuple in
                               enumerate(recommended_books)}
     return render(request, 'book_recommendations.html', {'recommended_books': recommended_books})

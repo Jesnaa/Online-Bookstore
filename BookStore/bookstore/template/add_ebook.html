@@ -21,7 +21,7 @@
                                                         <p class="mrg-top-10 text-dark"> <b>Book Name</b></p>
                                                     </div>
                                                     <div class="col-md-6" >
-                                                          <input type="text" name="ebook_name" value="{{book.ebook_name}}"size="30" >
+                                                          <input type="text" name="ebook_name" value="{{book.ebook_name}}"size="30"  pattern="^[A-Za_z][A-Za-z -]+$" title="The name should begin with capital letter Followed by uppercase or lowercase" >
                                                     </div>
                                                 </div>
                                                  <hr>
@@ -44,7 +44,7 @@
                                                         <p class="mrg-top-10 text-dark"> <b>Author</b></p>
                                                     </div>
                                                     <div class="col-md-6">
-                                                         <input type="text" name="book_author" value="{{book.book_author}}" size="30" required>
+                                                         <input type="text" name="book_author" value="{{book.book_author}}" size="30"  pattern="^[A-Za_z][A-Za-z -]+$" title="The name should begin with capital letter Followed by uppercase or lowercase"  required>
                                                     </div>
                                                 </div>
                                                 <hr>
@@ -53,7 +53,22 @@
                                                         <p class="mrg-top-10 text-dark"> <b>Year</b></p>
                                                     </div>
                                                     <div class="col-md-6">
-                                                         <input type="text" name="book_year"  pattern="[0-9]{4}" placeholder="YYYY" value="{{book.book_year}}" size="30" required>
+                                                         <input type="text" id="myInput" name="book_year"  pattern="[0-9]{4}" placeholder="YYYY" value="{{book.book_year}}" size="30" required>
+                                                        <div id="errors"></div>
+
+                                                        <script>
+                                                              const myInput = document.getElementById('myInput');
+                                                              const errors = document.getElementById('errors');
+                                                              myInput.addEventListener('invalid', showErrorMessage);
+
+                                                               function validateInput() {
+                                                                        if (myInput.value.length < 4) {
+                                                                          errors.textContent = 'Input must be a valid year';
+                                                                        } else {
+                                                                          errors.textContent = '';
+                                                                        }
+                                                                      }
+                                                            </script>
                                                     </div>
                                                 </div>
                                                 <hr>
@@ -62,7 +77,7 @@
                                                         <p class="mrg-top-10 text-dark"> <b>Language</b></p>
                                                     </div>
                                                     <div class="col-md-6">
-                                                         <input type="text" name="book_language" value="{{book.book_language}}" size="30" required>
+                                                         <input type="text" name="book_language" value="{{book.book_language}}" size="30"  pattern="^[A-Za_z][A-Za-z -]+$" title="The name should begin with capital letter Followed by uppercase or lowercase" required>
                                                     </div>
                                                 </div>
                                                   <hr>
@@ -71,7 +86,7 @@
                                                         <p class="mrg-top-10 text-dark"> <b>Publisher</b></p>
                                                     </div>
                                                     <div class="col-md-6">
-                                                         <input type="text" name="book_publisher" value="{{book.book_publisher}}" size="30" required>
+                                                         <input type="text" name="book_publisher" value="{{book.book_publisher}}"  pattern="^[A-Za_z][A-Za-z -]+$" title="The name should begin with capital letter Followed by uppercase or lowercase" size="30" required>
                                                     </div>
                                                 </div>
                                                  <hr>
@@ -80,7 +95,21 @@
                                                         <p class="mrg-top-10 text-dark"> <b>Description</b></p>
                                                     </div>
                                                     <div class="col-md-6">
-                                                         <textarea name="book_desc" rows="4" cols="36" value="{{book.book_desc}}" ></textarea>
+                                                         <textarea id="myTextarea" name="book_desc" rows="4" cols="36" value="{{book.book_desc}}" ></textarea>
+                                                        <div id="error"></div>
+                                                        <script>
+                                                          const myTextarea = document.getElementById('myTextarea');
+                                                          const error = document.getElementById('error');
+                                                          myTextarea.addEventListener('input', validateTextarea);
+
+                                                          function validateTextarea() {
+                                                            if (myTextarea.value.trim().length === 0) {
+                                                              error.textContent = 'Input cannot be only spaces';
+                                                            } else {
+                                                              error.textContent = '';
+                                                            }
+                                                          }
+                                                        </script>
                                                     </div>
                                                 </div>
                                                  <hr>
@@ -100,7 +129,7 @@
                                                         <p class="mrg-top-10 text-dark"> <b>img2</b></p>
                                                     </div>
                                                     <div class="col-md-6">
-                                                      <input name="img2" type="file"  accept=".png, .jpeg, .jpg" size="30" ><br>
+                                                      <input name="img2" type="file"  accept=".png, .jpeg, .jpg" size="30" required ><br>
                                                           <small class="text-muted">The image must have be in jpeg/png/jpg format</small>
                                                     </div>
                                                 </div>
