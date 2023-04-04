@@ -61,10 +61,9 @@
                                         <td>
                                             <div class="cart-quantity">
                                                 <div class="quantity">
-                                                     <a class="plus-a" data-max="1000" href="{% url 'plusqty' i.id %}">&#43;</a>
+                                                      <a class="minus-a" data-min="1" href="{% url 'minusqty' i.id %}">&#45;</a>
                                                     <input type="text" class="quantity-text-field" value="{{i.product_qty}}" readonly>
-
-                                                    <a class="minus-a" data-min="1" href="{% url 'minusqty' i.id %}">&#45;</a>
+                                                    <a class="plus-a" data-max="1000" href="{% url 'plusqty' i.id %}">&#43;</a>
                                                 </div>
                                             </div>
                                         </td>

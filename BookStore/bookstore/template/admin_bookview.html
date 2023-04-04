@@ -30,18 +30,42 @@
                                                         <p class="mrg-top-10 text-dark"> <b>Book Name</b></p>
                                                     </div>
                                                     <div class="col-md-6" >
-                                                          <input type="text" name="book_name" value="{{book.book_name}}" pattern="^[A-Za_z][A-Za-z -]+$" title="The name should begin with capital letter Followed by uppercase or lowercase" size="30" >
+                                                          <input type="text" name="book_name" value="{{book.book_name}}"  size="30" >
                                                     </div>
                                                 </div>
                                                  <hr>
-                                                <div class="row">
+<!--                                                <div class="row">-->
+<!--                                                    <div class="col-md-3">-->
+<!--                                                        <p class="mrg-top-10 text-dark"> <b>Category</b></p>-->
+<!--                                                    </div>-->
+<!--                                                    <div class="col-md-6">-->
+<!--                                                          <input type="text" name="book_category" value="{{book.book_category}}" size="30" readonly>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+                                                 <div class="row">
                                                     <div class="col-md-3">
                                                         <p class="mrg-top-10 text-dark"> <b>Category</b></p>
                                                     </div>
                                                     <div class="col-md-6">
-                                                          <input type="text" name="book_category" value="{{book.book_category}}" size="30" readonly>
+
+<!--                                                          <input type="text" name="book_category" value="{{book.book_category}}" size="30" readonly>-->
+<!--                                                           <select class="form-select" name="book_category" >-->
+<!--                                                            {% for c in category %}-->
+<!--                                                               <option ></option>-->
+<!--                                                            <option value="{{ c.category_id }}">{{c.category_name}}</option>-->
+<!--                                                            {% endfor %}-->
+<!--                                                        </select>-->
+
+<!--                                                        <tr><td><input type="text" name="book_category" value="{{book.book_category}}" size="30" readonly></td>-->
+                                                           <select class="form-select" name="book_category"  style="height: 25px;" >
+                                                               <option value="{{ c.category_id }}">{{book.book_category}}</option>
+                                                                {% for c in category %}
+                                                                <option value="{{ c.category_id }}" >{{c.category_name}}</option>
+                                                                {% endfor %}
+                                                        </select>
                                                     </div>
                                                 </div>
+
                                                 <hr>
                                                 <div class="row">
                                                     <div class="col-md-3">
@@ -76,7 +100,7 @@
                                                         <p class="mrg-top-10 text-dark"> <b>Author</b></p>
                                                     </div>
                                                     <div class="col-md-6">
-                                                         <input type="text" name="book_author" pattern="^[A-Za_z][A-Za-z -]+$" title="The name should begin with capital letter Followed by uppercase or lowercase"   value="{{book.book_author}}" size="30">
+                                                         <input type="text" name="book_author"    value="{{book.book_author}}" size="30">
                                                     </div>
                                                 </div>
                                                 <hr>
@@ -117,7 +141,7 @@
                                                         <p class="mrg-top-10 text-dark"> <b>Publisher</b></p>
                                                     </div>
                                                     <div class="col-md-6">
-                                                         <input type="text" name="book_publisher" value="{{book.book_publisher}}" pattern="^[A-Za_z][A-Za-z -]+$"  size="30">
+                                                         <input type="text" name="book_publisher" value="{{book.book_publisher}}"   size="30">
                                                     </div>
                                                 </div>
                                                  <hr>

@@ -2,6 +2,8 @@ from audioop import reverse
 
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+#
+# from .encryption_util import encrypt, decrypt
 from .models import Book,Category,Payment, OrderPlaced,eBooks,BookTypes,ReviewRating
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
@@ -31,9 +33,12 @@ def index(request):
     count = Cart.objects.filter(user=request.user.id).count()
     w_count = Whishlist.objects.filter(user=request.user.id).count()
     tblBook = Book.objects.all()
+    # Book.objects.values('book_id', 'book_name', 'book_category','book_quantity','book_price', 'book_oldprice','book_author','book_year','book_publisher','book_language', 'book_desc', '', 'img', 'user')
     category = Category.objects.all()
     cart = Cart.objects.all()
-
+    # for i in tblBook:
+    #     i['encrypt_key'] = encrypt(i['id'])
+    #     i['id'] = i['id']
 
 
     return render(request,'index.html',{'datas':tblBook,'category':category,'cart':cart,'count':count,'w_count':w_count})
@@ -67,6 +72,7 @@ def product(request,id):
     w_count = Whishlist.objects.filter(user=request.user.id).count()
     count = Cart.objects.filter(user=request.user.id).count()
     products = Book.objects.all()
+    # id = decrypt(id)
     single = Book.objects.filter(book_id=id)
     cart = Cart.objects.all()
     category = Category.objects.all()
@@ -154,6 +160,9 @@ def allproduct(request):
      count = Cart.objects.filter(user=request.user.id).count()
      category = Category.objects.all()
      book = Book.objects.all()
+     # for i in book:
+     #     i['encrypt_key'] = encrypt(i['id'])
+     #     i['id'] = i['id']
      cart = Cart.objects.all()
      books = Book.objects.filter(reviewrating__rating__gte=4.0).annotate( avg_rating=Avg('reviewrating__rating')).order_by('avg_rating')
 
@@ -186,22 +195,43 @@ def searchbar(request):
 
 
 @login_required(login_url='login')
+# def addcart(request,id):
+#       user = request.user
+#       item=Book.objects.get(book_id=id)
+#       if item.book_quantity>0:
+#             if Cart.objects.filter(user_id=user,product_id=item).exists():
+#                   messages.success(request, 'Book Already in the cart ')
+#                   return redirect(allproduct)
+#             else:
+#                   product_qty=1
+#                   price=item.book_price * product_qty
+#
+#                   new_cart=Cart(user_id=user.id,product_id=item.book_id,product_qty=product_qty,price=price)
+#                   new_cart.save()
+#                   messages.success(request, 'Book added to the Cart ')
+#                   return redirect(allproduct)
+
 def addcart(request,id):
-      user = request.user
-      item=Book.objects.get(book_id=id)
-      if item.book_quantity>0:
-            if Cart.objects.filter(user_id=user,product_id=item).exists():
-                  messages.success(request, 'Book Already in the cart ')
-                  return redirect(allproduct)
-            else:
-                  product_qty=1
-                  price=item.book_price * product_qty
+    user = request.user
+    item = Book.objects.get(book_id=id)
+    if item.book_quantity > 0:
+        if Cart.objects.filter(user_id=user, product_id=item).exists():
+            # If the book is already in the cart, increase the quantity by 1
+            cart_item = Cart.objects.get(user_id=user, product_id=item)
+            cart_item.product_qty += 1
+            cart_item.price = item.book_price * cart_item.product_qty
+            cart_item.save()
 
-                  new_cart=Cart(user_id=user.id,product_id=item.book_id,product_qty=product_qty,price=price)
-                  new_cart.save()
-                  messages.success(request, 'Book added to the Cart ')
-                  return redirect(allproduct)
+            messages.success(request, 'Book quantity updated in the cart ')
+            return redirect(allproduct)
+        else:
+            product_qty = 1
+            price = item.book_price * product_qty
 
+            new_cart = Cart(user_id=user.id, product_id=item.book_id, product_qty=product_qty, price=price)
+            new_cart.save()
+            messages.success(request, 'Book added to the Cart ')
+            return redirect(allproduct)
 
 
 # Cart Quentity Plus Settings
@@ -410,8 +440,8 @@ def admin_index(request):
 
     # Create the layout for the chart
     layout = go.Layout(title='Most Ordered Books',
-                       xaxis=dict(title='Product'),
-                       yaxis=dict(title='Quantity'))
+                       xaxis=dict(title='Books'),
+                       yaxis=dict(title='No: of Orders'))
 
     # Create the figure and render it as a div
     fig = go.Figure(data=traces, layout=layout)
@@ -529,7 +559,13 @@ def delete_dboy(request,id):
     users.delete()
     messages.success(request, 'Delivery Boy Deleted. ')
     return redirect(admin_delboy)
+def dboylastorder(request):
+    user=User.objects.filter(is_staff=True,is_admin = False)
+    for user in user:
+        print(user.username)
 
+    last_order = OrderPlaced.objects.filter(status='Delivered').order_by('-id').first()
+    return render(request, 'dboylastordr.html',{'last_order': last_order,'user': user})
 @login_required(login_url='login')
 def admin_ebook(request):
     ebook = eBooks.objects.all()
@@ -651,13 +687,15 @@ def book_export( request):
 @login_required(login_url='login')
 def admin_bookview(request,id):
     book = Book.objects.filter(book_id=id)
-    return render(request, 'admin_bookview.html',{'book':book})
+    category = Category.objects.all()
+    return render(request, 'admin_bookview.html',{'book':book,'category':category})
 
 @login_required(login_url='login')
 def add_book(request):
     category = Category.objects.all()
     if request.method == "POST":
         book_name= request.POST.get('book_name')
+        print("category_id:", book_name)
         category_id = request.POST.get('book_category')
         print("category_id:", category_id)
         book_category = Category.objects.get(category_id=category_id)
@@ -691,8 +729,8 @@ def bookupdate(request,id):
     if request.method == "POST":
         book_id = request.POST.get('book_id')
         book_name = request.POST.get('book_name')
-        # category_id = request.POST.get('book_category')
-        # book_category = Category.objects.get(category_id=category_id)
+        category_id = request.POST.get('book_category')
+        book_category = Category.objects.get(category_id=category_id)
         book_quantity = request.POST.get('book_quantity')
         book_price = request.POST.get('book_price')
         book_oldprice = request.POST.get('book_oldprice')
@@ -705,7 +743,7 @@ def bookupdate(request,id):
         # img2 = request.FILES['img2']
         book = Book.objects.get(book_id=id)
         book.book_name = book_name
-        # book.book_category = book_category
+        book.book_category = book_category
         book.book_quantity = book_quantity
         book.book_price = book_price
         book.book_oldprice = book_oldprice
@@ -718,6 +756,7 @@ def bookupdate(request,id):
         # book.img2 = img2
         book.save()
         messages.success(request, 'Category Updated. ')
+
     return redirect(admin_book)
 
 @login_required(login_url='login')

@@ -43,6 +43,7 @@ urlpatterns = [
     path('admin_index/', views.admin_index, name='admin_index'),
     path('admin_profile/', views.admin_profile, name='admin_profile'),
     path('admin_base/', views.admin_base, name='admin_base'),
+    path('dboylastorder/', views.dboylastorder, name='dboylastorder'),
     path('admin_delboy/', views.admin_delboy, name='admin_delboy'),
     path('add_deliveryboy/', views.add_deliveryboy, name='add_deliveryboy'),
     path('delete_dboy/<int:id>/', views.delete_dboy, name='delete_dboy'),

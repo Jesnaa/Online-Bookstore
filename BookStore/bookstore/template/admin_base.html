@@ -6,7 +6,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
-    <title>Bootstrap Responsive Web Application Template</title>
+    <title>BookRak</title>
 
     <!-- Favicon -->
     <link rel="shortcut icon" href="{% static 'assets/images/logo/favicon.png">
@@ -53,12 +53,29 @@
                                 <span class="title">Users</span>
                             </a>
                         </li>
-                        <li class="nav-item ">
-                            <a class="" href="{% url 'admin_delboy' %}">
-                                <span class="icon-holder"><i class="fas fa-users"></i></span>
+<!--                        <li class="nav-item ">-->
+<!--                            <a class="" href="{% url 'admin_delboy' %}">-->
+<!--                                <span class="icon-holder"><i class="fas fa-users"></i></span>-->
+<!--                                <span class="title">Delivery Boy</span>-->
+<!--                            </a>-->
+<!--                        </li>-->
+                        <li class="nav-item dropdown">
+                            <a class="dropdown-toggle" href="javascript:void(0);">
+                                <span class="icon-holder"><i class="ti-package"></i></span>
                                 <span class="title">Delivery Boy</span>
+                                <span class="arrow"><i class="ti-angle-right"></i></span>
                             </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="{% url 'admin_delboy' %}">Delivery Boy</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'dboylastorder' %}">Delivery Boy's Location</a>
+                                </li>
+
+                            </ul>
                         </li>
+
                         <li class="nav-item dropdown">
                             <a class="dropdown-toggle" href="javascript:void(0);">
                                 <span class="icon-holder"><i class="ti-package"></i></span>
@@ -200,6 +217,8 @@
     <script src="{% static 'assets/vendors/chart.js/dist/Chart.min.js' %}"></script>
     <script src="{% static 'assets/js/app.js' %}"></script>
     <script src="{% static 'assets/js/dashboard/dashboard.js' %}"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA80cWOalTZWvHNwZWK9VEVVa3gYzOCKJE"></script>
+    <script src="{% static 'assets/js/maps/google-map.js' %}"></script>
 
     <!-- page plugins js -->
     <script src="{% static 'assets/vendors/datatables/media/js/jquery.dataTables.js' %}"></script>
