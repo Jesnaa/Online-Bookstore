@@ -15,6 +15,9 @@ urlpatterns = [
      path('audiobooks/', views.audiobooks, name='audiobooks'),
      path('paymentdone/', views.payment_done, name='paymentdone'),
      path('orders/', views.allproduct, name='orders'),
+     path('book_search/', views.book_search, name='book_search'),
+
+
     # path('checkoutDetails/', views.checkoutDetails, name='checkoutDetails'),
      # path('wishlist/',views.wishlist,name='wishlist'),
     path('add_wishlist/<int:id>/',views.add_wishlist,name='add_wishlist'),

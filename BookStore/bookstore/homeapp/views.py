@@ -80,12 +80,15 @@ def product(request,id):
     review = ReviewRating.objects.filter(product_id=id, status=True)
     book = get_object_or_404(Book, book_id=id)
     average_review = book.averageReview()
+    category_id = book.book_category_id
+    relatedbook = Book.objects.filter(book_category_id=category_id).exclude(book_id=id)
+
     context = {
         'book': book,
         'review_count': book.countReview(),
         'averageReview' : average_review
     }
-    return render(request, 'product.html', {'context':context,'result': single,'products':products,'category':category,'cart':cart,'count':count,'w_count':w_count,'orderproduct':orderproduct,'review':review})
+    return render(request, 'product.html', {'context':context,'result': single,'products':products,'relatedbook':relatedbook,'category':category,'cart':cart,'count':count,'w_count':w_count,'orderproduct':orderproduct,'review':review})
 
 
 # def product(request,book_slug):
@@ -168,10 +171,6 @@ def allproduct(request):
 
      return render(request,'all product.html',{'datas':book,'category':category,'cart':cart,'books':books,'count':count,'w_count':w_count})
 
-# def allproduct(request):
-#     tblBook = Book.objects.all()
-#     category = Category.objects.all()
-#     return render(request,'all product.html',{'datas':tblBook,'category':category})
 def base(request,id):
     w_count = Whishlist.objects.filter(user=request.user.id).count()
     count = Cart.objects.filter(user=request.user.id).count()
@@ -182,13 +181,17 @@ def base(request,id):
 
 
 def searchbar(request):
+    w_count = Whishlist.objects.filter(user=request.user.id).count()
+    count = Cart.objects.filter(user=request.user.id).count()
     category = Category.objects.all()
+    books = Book.objects.filter(reviewrating__rating__gte=4.0).annotate(
+        avg_rating=Avg('reviewrating__rating')).order_by('avg_rating')
     if request.method == 'GET':
         query = request.GET.get('query')
         if query:
             multiple_q = Q(Q(book_name__icontains=query) | Q(book_author__icontains=query))
             products = Book.objects.filter(multiple_q)
-            return render(request, 'searchbar.html', {'datas':products,'category':category})
+            return render(request, 'searchbar.html', {'datas':products,'category':category,'books':books,'count':count,'w_count':w_count})
         else:
             print("No information to show")
     return render(request, 'searchbar.html', {})
@@ -867,6 +870,13 @@ def pdf_to_audio(request, id):
     audio_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'audio'))
     if not ebook.book_pdf:
         return render(request, 'error.html', {'message': 'PDF not found'})
+
+    # Check if the audio file already exists for this eBook
+    if ebook.book_audioFile:
+        audio_file_url = audio_storage.url(ebook.book_audioFile.name)
+        return render(request, 'pdf_to_audio.html', {'audio_file_url': audio_file_url, 'count': count, 'w_count': w_count})
+
+    # If the audio file doesn't exist, create it
     pdf_reader = PyPDF2.PdfReader(BytesIO(ebook.book_pdf.read()))
     num_pages = len(pdf_reader.pages)
     text = ''
@@ -887,12 +897,10 @@ def pdf_to_audio(request, id):
     audio_content = ContentFile(audio_data)
     print(len(audio_data))
 
+    # Save the audio file for this eBook
     ebook.book_audioFile.save(audio_filename, audio_content)
-    print('Temp file:', temp_file.name)
-    print('Audio file:', audio_filename)
-    # Render the template
 
-    # Get the URL of the saved audio file
+    # Render the template
     audio_file_url = audio_storage.url(ebook.book_audioFile.name)
     engine.stop()
     engine.say(text)
@@ -903,8 +911,9 @@ def pdf_to_audio(request, id):
     # engine.runAndWait()
     print('audio_file_url:', audio_file_url)
     return render(request, 'pdf_to_audio.html', {'audio_file_url': audio_file_url,'count':count,'w_count':w_count})
-import threading
-stop_flag = False
+
+
+
 def run(request):
     count = Cart.objects.filter(user=request.user.id).count()
     w_count = Whishlist.objects.filter(user=request.user.id).count()
@@ -1224,4 +1233,94 @@ from django.db.models.functions import TruncMonth
 import plotly.graph_objs as go
 from plotly.offline import plot
 from .models import OrderPlaced
+
+#///////////////
+from django.shortcuts import render
+from django.core.files.storage import FileSystemStorage
+from PIL import Image
+import pytesseract
+import nltk
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+from .models import Book
+
+
+# pytesseract.pytesseract.tesseract_cmd = r'c:\users\jesna\onedrive\documents\bookstore\projectenv\lib\site-packages\pytesseract\tesseract.exe'
+
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+
+stop_words = set(stopwords.words('english'))
+#
+# def book_search(request):
+#     if request.method == 'POST' and request.FILES['book_cover']:
+#         # Get the uploaded image file
+#         uploaded_file = request.FILES['book_cover']
+#         print('uploaded_file        ', uploaded_file)
+#         # Extract text from the uploaded image
+#         image = Image.open(uploaded_file)
+#         print('image        ', image)
+#         text = pytesseract.image_to_string(image)
+#         print('text        ',text)
+#         # Tokenize the text and remove stop words
+#         tokens = word_tokenize(text)
+#         tokens_without_stopwords = [token for token in tokens if not token in stop_words]
+#         # Identify the book title and author based on the extracted text
+#         book_name = None
+#         book_author = None
+#         for i in range(len(tokens_without_stopwords)-1):
+#             if tokens_without_stopwords[i].istitle() and tokens_without_stopwords[i+1].istitle():
+#                 book_name = tokens_without_stopwords[i] + ' ' + tokens_without_stopwords[i+1]
+#                 print('book_name        ', book_name)
+#                 book_author = ' '.join(tokens_without_stopwords[:i])
+#                 print('book_author        ', book_author)
+#                 break
+#         # Search the database for the corresponding book
+#         if book_name and book_author:
+#             search_results = Book.objects.filter(book_name__icontains=book_name, book_author__icontains=book_author)
+#             print('search_results        ', search_results)
+#             # Render the search results template with the search results
+#             return render(request, 'image_search.html', {'search_results': search_results})
+#         else:
+#             messages.success(request, 'No Matching Book Founded')
+#             return render(request, 'image_search.html')
+#
+#
+#     return render(request, 'image_search.html')
+
+
+
+from django.db.models import Q
+
+def book_search(request):
+    w_count = Whishlist.objects.filter(user=request.user.id).count()
+    count = Cart.objects.filter(user=request.user.id).count()
+    products = Book.objects.all()
+
+    if request.method == 'POST' and request.FILES['book_cover']:
+        # Get the uploaded image file
+        uploaded_file = request.FILES['book_cover']
+        # Extract text from the uploaded image
+        image = Image.open(uploaded_file)
+        text = pytesseract.image_to_string(image)
+        # Tokenize the text and remove stop words
+        tokens = word_tokenize(text)
+        print('tokens', tokens)
+        tokens_without_stopwords = [token for token in tokens if not token in stop_words]
+        # Identify the book title based on the extracted text
+        book_title = None
+        for token in tokens_without_stopwords:
+            if Book.objects.filter(book_name__icontains=token).exists():
+                book_title = token
+                break
+        # Search the database for the corresponding book
+        if book_title:
+            search_results = Book.objects.filter(Q(book_name__icontains=book_title) | Q(book_author__icontains=book_title))
+            print('search_results',search_results)
+            # Render the search results template with the search results
+            return render(request, 'image_search.html', {'search_results': search_results,'w_count': w_count,'count': count,'products': products})
+        else:
+            messages.error(request, 'No matching book found')
+            return render(request, 'image_search.html')
+
+    return render(request, 'image_search.html')
 

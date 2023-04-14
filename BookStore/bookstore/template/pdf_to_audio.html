@@ -9,11 +9,20 @@
         <div class="col-lg-12">
             <div style="height:300px;text-align: center;">
                <h2>PDF to Audio</h2><br>
-
-                 <div class="action-wrapper">
-                  <a href="{% url 'run'  %}" class="btn btn-danger"><span><i class="fas fa-play"></i> play</span></a>
-                  <a  href="{% url 'stop'  %}" class="btn btn-danger"><span><i class="fas fa-stop"></i> stop</span></a>
-                 </div>
+ <h1>PDF to Audio Conversion</h1>
+    {% if audio_file_url %}
+        <p>Audio file URL: <a href="{{ audio_file_url }}">{{ audio_file_url }}</a></p>
+        <audio controls>
+            <source src="{{ audio_file_url }}" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+    {% else %}
+        <p>Sorry, there was an error converting the PDF to audio.</p>
+    {% endif %}
+<!--                 <div class="action-wrapper">-->
+<!--                  <a href="{% url 'run'  %}" class="btn btn-danger"><span><i class="fas fa-play"></i> play</span></a>-->
+<!--                  <a  href="{% url 'stop'  %}" class="btn btn-danger"><span><i class="fas fa-stop"></i> stop</span></a>-->
+<!--                 </div>-->
 
             </div>
         </div>

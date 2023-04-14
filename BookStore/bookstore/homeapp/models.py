@@ -72,6 +72,9 @@ class Book(models.Model):
             count = int(reviews['count'])
         return count
 
+    def search(cls, book_name, book_author):
+        return cls.objects.filter(book_name__icontains=book_name, book_author__icontains=book_author)
+
 
 # Create your models here.
 class Cart(models.Model):

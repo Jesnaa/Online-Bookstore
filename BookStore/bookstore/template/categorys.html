@@ -207,8 +207,14 @@
 											</svg></a><span class="tooltipp">add to wishlist</span></button>
 										</div>
 									</div>
-									<div class="add-to-cart">
+									<div class="add-to-cart" >
+
+										 {% if i.book_quantity > 0 %}
 										<button class="add-to-cart-btn" type="submit">  <a href="{% url 'addcart' i.book_id %}">Add to cart</a></button>
+										{% else %}
+										<button class="add-to-cart-btn" type="submit">Out of Stock</button>
+<!--										<h5 style="color:red;">Out of Stock</h5>-->
+                                       {% endif %}
 									</div>
 								</div>
 

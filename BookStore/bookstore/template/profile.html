@@ -68,7 +68,7 @@
                                              <td>{{order.quantity}}</td>
                                             <td>₹ {% widthratio order.product.book_price 1 order.quantity %} </td>
                                             {% for i in orders|slice:":1" %}
-                                            <td><a href="{% url 'pdf' order.id %}" style="font-weight:bold;color:rgb(240, 16, 16);">View</a></td>
+                                            <td><a href="{% url 'pdf' order.id %}" style="font-weight:bold;color:rgb(240, 16, 16);"> <i class="ti-printer pdd-right-5"></i></a></td>
                                             {% endfor %}
                                             <td>{{order.status}}</td>
                                         </tr>

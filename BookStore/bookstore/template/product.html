@@ -308,10 +308,8 @@ table, th, td {
 
 										<!-- Review Form -->
 										<div class="col-md-3">
-
 											<div id="review-form">
                                                 <form action="{% url 'reviewss' i.book_id %}" method="POST"  class="review-form">
-
 													{% csrf_token %}
 													<input class="input" type="text" placeholder="HeadLine For Your Review" name="headline">
 <!--													<input class="input" type="email" placeholder="Your Email">-->
@@ -321,7 +319,6 @@ table, th, td {
 													<div class="input-rating">
 														<table>
 														<th><span>Your Rating: </span></th>
-
 														   <th> <div class="rate">
 																<input type="radio" name="rating" id="rating10" value="5" required /><label for="rating10" title="5"></label>
 																<input type="radio" name="rating" id="rating9" value="4.5" required /><label for="rating9" title="4.5" class="half"></label>
@@ -343,7 +340,6 @@ table, th, td {
 <!--														</div>-->
 														{% if user.is_authenticated %}
 													{% if orderproduct %}
-
 														<button  type="submit" value="Submit Review" class="primary-btn">Submit</button>
 													{% else %}
 														<p>You must purchase this product to post a review.</p>
@@ -353,14 +349,12 @@ table, th, td {
 												{% endif %}
 													</div>
                                                 {% include 'alert.html' %}
-
 								  <script>
 									  setTimeout(function(){
 										if ($('#msg').length > 0){
 										  $('#msg').remove();
 										  }
 										},2900)
-
 								  </script>
 <!--													<button class="primary-btn">Submit</button>-->
 												</form>
@@ -377,29 +371,26 @@ table, th, td {
 						</div>
 					</div>
 					<!-- /product tab -->
-
 				</div>
 				<!-- /row -->
 			</div>
 			<!-- /container -->
 		</div>
 		<!-- /SECTION -->
-
+ {% if relatedbook %}
 		<!-- Section -->
 		<div class="section">
 			<!-- container -->
 			<div class="container">
 				<!-- row -->
 				<div class="row">
-
 					<div class="col-md-12">
 						<div class="section-title text-center">
 							<h3 class="title">Related Products</h3>
 						</div>
 					</div>
-
 					<!-- product -->
-           {% for p in products %}
+           {% for p in relatedbook %}
 					<div class="col-md-3 col-xs-6">
 						<div class="product">
 							<div class="product-img">
@@ -423,18 +414,15 @@ table, th, td {
 							<div class="add-to-cart">
 								<button class="add-to-cart-btn"><a  href="{% url 'addcart' p.book_id %}">  add to cart</a></button>
 							</div>
-
 						</div>
 					</div>
 					{% endfor %}
-
-
 				</div>
 				<!-- /row -->
 			</div>
 			<!-- /container -->
 		</div>
 		<!-- /Section -->
-
+{% endif  %}
 
 {% endblock content %}
