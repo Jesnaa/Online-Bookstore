@@ -1,4 +1,5 @@
 from audioop import reverse
+from datetime import timezone
 
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
@@ -761,10 +762,16 @@ def bookupdate(request,id):
         messages.success(request, 'Category Updated. ')
 
     return redirect(admin_book)
-
+from django.utils import timezone
 @login_required(login_url='login')
 def admin_orders(request):
-    order = OrderPlaced.objects.all()
+    # order = OrderPlaced.objects.all()
+    order = OrderPlaced.objects.order_by('-status')
+    pending_orders = OrderPlaced.objects.filter(status='Pending')
+    for orders in pending_orders:
+        if (timezone.now() - orders.ordered_date).days > 10:
+            messages.warning(request, f'Order of "{orders.product.book_name}"  Ordered by {orders.user.first_name} , Delivery is pending for more than 10 days  ')
+
     return render(request, 'admin_orders.html',{'order':order})
 
 @login_required(login_url='login')
@@ -787,6 +794,7 @@ def dboy1(request):
     context = {
         'orders': orders,
     }
+
     return render(request,'dboy1.html',context)
 # def dboy2(request,id):
 #     orders = OrderPlaced.objects.filter(id=id)
@@ -1160,53 +1168,122 @@ import io
 import urllib
 from django.db.models import Avg
 from .models import ReviewRating
-
-def review_analysis(request):
-    # Load the review data from the database, filtering by status=True
-    reviews = ReviewRating.objects.filter(status=True)
-    # Convert the review data to a Pandas DataFrame
-    review_data = pd.DataFrame(list(reviews.values()))
-    # Tokenize the review text
-    stop_words = stopwords.words('english')
-    stemmer = SnowballStemmer('english')
-    review_data['tokens'] = review_data['review'].apply(
-        lambda x: [stemmer.stem(token.lower()) for token in word_tokenize(x) if token.lower() not in stop_words])
-    # Calculate the sentiment score for each review using VADER
-    sia = SentimentIntensityAnalyzer()
-    review_data['sentiment_scores'] = review_data.apply(
-        lambda x: sia.polarity_scores(x['review'])['compound'] if x['rating'] >= 3 else -sia.polarity_scores(x['review'])['compound'], axis=1)
-    # Calculate the average sentiment score for each book
-    book_sentiment = review_data.groupby('product_id')['sentiment_scores'].mean().reset_index()
-    book_data = pd.DataFrame(list(Book.objects.all().values()))
-    book_data = book_data.merge(book_sentiment, left_on='book_id', right_on='product_id')
-    # print(book_data)
-    book_data = book_data.sort_values(by='sentiment_scores', ascending=False)
-    # print(book_data)
-    # Render the results
-    # book_data_dict = book_data.to_dict('list')
-    book_data = book_data.to_dict('records')
-    book_names = [d['book_name'] for d in book_data]
-    sentiment_scores = [d['sentiment_scores'] for d in book_data]
-    fig = go.Figure([go.Bar(x=book_names, y=sentiment_scores)])
-    plot_div = plot(fig, output_type='div')
-    fig = go.Figure(data=[go.Pie(labels=book_names, values=sentiment_scores)])
-    plot_divs = plot(fig, output_type='div')
-    context = {
-        'book_data': book_data,
-        'plot_div': plot_div,
-        'plot_divs': plot_divs
-    }
-    return render(request, 'review_analysis.html', context)
-
-
-
-
-
 from django.shortcuts import render
 from django.db.models import Avg
 from .models import Book, ReviewRating
 import plotly.graph_objs as go
 from plotly.offline import plot
+
+
+def review_analysis(request):
+    # Load the review data from the database, filtering by status=True
+    reviews = ReviewRating.objects.filter(status=True)
+
+    # Convert the review data to a Pandas DataFrame
+    review_data = pd.DataFrame(list(reviews.values()))
+
+    # Tokenize the review text
+    stop_words = stopwords.words('english')
+    stemmer = SnowballStemmer('english')
+    review_data['tokens'] = review_data['review'].apply(
+        lambda x: [stemmer.stem(token.lower()) for token in word_tokenize(x) if token.lower() not in stop_words])
+
+    # Calculate the sentiment score for each review using VADER
+    sia = SentimentIntensityAnalyzer()
+    review_data['sentiment_scores'] = review_data.apply(
+        lambda x: sia.polarity_scores(x['review'])['compound'], axis=1)
+
+    # Assign each review to a "positive" or "negative" category based on the sentiment score
+    review_data['sentiment_category'] = review_data['sentiment_scores'].apply(
+        lambda x: 'positive' if x >= 0.05 else 'negative')
+
+    # Calculate the average sentiment score for each book
+    book_sentiment = review_data.groupby(['product_id', 'sentiment_category'])['sentiment_scores'].mean().reset_index()
+    book_data = pd.DataFrame(list(Book.objects.all().values()))
+    book_data = book_data.merge(book_sentiment, left_on='book_id', right_on='product_id')
+
+    # Separate the book data into positive and negative reviews
+    positive_reviews = book_data[book_data['sentiment_category'] == 'positive']
+    negative_reviews = book_data[book_data['sentiment_category'] == 'negative']
+
+    # Sort the positive and negative reviews by sentiment score
+    positive_reviews = positive_reviews.sort_values(by='sentiment_scores', ascending=False)
+    negative_reviews = negative_reviews.sort_values(by='sentiment_scores', ascending=True)
+
+    # Render the results
+    positive_data = positive_reviews.to_dict('records')
+    negative_data = negative_reviews.to_dict('records')
+
+    plot_divs = []
+    for data, title in zip([positive_data, negative_data], ['Positive Reviews', 'Negative Reviews']):
+        book_names = [d['book_name'] for d in data]
+        sentiment_scores = [d['sentiment_scores'] for d in data]
+        fig = go.Figure([go.Bar(x=book_names, y=sentiment_scores)])
+        fig.update_layout(title=title)
+        plot_div = plot(fig, output_type='div')
+        plot_divs.append(plot_div)
+
+    # create pie charts
+    # for data, title in zip([positive_data, negative_data], ['Positive Reviews', 'Negative Reviews']):
+    #     book_names = [d['book_name'] for d in data]
+    #     sentiment_scores = [d['sentiment_scores'] for d in data]
+    #     fig = go.Figure([go.Pie(labels=book_names, values=sentiment_scores)])
+    #     fig.update_layout(title=title)
+    #     plot_div = plot(fig, output_type='div')
+    #     plot_divs.append(plot_div)
+
+    context = {
+        'book_data': book_data,
+        'positive_data': positive_data,
+        'negative_data': negative_data,
+        'plot_divs': plot_divs,
+
+    }
+    return render(request, 'review_analysis.html', context)
+
+
+# def review_analysis(request):
+#     # Load the review data from the database, filtering by status=True
+#     reviews = ReviewRating.objects.filter(status=True)
+#     # Convert the review data to a Pandas DataFrame
+#     review_data = pd.DataFrame(list(reviews.values()))
+#     # Tokenize the review text
+#     stop_words = stopwords.words('english')
+#     stemmer = SnowballStemmer('english')
+#     review_data['tokens'] = review_data['review'].apply(
+#         lambda x: [stemmer.stem(token.lower()) for token in word_tokenize(x) if token.lower() not in stop_words])
+#     # Calculate the sentiment score for each review using VADER
+#     sia = SentimentIntensityAnalyzer()
+#     review_data['sentiment_scores'] = review_data.apply(
+#         lambda x: sia.polarity_scores(x['review'])['compound'] if x['rating'] >= 3 else -sia.polarity_scores(x['review'])['compound'], axis=1)
+#     # Calculate the average sentiment score for each book
+#     book_sentiment = review_data.groupby('product_id')['sentiment_scores'].mean().reset_index()
+#     book_data = pd.DataFrame(list(Book.objects.all().values()))
+#     book_data = book_data.merge(book_sentiment, left_on='book_id', right_on='product_id')
+#     # print(book_data)
+#     book_data = book_data.sort_values(by='sentiment_scores', ascending=False)
+#     # print(book_data)
+#     # Render the results
+#     # book_data_dict = book_data.to_dict('list')
+#     book_data = book_data.to_dict('records')
+#     book_names = [d['book_name'] for d in book_data]
+#     sentiment_scores = [d['sentiment_scores'] for d in book_data]
+#     fig = go.Figure([go.Bar(x=book_names, y=sentiment_scores)])
+#     plot_div = plot(fig, output_type='div')
+#     fig = go.Figure(data=[go.Pie(labels=book_names, values=sentiment_scores)])
+#     plot_divs = plot(fig, output_type='div')
+#     context = {
+#         'book_data': book_data,
+#         'plot_div': plot_div,
+#         'plot_divs': plot_divs
+#     }
+#     return render(request, 'review_analysis.html', context)
+
+
+
+
+
+
 
 def rating_analysis(request):
     book_data = []
@@ -1222,9 +1299,12 @@ def rating_analysis(request):
 
     fig = go.Figure([go.Bar(x=book_names, y=sentiment_scores)])
     plot_div = plot(fig, output_type='div')
+    fig = go.Figure(data=[go.Pie(labels=book_names, values=sentiment_scores)])
+    plot_divs = plot(fig, output_type='div')
     context = {
         'book_data': book_data,
-        'plot_div': plot_div
+        'plot_div': plot_div,
+        'plot_divs': plot_divs
     }
     return render(request, 'rating_analysis.html', context)
 from django.shortcuts import render
@@ -1243,59 +1323,14 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from .models import Book
-
-
-# pytesseract.pytesseract.tesseract_cmd = r'c:\users\jesna\onedrive\documents\bookstore\projectenv\lib\site-packages\pytesseract\tesseract.exe'
-
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-
 stop_words = set(stopwords.words('english'))
-#
-# def book_search(request):
-#     if request.method == 'POST' and request.FILES['book_cover']:
-#         # Get the uploaded image file
-#         uploaded_file = request.FILES['book_cover']
-#         print('uploaded_file        ', uploaded_file)
-#         # Extract text from the uploaded image
-#         image = Image.open(uploaded_file)
-#         print('image        ', image)
-#         text = pytesseract.image_to_string(image)
-#         print('text        ',text)
-#         # Tokenize the text and remove stop words
-#         tokens = word_tokenize(text)
-#         tokens_without_stopwords = [token for token in tokens if not token in stop_words]
-#         # Identify the book title and author based on the extracted text
-#         book_name = None
-#         book_author = None
-#         for i in range(len(tokens_without_stopwords)-1):
-#             if tokens_without_stopwords[i].istitle() and tokens_without_stopwords[i+1].istitle():
-#                 book_name = tokens_without_stopwords[i] + ' ' + tokens_without_stopwords[i+1]
-#                 print('book_name        ', book_name)
-#                 book_author = ' '.join(tokens_without_stopwords[:i])
-#                 print('book_author        ', book_author)
-#                 break
-#         # Search the database for the corresponding book
-#         if book_name and book_author:
-#             search_results = Book.objects.filter(book_name__icontains=book_name, book_author__icontains=book_author)
-#             print('search_results        ', search_results)
-#             # Render the search results template with the search results
-#             return render(request, 'image_search.html', {'search_results': search_results})
-#         else:
-#             messages.success(request, 'No Matching Book Founded')
-#             return render(request, 'image_search.html')
-#
-#
-#     return render(request, 'image_search.html')
-
-
-
 from django.db.models import Q
 
 def book_search(request):
     w_count = Whishlist.objects.filter(user=request.user.id).count()
     count = Cart.objects.filter(user=request.user.id).count()
     products = Book.objects.all()
-
     if request.method == 'POST' and request.FILES['book_cover']:
         # Get the uploaded image file
         uploaded_file = request.FILES['book_cover']
@@ -1319,7 +1354,7 @@ def book_search(request):
             # Render the search results template with the search results
             return render(request, 'image_search.html', {'search_results': search_results,'w_count': w_count,'count': count,'products': products})
         else:
-            messages.error(request, 'No matching book found')
+            messages.warning(request, 'No matching book found')
             return render(request, 'image_search.html')
 
     return render(request, 'image_search.html')
