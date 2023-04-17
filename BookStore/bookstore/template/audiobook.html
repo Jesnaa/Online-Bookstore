@@ -398,145 +398,145 @@ table, th, td {
 		<!-- /SECTION -->
 
 		<!-- Section -->
-		<div class="section">
-			<!-- container -->
-			<div class="container">
-				<!-- row -->
-				<div class="row">
+<!--		<div class="section">-->
+<!--			&lt;!&ndash; container &ndash;&gt;-->
+<!--			<div class="container">-->
+<!--				&lt;!&ndash; row &ndash;&gt;-->
+<!--				<div class="row">-->
 
-					<div class="col-md-12">
-						<div class="section-title text-center">
-							<h3 class="title">Related Products</h3>
-						</div>
-					</div>
-
-					<!-- product -->
-           {% for p in products %}
-					<div class="col-md-3 col-xs-6">
-						<div class="product">
-							<div class="product-img">
-								<a href="{% url 'audiobook' p.book_id %}"><img src="{{p.img.url}}"  alt="" height="400"></a>
-								<div class="product-label">
-									<span class="sale">-30%</span>
-								</div>
-							</div>
-							<div class="product-body">
-								<p class="product-category">{{p.book_category}}</p>
-								<h3 class="product-name"><a href="#">{{p.ebook_name}}</a></h3>
-								<h4 class="product-price">₹{{p.book_price}}.00 <del class="product-old-price">₹{{p.book_oldprice}}.00</del></h4>
-								<div class="product-rating">
-								</div>
-								<div class="product-btns">
-									<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp"><a  href="{% url 'add_wishlist' p.book_id %}">add to wishlist</a></span></button>
-									<button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
-									<button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
-								</div>
-							</div>
-							<div class="add-to-cart">
-								<button class="add-to-cart-btn"><a  href="{% url 'addcart' p.book_id %}">  add to cart</a></button>
-							</div>
-
-						</div>
-					</div>
-					{% endfor %}
-
-					<!-- /product -->
+<!--					<div class="col-md-12">-->
+<!--						<div class="section-title text-center">-->
+<!--							<h3 class="title">Related Products</h3>-->
+<!--						</div>-->
+<!--					</div>-->
 
 <!--					&lt;!&ndash; product &ndash;&gt;-->
+<!--           {% for p in products %}-->
 <!--					<div class="col-md-3 col-xs-6">-->
 <!--						<div class="product">-->
 <!--							<div class="product-img">-->
-<!--								<img src="./img/product02.png" alt="">-->
+<!--								<a href="{% url 'audiobook' p.book_id %}"><img src="{{p.img.url}}"  alt="" height="400"></a>-->
 <!--								<div class="product-label">-->
-<!--									<span class="new">NEW</span>-->
+<!--									<span class="sale">-30%</span>-->
 <!--								</div>-->
 <!--							</div>-->
 <!--							<div class="product-body">-->
-<!--								<p class="product-category">Category</p>-->
-<!--								<h3 class="product-name"><a href="#">product name goes here</a></h3>-->
-<!--								<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>-->
+<!--								<p class="product-category">{{p.book_category}}</p>-->
+<!--								<h3 class="product-name"><a href="#">{{p.ebook_name}}</a></h3>-->
+<!--								<h4 class="product-price">₹{{p.book_price}}.00 <del class="product-old-price">₹{{p.book_oldprice}}.00</del></h4>-->
 <!--								<div class="product-rating">-->
-<!--									<i class="fa fa-star"></i>-->
-<!--									<i class="fa fa-star"></i>-->
-<!--									<i class="fa fa-star"></i>-->
-<!--									<i class="fa fa-star"></i>-->
-<!--									<i class="fa fa-star"></i>-->
 <!--								</div>-->
 <!--								<div class="product-btns">-->
-<!--									<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>-->
+<!--									<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp"><a  href="{% url 'add_wishlist' p.book_id %}">add to wishlist</a></span></button>-->
 <!--									<button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>-->
 <!--									<button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>-->
 <!--								</div>-->
 <!--							</div>-->
 <!--							<div class="add-to-cart">-->
-<!--								<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>-->
+<!--								<button class="add-to-cart-btn"><a  href="{% url 'addcart' p.book_id %}">  add to cart</a></button>-->
 <!--							</div>-->
+
 <!--						</div>-->
 <!--					</div>-->
+<!--					{% endfor %}-->
+
 <!--					&lt;!&ndash; /product &ndash;&gt;-->
 
-<!--					<div class="clearfix visible-sm visible-xs"></div>-->
+<!--&lt;!&ndash;					&lt;!&ndash; product &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;					<div class="col-md-3 col-xs-6">&ndash;&gt;-->
+<!--&lt;!&ndash;						<div class="product">&ndash;&gt;-->
+<!--&lt;!&ndash;							<div class="product-img">&ndash;&gt;-->
+<!--&lt;!&ndash;								<img src="./img/product02.png" alt="">&ndash;&gt;-->
+<!--&lt;!&ndash;								<div class="product-label">&ndash;&gt;-->
+<!--&lt;!&ndash;									<span class="new">NEW</span>&ndash;&gt;-->
+<!--&lt;!&ndash;								</div>&ndash;&gt;-->
+<!--&lt;!&ndash;							</div>&ndash;&gt;-->
+<!--&lt;!&ndash;							<div class="product-body">&ndash;&gt;-->
+<!--&lt;!&ndash;								<p class="product-category">Category</p>&ndash;&gt;-->
+<!--&lt;!&ndash;								<h3 class="product-name"><a href="#">product name goes here</a></h3>&ndash;&gt;-->
+<!--&lt;!&ndash;								<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>&ndash;&gt;-->
+<!--&lt;!&ndash;								<div class="product-rating">&ndash;&gt;-->
+<!--&lt;!&ndash;									<i class="fa fa-star"></i>&ndash;&gt;-->
+<!--&lt;!&ndash;									<i class="fa fa-star"></i>&ndash;&gt;-->
+<!--&lt;!&ndash;									<i class="fa fa-star"></i>&ndash;&gt;-->
+<!--&lt;!&ndash;									<i class="fa fa-star"></i>&ndash;&gt;-->
+<!--&lt;!&ndash;									<i class="fa fa-star"></i>&ndash;&gt;-->
+<!--&lt;!&ndash;								</div>&ndash;&gt;-->
+<!--&lt;!&ndash;								<div class="product-btns">&ndash;&gt;-->
+<!--&lt;!&ndash;									<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>&ndash;&gt;-->
+<!--&lt;!&ndash;									<button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>&ndash;&gt;-->
+<!--&lt;!&ndash;									<button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>&ndash;&gt;-->
+<!--&lt;!&ndash;								</div>&ndash;&gt;-->
+<!--&lt;!&ndash;							</div>&ndash;&gt;-->
+<!--&lt;!&ndash;							<div class="add-to-cart">&ndash;&gt;-->
+<!--&lt;!&ndash;								<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>&ndash;&gt;-->
+<!--&lt;!&ndash;							</div>&ndash;&gt;-->
+<!--&lt;!&ndash;						</div>&ndash;&gt;-->
+<!--&lt;!&ndash;					</div>&ndash;&gt;-->
+<!--&lt;!&ndash;					&lt;!&ndash; /product &ndash;&gt;&ndash;&gt;-->
 
-<!--					&lt;!&ndash; product &ndash;&gt;-->
-<!--					<div class="col-md-3 col-xs-6">-->
-<!--						<div class="product">-->
-<!--							<div class="product-img">-->
-<!--								<img src="./img/product03.png" alt="">-->
-<!--							</div>-->
-<!--							<div class="product-body">-->
-<!--								<p class="product-category">Category</p>-->
-<!--								<h3 class="product-name"><a href="#">product name goes here</a></h3>-->
-<!--								<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>-->
-<!--								<div class="product-rating">-->
-<!--									<i class="fa fa-star"></i>-->
-<!--									<i class="fa fa-star"></i>-->
-<!--									<i class="fa fa-star"></i>-->
-<!--									<i class="fa fa-star"></i>-->
-<!--									<i class="fa fa-star-o"></i>-->
-<!--								</div>-->
-<!--								<div class="product-btns">-->
-<!--									<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>-->
-<!--									<button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>-->
-<!--									<button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>-->
-<!--								</div>-->
-<!--							</div>-->
-<!--							<div class="add-to-cart">-->
-<!--								<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>-->
-<!--							</div>-->
-<!--						</div>-->
-<!--					</div>-->
-<!--					&lt;!&ndash; /product &ndash;&gt;-->
+<!--&lt;!&ndash;					<div class="clearfix visible-sm visible-xs"></div>&ndash;&gt;-->
 
-<!--					&lt;!&ndash; product &ndash;&gt;-->
-<!--					<div class="col-md-3 col-xs-6">-->
-<!--						<div class="product">-->
-<!--							<div class="product-img">-->
-<!--								<img src="./img/product04.png" alt="">-->
-<!--							</div>-->
-<!--							<div class="product-body">-->
-<!--								<p class="product-category">Category</p>-->
-<!--								<h3 class="product-name"><a href="#">product name goes here</a></h3>-->
-<!--								<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>-->
-<!--								<div class="product-rating">-->
-<!--								</div>-->
-<!--								<div class="product-btns">-->
-<!--									<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>-->
-<!--									<button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>-->
-<!--									<button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>-->
-<!--								</div>-->
-<!--							</div>-->
-<!--							<div class="add-to-cart">-->
-<!--								<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>-->
-<!--							</div>-->
-<!--						</div>-->
-<!--					</div>-->
-<!--					&lt;!&ndash; /product &ndash;&gt;-->
+<!--&lt;!&ndash;					&lt;!&ndash; product &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;					<div class="col-md-3 col-xs-6">&ndash;&gt;-->
+<!--&lt;!&ndash;						<div class="product">&ndash;&gt;-->
+<!--&lt;!&ndash;							<div class="product-img">&ndash;&gt;-->
+<!--&lt;!&ndash;								<img src="./img/product03.png" alt="">&ndash;&gt;-->
+<!--&lt;!&ndash;							</div>&ndash;&gt;-->
+<!--&lt;!&ndash;							<div class="product-body">&ndash;&gt;-->
+<!--&lt;!&ndash;								<p class="product-category">Category</p>&ndash;&gt;-->
+<!--&lt;!&ndash;								<h3 class="product-name"><a href="#">product name goes here</a></h3>&ndash;&gt;-->
+<!--&lt;!&ndash;								<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>&ndash;&gt;-->
+<!--&lt;!&ndash;								<div class="product-rating">&ndash;&gt;-->
+<!--&lt;!&ndash;									<i class="fa fa-star"></i>&ndash;&gt;-->
+<!--&lt;!&ndash;									<i class="fa fa-star"></i>&ndash;&gt;-->
+<!--&lt;!&ndash;									<i class="fa fa-star"></i>&ndash;&gt;-->
+<!--&lt;!&ndash;									<i class="fa fa-star"></i>&ndash;&gt;-->
+<!--&lt;!&ndash;									<i class="fa fa-star-o"></i>&ndash;&gt;-->
+<!--&lt;!&ndash;								</div>&ndash;&gt;-->
+<!--&lt;!&ndash;								<div class="product-btns">&ndash;&gt;-->
+<!--&lt;!&ndash;									<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>&ndash;&gt;-->
+<!--&lt;!&ndash;									<button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>&ndash;&gt;-->
+<!--&lt;!&ndash;									<button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>&ndash;&gt;-->
+<!--&lt;!&ndash;								</div>&ndash;&gt;-->
+<!--&lt;!&ndash;							</div>&ndash;&gt;-->
+<!--&lt;!&ndash;							<div class="add-to-cart">&ndash;&gt;-->
+<!--&lt;!&ndash;								<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>&ndash;&gt;-->
+<!--&lt;!&ndash;							</div>&ndash;&gt;-->
+<!--&lt;!&ndash;						</div>&ndash;&gt;-->
+<!--&lt;!&ndash;					</div>&ndash;&gt;-->
+<!--&lt;!&ndash;					&lt;!&ndash; /product &ndash;&gt;&ndash;&gt;-->
 
-				</div>
-				<!-- /row -->
-			</div>
-			<!-- /container -->
-		</div>
+<!--&lt;!&ndash;					&lt;!&ndash; product &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;					<div class="col-md-3 col-xs-6">&ndash;&gt;-->
+<!--&lt;!&ndash;						<div class="product">&ndash;&gt;-->
+<!--&lt;!&ndash;							<div class="product-img">&ndash;&gt;-->
+<!--&lt;!&ndash;								<img src="./img/product04.png" alt="">&ndash;&gt;-->
+<!--&lt;!&ndash;							</div>&ndash;&gt;-->
+<!--&lt;!&ndash;							<div class="product-body">&ndash;&gt;-->
+<!--&lt;!&ndash;								<p class="product-category">Category</p>&ndash;&gt;-->
+<!--&lt;!&ndash;								<h3 class="product-name"><a href="#">product name goes here</a></h3>&ndash;&gt;-->
+<!--&lt;!&ndash;								<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>&ndash;&gt;-->
+<!--&lt;!&ndash;								<div class="product-rating">&ndash;&gt;-->
+<!--&lt;!&ndash;								</div>&ndash;&gt;-->
+<!--&lt;!&ndash;								<div class="product-btns">&ndash;&gt;-->
+<!--&lt;!&ndash;									<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>&ndash;&gt;-->
+<!--&lt;!&ndash;									<button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>&ndash;&gt;-->
+<!--&lt;!&ndash;									<button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>&ndash;&gt;-->
+<!--&lt;!&ndash;								</div>&ndash;&gt;-->
+<!--&lt;!&ndash;							</div>&ndash;&gt;-->
+<!--&lt;!&ndash;							<div class="add-to-cart">&ndash;&gt;-->
+<!--&lt;!&ndash;								<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>&ndash;&gt;-->
+<!--&lt;!&ndash;							</div>&ndash;&gt;-->
+<!--&lt;!&ndash;						</div>&ndash;&gt;-->
+<!--&lt;!&ndash;					</div>&ndash;&gt;-->
+<!--&lt;!&ndash;					&lt;!&ndash; /product &ndash;&gt;&ndash;&gt;-->
+
+<!--				</div>-->
+<!--				&lt;!&ndash; /row &ndash;&gt;-->
+<!--			</div>-->
+<!--			&lt;!&ndash; /container &ndash;&gt;-->
+<!--		</div>-->
 		<!-- /Section -->
 
 

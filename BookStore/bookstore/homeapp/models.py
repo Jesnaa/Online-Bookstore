@@ -152,6 +152,7 @@ class OrderPlaced(models.Model):
     is_ordered = models.BooleanField(default=False)
     ordered_date = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    delivery_boy = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders_delivered', null=True, blank=True)
 
     def total_cost(self):
         return self.quantity

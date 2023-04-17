@@ -34,6 +34,16 @@ def index(request):
     count = Cart.objects.filter(user=request.user.id).count()
     w_count = Whishlist.objects.filter(user=request.user.id).count()
     tblBook = Book.objects.all()
+
+    # book = get_object_or_404(Book, book_id=id)
+
+    # book = Book.objects.filter(book_id=id)
+    # average_review = book.averageReview()
+    # context = {
+    #     'book': tblBook,
+    #
+    #     'averageReview': average_review
+    # }
     # Book.objects.values('book_id', 'book_name', 'book_category','book_quantity','book_price', 'book_oldprice','book_author','book_year','book_publisher','book_language', 'book_desc', '', 'img', 'user')
     category = Category.objects.all()
     cart = Cart.objects.all()
@@ -789,25 +799,112 @@ def dboyindex(request):
     return render(request,'dboyindex.html')
 def dboyblank(request):
     return render(request,'dboyblank.html')
-def dboy1(request):
-    orders = OrderPlaced.objects.exclude(status='Delivered')
-    context = {
-        'orders': orders,
-    }
-
-    return render(request,'dboy1.html',context)
-# def dboy2(request,id):
-#     orders = OrderPlaced.objects.filter(id=id)
+# def dboy1(request):
+#     orders = OrderPlaced.objects.exclude(status='Delivered')
 #     context = {
 #         'orders': orders,
 #     }
-#     for order in orders:
-#        if order.status == 'Pending':
-#                  order.status = 'Delivered'
-#                  order.save()
 #
-#     return render(request,'dboy2.html',context)
-# 916287
+#     return render(request,'dboy1.html',context)
+
+
+from django.db.models import Q
+def dboy1(request):
+    # Get all the undelivered orders and sort them by ID
+    orders = OrderPlaced.objects.exclude(status='Delivered').order_by('id')
+
+    # Get the active delivery boys and sort them by ID
+    delivery_boys = User.objects.filter(is_staff=True, is_admin=False, is_active=True).order_by('id')
+
+    # Divide the orders equally among all the delivery boys
+    num_delivery_boys = delivery_boys.count()
+    orders_per_delivery_boy = orders.count() // num_delivery_boys
+    remaining_orders = orders.count() % num_delivery_boys
+
+    # Create a list of orders for each delivery boy
+    order_lists = [[] for _ in range(num_delivery_boys)]
+    index = 0
+    for i, order in enumerate(orders):
+        if index < num_delivery_boys:
+            order_lists[index].append(order)
+            index += 1
+        else:
+            index = 0
+            order_lists[index].append(order)
+            index += 1
+
+    # Assign orders to delivery boys in a round-robin fashion
+    order_index = 0
+    for i, delivery_boy in enumerate(delivery_boys):
+        orders_to_assign = orders_per_delivery_boy
+        if i < remaining_orders:
+            orders_to_assign += 1
+        for order in order_lists[order_index][:orders_to_assign]:
+            order.delivery_boy = delivery_boy
+            order.save()
+        order_index = (order_index + 1) % num_delivery_boys
+
+    # Get the orders for the current delivery boy
+    delivery_boy_orders = OrderPlaced.objects.filter(delivery_boy=request.user)
+
+    context = {
+        'orders': delivery_boy_orders,
+    }
+
+    return render(request, 'dboy1.html', context)
+
+
+# def dboy1(request):
+#     # Get all the undelivered orders
+#     orders = OrderPlaced.objects.exclude(status='Delivered').order_by('id')
+#
+#     # Get the number of active delivery boys
+#     delivery_boys = User.objects.filter(is_staff=True, is_admin=False, is_active=True)
+#
+#     # Divide the orders equally among all the delivery boys
+#     num_delivery_boys = delivery_boys.count()
+#     if num_delivery_boys > 0:
+#         orders_per_delivery_boy = orders.count() // num_delivery_boys
+#         remaining_orders = orders.count() % num_delivery_boys
+#     else:
+#         orders_per_delivery_boy = orders.count()
+#         remaining_orders = 0
+#
+#     # Create a list of orders for each delivery boy
+#     order_lists = [[] for _ in range(num_delivery_boys)]
+#     index = 0
+#     for i, order in enumerate(orders):
+#         if index < num_delivery_boys:
+#             order_lists[index].append(order)
+#             index += 1
+#         else:
+#             index = 0
+#             order_lists[index].append(order)
+#             index += 1
+#
+#     # Assign delivery boy to orders in each order list and save them
+#     for i, order_list in enumerate(order_lists):
+#         delivery_boy = delivery_boys[i]
+#         if i < remaining_orders:
+#             orders_to_assign = orders_per_delivery_boy + 1
+#         else:
+#             orders_to_assign = orders_per_delivery_boy
+#         for order in order_list[:orders_to_assign]:
+#             order.delivery_boy = delivery_boy
+#             order.save()
+#
+#     # Get the orders for the current delivery boy
+#     delivery_boy_orders = OrderPlaced.objects.filter(delivery_boy=request.user)
+#
+#     context = {
+#         'orders': delivery_boy_orders,
+#     }
+#
+#     return render(request, 'dboy1.html', context)
+
+
+
+
 # def dboy2(request, id):
 #     order = OrderPlaced.objects.filter(id=id)
 #     print('orders',order)
@@ -1327,12 +1424,12 @@ pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tessera
 stop_words = set(stopwords.words('english'))
 from django.db.models import Q
 
+
 def book_search(request):
     w_count = Whishlist.objects.filter(user=request.user.id).count()
     count = Cart.objects.filter(user=request.user.id).count()
     products = Book.objects.all()
     if request.method == 'POST' and request.FILES['book_cover']:
-        # Get the uploaded image file
         uploaded_file = request.FILES['book_cover']
         # Extract text from the uploaded image
         image = Image.open(uploaded_file)
