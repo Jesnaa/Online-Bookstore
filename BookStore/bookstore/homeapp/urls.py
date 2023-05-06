@@ -35,6 +35,8 @@ urlpatterns = [
     path('plusqty/<int:id>/',views.plusqty,name='plusqty'),
     path('minusqty/<int:id>/',views.minusqty,name='minusqty'),
     path('billview/', views.billview, name='billview'),
+
+
     path('text_summarizer/', TextSummarizerView.as_view(), name='text_summarizer'),
     path('dboyindex/', views.dboyindex, name='dboyindex'),
     path('dboyblank/', views.dboyblank, name='dboyblank'),

@@ -114,3 +114,13 @@ class User(AbstractBaseUser,PermissionsMixin):
         return True
 
 
+class Address(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='addresses')
+    first_name = models.CharField(max_length=50, default='')
+    last_name = models.CharField(max_length=50, default='')
+    phonenumber = models.BigIntegerField(default=0, )
+    hname = models.CharField(max_length=50, null=True, blank=True)
+    country = models.CharField(max_length=50, null=True, blank=True)
+    state = models.CharField(max_length=50, null=True, blank=True)
+    city = models.CharField(max_length=50, null=True, blank=True)
+    pincode = models.IntegerField(default=0, null=True, blank=True)

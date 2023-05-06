@@ -10,7 +10,7 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from .models import Cart,Whishlist
 from django.contrib import messages
-from logapp.models import User
+from logapp.models import User,Address
 from django.conf import settings
 import razorpay
 from django.shortcuts import render
@@ -35,9 +35,8 @@ def index(request):
     w_count = Whishlist.objects.filter(user=request.user.id).count()
     tblBook = Book.objects.all()
 
-    # book = get_object_or_404(Book, book_id=id)
-
-    # book = Book.objects.filter(book_id=id)
+    # id=Book.book_id
+    # book = Book.objects.filter( book_id=id)
     # average_review = book.averageReview()
     # context = {
     #     'book': tblBook,
@@ -87,7 +86,7 @@ def product(request,id):
     single = Book.objects.filter(book_id=id)
     cart = Cart.objects.all()
     category = Category.objects.all()
-    orderproduct = OrderPlaced.objects.filter(user=request.user, is_ordered=True).exists()
+    # orderproduct = OrderPlaced.objects.filter(user=request.user, is_ordered=True).exists()
     review = ReviewRating.objects.filter(product_id=id, status=True)
     book = get_object_or_404(Book, book_id=id)
     average_review = book.averageReview()
@@ -99,7 +98,7 @@ def product(request,id):
         'review_count': book.countReview(),
         'averageReview' : average_review
     }
-    return render(request, 'product.html', {'context':context,'result': single,'products':products,'relatedbook':relatedbook,'category':category,'cart':cart,'count':count,'w_count':w_count,'orderproduct':orderproduct,'review':review})
+    return render(request, 'product.html', {'context':context,'result': single,'products':products,'relatedbook':relatedbook,'category':category,'cart':cart,'count':count,'w_count':w_count,'review':review})
 
 
 # def product(request,book_slug):
@@ -340,6 +339,9 @@ def checkout(request):
     tblBook = Book.objects.all()
     razoramount = total * 100
     print(razoramount)
+    address = Address.objects.filter(user=request.user)
+    print("address      ",address)
+
     client = razorpay.Client(auth=(settings.RAZORPAY_API_KEY, settings.RAZORPAY_API_SECRET_KEY))
 
     data = {
@@ -370,7 +372,7 @@ def checkout(request):
     #     'grand_total': grand_total
     # }
 
-    return render(request, 'checkout.html', {'datas': tblBook, 'category': category, 'product': cart, 'total':total,'razoramount':razoramount})
+    return render(request, 'checkout.html', {'datas': tblBook, 'category': category, 'product': cart, 'total':total,'razoramount':razoramount, 'address':address})
 def send_order_confirmation_email(order):
     otp_code = order.otp
     user = order.user
@@ -392,18 +394,28 @@ def send_order_confirmation_email(order):
         fail_silently=False,
     )
 
-
 def payment_done(request):
     order_id = request.session['order_id']
     payment_id = request.GET.get('payment_id')
     print(payment_id)
 
+
     payment = Payment.objects.get(razorpay_order_id=order_id)
+    payment.paid = True
+    payment.razorpay_payment_id = payment_id
+    payment.save()
+    customer = Address.objects.filter(user=request.user)
+    for i in customer:
+        print(i.id)
+
+    id = request.POST.get('address')
+    print("customerdd              ", id)
+    # selected_address = Address.objects.get(id=id)
 
     cart = Cart.objects.filter(user=request.user)
     for c in cart:
         otp_code = str(random.randint(100000, 999999))
-        order = OrderPlaced(user=request.user, product=c.product, payment=payment, otp=otp_code, is_ordered=True)
+        order = OrderPlaced(user=request.user, customer=i,product=c.product, payment=payment, otp=otp_code, is_ordered=True)
         order.save()
         send_order_confirmation_email(order)
         c.product.book_quantity -= c.product_qty
@@ -411,6 +423,27 @@ def payment_done(request):
         c.delete()
 
     return redirect('billview')
+#
+# def payment_done(request):
+#     order_id = request.session['order_id']
+#     payment_id = request.GET.get('payment_id')
+#     print(payment_id)
+#     customer = Address.objects.filter(user=request.user)
+#     payment = Payment.objects.get(razorpay_order_id=order_id)
+#     payment.paid = True
+#     payment.razorpay_payment_id = payment_id
+#     payment.save()
+#     cart = Cart.objects.filter(user=request.user)
+#     for c in cart:
+#         otp_code = str(random.randint(100000, 999999))
+#         order = OrderPlaced(user=request.user,product=c.product, payment=payment, otp=otp_code, is_ordered=True)
+#         order.save()
+#         send_order_confirmation_email(order)
+#         c.product.book_quantity -= c.product_qty
+#         c.product.save()
+#         c.delete()
+#
+#     return redirect('billview')
 
 def billview(request):
     count = Cart.objects.filter(user=request.user.id).count()
@@ -1153,6 +1186,7 @@ class TextSummarizerView(View):
         sentences = nltk.sent_tokenize(input_text)
         words = [nltk.word_tokenize(sentence) for sentence in sentences]
         words = [[word for word in sentence if word.isalnum()] for sentence in words]
+        print(words)
         summaries = []
         for i in range(len(sentences)):
             score = nltk.sentiment.vader.SentimentIntensityAnalyzer().polarity_scores(sentences[i])['compound']
@@ -1171,17 +1205,14 @@ def translation(request):
         text = request.POST.get('text')
         source_language = request.POST.get('source_language')
         target_language = request.POST.get('target_language')
-
         # Check if the source and target languages are valid
         if source_language not in LANGUAGES or target_language not in LANGUAGES:
             context = {'error_message': 'Invalid source or target language'}
             return render(request, 'translation.html', context)
-
         try:
             # Create a Translator object and translate the text to the target language
             translator = Translator()
             translated_text = translator.translate(text, src=source_language, dest=target_language)
-
             # Render the translated text in the template
             context = {'translated_text': translated_text.text}
             return render(request, 'translation.html', context)
@@ -1316,7 +1347,12 @@ def review_analysis(request):
         book_names = [d['book_name'] for d in data]
         sentiment_scores = [d['sentiment_scores'] for d in data]
         fig = go.Figure([go.Bar(x=book_names, y=sentiment_scores)])
-        fig.update_layout(title=title)
+
+        fig.update_layout(
+            title=title,
+            xaxis_title="Book Names",
+            yaxis_title="Sentiment Scores"
+        )
         plot_div = plot(fig, output_type='div')
         plot_divs.append(plot_div)
 

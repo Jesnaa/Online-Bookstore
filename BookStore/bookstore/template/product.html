@@ -345,7 +345,8 @@ table, th, td {
 														<p>You must purchase this product to post a review.</p>
 													{% endif %}
 												{% else %}
-												<p>You must be logged in to post a review. <span><a href="{% url 'login' %}">Login now</a></span></p>
+												<p>You must be logged in to post a review.</p>
+													<button class="btn btn-sm btn-danger"><a href="{% url 'login' %}">Login now</a></button>
 												{% endif %}
 													</div>
                                                 {% include 'alert.html' %}

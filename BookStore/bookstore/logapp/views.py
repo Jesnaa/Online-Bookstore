@@ -2,7 +2,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages, auth
 from django.contrib.auth.models import User, auth, models
-from .models import User
+from .models import User,Address
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
@@ -22,7 +22,8 @@ def profile(request):
     w_count = Whishlist.objects.filter(user=request.user.id).count()
     orders = OrderPlaced.objects.filter(
         user=request.user, is_ordered=True).order_by('ordered_date')
-    return render(request,'profile.html', { 'orders': orders,'count':count,'w_count':w_count})
+    address= Address.objects.filter(user=request.user.id)
+    return render(request,'profile.html', { 'orders': orders,'count':count,'w_count':w_count,'address':address})
 
 def index(request):
     return render(request,'index.html')
@@ -60,6 +61,13 @@ def register(request):
                                                 city=city, pincode=pincode, password=password)
                 user.is_user = True
                 user.save()
+                address = Address(user=user, hname=hname, country=country, state=state, city=city, pincode=pincode)
+                address.save()
+                # if user.hname and user.country and user.state and user.city and user.pincode:
+                #     address = Address(user=user, hname=user.hname, country=user.country, state=user.state,
+                #                       city=user.city, pincode=user.pincode)
+                #     address.save()
+
                 messages.success(request, 'Please verify your email for login!')
 
                 current_site = get_current_site(request)
@@ -259,3 +267,17 @@ def profile_update(request):
         return redirect('profile')
 
 
+def add_address(request):
+    if request.method == "POST":
+        hname = request.POST.get('hname')
+        country = request.POST.get('country')
+        state = request.POST.get('state')
+        city = request.POST.get('city')
+        pincode = request.POST.get('pincode')
+        # address = Address.objects.get(user_id=request.user.id)
+        address = Address(user=request.user,hname = hname,city = city,state = state,country = country,pincode = pincode)
+
+        address.save()
+
+        messages.success(request,'Address Added  Successfully. ')
+        return redirect('profile')

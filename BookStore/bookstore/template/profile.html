@@ -57,6 +57,7 @@
                                              <th>Quantity</th>
                                             <th>Book Price</th>
                                             <th>Invoice</th>
+                                            <th>Status</th>
 <!--                                            <th>Status</th>-->
                                         </tr>
                                     </thead>
@@ -82,8 +83,20 @@
                         </div>
                         <div id="address" class="tab-pane" style="height:70%">
                             <p>The following addresses will be used on the checkout page by default.</p><br>
-                            <h4 class="billing-address">Billing address</h4>
+                             <a data-toggle="tab" href="#add_address">
+                                 <button class="btn btn-sm btn-primary" type="submit"> Add New Address + </button>
+                             </a>
+                            <hr>
 
+                            <h4 class="billing-address">Billing address</h4>
+<div class="row">
+<div class="col-md-3 col-xs-5">
+
+
+                             {% for user in address %}
+     <div class="product" >
+<div class="product-body" >
+                            <p>{{forloop.counter}} . </p>
                              <p>{{user.first_name}} {{user.last_name}}</p>
                              <p>{{user.phonenumber}}</p>
                              <p>{{user.hname}} (h)</p>
@@ -91,7 +104,15 @@
                              <p>{{user.city}}</p>
                              <p>{{user.state}}</p>
                              <p>{{user.country}}</p>
-                            <button ><a data-toggle="tab" href="#account-details">Edit</a></button>
+                            <button class="btn btn-sm btn-primary"><a data-toggle="tab" href="#account-details">Edit</a></button>
+ </div>
+            </div>
+                              {% endfor %}
+
+
+</div>
+</div>
+
                         </div>
                         <div id="account-details" class="tab-pane fade">
                             <h3>Account details </h3>
@@ -186,6 +207,63 @@
                                 </form>
                             </div>
                         </div>
+<!--                        -->
+                         <div id="add_address" class="tab-pane fade">
+                            <h3>Account details </h3>
+                            <div class="register-form login-form clearfix">
+                                <form action="{% url 'add_address' %}" method="post">
+                                     {% csrf_token %}
+                                     <div class="form-group row">
+                                        <label for="name" class="col-lg-3 col-md-4 col-form-label">Name</label>
+                                        <div class="col-lg-6 col-md-8">
+                                            <input type="text" class="form-control" id="name" name="first_name" >
+                                        </div>
+                                    </div>
+                                     <div class="form-group row">
+                                        <label for="phonenumber" class="col-lg-3 col-md-4 col-form-label">Phonenumber</label>
+                                        <div class="col-lg-6 col-md-8">
+                                            <input type="text" class="form-control" id="phonenumber" name="phonenumber" >
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="hname" class="col-lg-3 col-md-4 col-form-label">House Name</label>
+                                        <div class="col-lg-6 col-md-8">
+                                            <input type="text" class="form-control" id="hnames" name="hname" >
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="pincode" class="col-lg-3 col-md-4 col-form-label">Pincode</label>
+                                        <div class="col-lg-6 col-md-8">
+                                            <input type="text" class="form-control" id="pincodes" name="pincode"  >
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="city" class="col-lg-3 col-md-4 col-form-label">City</label>
+                                        <div class="col-lg-6 col-md-8">
+                                            <input type="text" class="form-control" id="citys" name="city"  >
+                                        </div>
+                                    </div>
+                                     <div class="form-group row">
+                                        <label for="state" class="col-lg-3 col-md-4 col-form-label">State</label>
+                                        <div class="col-lg-6 col-md-8">
+                                            <input type="text" class="form-control" id="states" name="state"  >
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="country" class="col-lg-3 col-md-4 col-form-label">Country</label>
+                                        <div class="col-lg-6 col-md-8">
+                                            <input type="text" class="form-control" id="countrys" name="country"  >
+                                        </div>
+                                    </div>
+
+
+                                    <div class="register-box mt-40">
+                                        <button type="submit" class="return-customer-btn f-right">Add</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+<!--                        -->
                     </div>
                 </div>
             </div>

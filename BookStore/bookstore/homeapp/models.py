@@ -8,6 +8,10 @@ from django.urls.base import reverse
 from bookstore.settings import audio_storage
 from django.db.models import Avg, Count
 import random
+
+from logapp.models import Address
+
+
 class Category(models.Model):
     category_id = models.AutoField(primary_key=True)
     category_name = models.CharField(max_length=50, unique=True)
@@ -144,6 +148,7 @@ class OrderPlaced(models.Model):
 
     )
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    customer = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True, default=0)
     payment = models.ForeignKey(Payment, on_delete=models.SET_NULL, null=True, blank=True)
     product = models.ForeignKey(Book, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
