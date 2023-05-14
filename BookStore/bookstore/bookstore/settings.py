@@ -84,7 +84,8 @@ DATABASES = {
         'NAME': 'bookrak',
         'USER': 'postgres',
         'PASSWORD': '123',
-        'HOST': 'localhost'
+        'HOST': 'localhost',
+        'PORT': 5432,
     }
 }
 
