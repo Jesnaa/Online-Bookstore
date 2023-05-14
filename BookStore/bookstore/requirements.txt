@@ -44,7 +44,6 @@ hyperframe==5.2.0
 idna==2.10
 Jinja2==3.1.2
 joblib==1.2.0
-kaleido==0.2.1
 keyboard==0.13.5
 kiwisolver==1.4.4
 langcodes==3.3.0
