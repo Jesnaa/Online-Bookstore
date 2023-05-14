@@ -148,7 +148,7 @@ class OrderPlaced(models.Model):
 
     )
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    customer = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True, default=0)
+    # customer = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True, default=0)
     payment = models.ForeignKey(Payment, on_delete=models.SET_NULL, null=True, blank=True)
     product = models.ForeignKey(Book, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)

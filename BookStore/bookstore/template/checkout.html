@@ -113,32 +113,29 @@
 <!--                                {% endfor %}-->
 <!--                            </div>-->
 <!--							</div>-->
-						{% if address %}
-  <form method="post" action="{% url 'paymentdone' %}">
-    {% csrf_token %}
-    {% for address in address %}
-      <div class="form-check">
-        <input class="form-check-input" type="radio" name="address" value="{{ address.id }}" id="address{{ address.id }}">
-        <label class="form-check-label" for="address{{ address.id }}">
-          {{ address.first_name }} {{ address.last_name }}<br>
-          {{ address.phonenumber }}<br>
-          {{ address.hname }}<br>
-          {{ address.city }}, {{ address.state }} - {{ address.pincode }}<br>
-          {{ address.country }}
-        </label>
-      </div>
-    {% empty %}
-      <p>You don't have any saved addresses.</p>
-    {% endfor %}
 
 
-
-
-
-  </form>
-{% else %}
-  <p>You don't have any saved addresses.</p>
-{% endif %}
+<!--						{% if address %}-->
+<!--  <form method="post" action="{% url 'paymentdone' %}">-->
+<!--    {% csrf_token %}-->
+<!--    {% for address in address %}-->
+<!--      <div class="form-check">-->
+<!--        <input class="form-check-input" type="radio" name="address" value="{{ address.id }}" id="address{{ address.id }}">-->
+<!--        <label class="form-check-label" for="address{{ address.id }}">-->
+<!--          {{ address.first_name }} {{ address.last_name }}<br>-->
+<!--          {{ address.phonenumber }}<br>-->
+<!--          {{ address.hname }}<br>-->
+<!--          {{ address.city }}, {{ address.state }} - {{ address.pincode }}<br>-->
+<!--          {{ address.country }}-->
+<!--        </label>-->
+<!--      </div>-->
+<!--    {% empty %}-->
+<!--      <p>You don't have any saved addresses.</p>-->
+<!--    {% endfor %}-->
+<!--  </form>-->
+<!--{% else %}-->
+<!--  <p>You don't have any saved addresses.</p>-->
+<!--{% endif %}-->
 
 
 

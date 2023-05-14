@@ -408,14 +408,14 @@ def payment_done(request):
     for i in customer:
         print(i.id)
 
-    id = request.POST.get('address')
-    print("customerdd              ", id)
+    # id = request.POST.get('address')
+    # print("customerdd              ", id)
     # selected_address = Address.objects.get(id=id)
 
     cart = Cart.objects.filter(user=request.user)
     for c in cart:
         otp_code = str(random.randint(100000, 999999))
-        order = OrderPlaced(user=request.user, customer=i,product=c.product, payment=payment, otp=otp_code, is_ordered=True)
+        order = OrderPlaced(user=request.user,product=c.product, payment=payment, otp=otp_code, is_ordered=True)
         order.save()
         send_order_confirmation_email(order)
         c.product.book_quantity -= c.product_qty
