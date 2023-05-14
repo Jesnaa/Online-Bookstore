@@ -23,7 +23,7 @@ def profile(request):
     orders = OrderPlaced.objects.filter(
         user=request.user, is_ordered=True).order_by('ordered_date')
     address= Address.objects.filter(user=request.user.id)
-    return render(request,'profile.html', { 'orders': orders,'count':count,'w_count':w_count,'address':address})
+    return render(request,'profile.html', { 'orders': orders,'count':count,'w_count':w_count,'address':addressf})
 
 def index(request):
     return render(request,'index.html')
