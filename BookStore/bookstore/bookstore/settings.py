@@ -27,7 +27,7 @@ ENCRYPT_KEY = b'hhsto_JaVx16sKBJT_6vwL9fIc4d-07kn2deCO2ybZo='
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [' 16.170.165.153', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['16.170.165.153', 'localhost', '127.0.0.1']
 
 
 # Application definition
