@@ -81,10 +81,10 @@ WSGI_APPLICATION = 'bookstore.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'bookrak',
+        'NAME': 'demo',
         'USER': 'postgres',
-        'PASSWORD': '123',
-        'HOST': 'localhost',
+        'PASSWORD': 'postgres123',
+        'HOST': 'database-1.cewke2oe1c41.eu-north-1.rds.amazonaws.com',
         'PORT': '5432',
 
     }
